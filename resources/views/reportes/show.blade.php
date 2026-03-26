@@ -30,6 +30,7 @@
                 @endif
             </div>
             <div class="detail-row"><strong>Descripción:</strong> {{ $report->descripcion }}</div>
+            <div class="detail-row"><strong>Observaciones:</strong> {{ $report->observaciones ?? '-' }}</div>
             <div class="detail-row"><strong>Casilleros vinculados:</strong>
                 @if ($report->casilleros->isEmpty())
                     Ninguno

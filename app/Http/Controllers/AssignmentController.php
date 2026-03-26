@@ -12,11 +12,26 @@ use Illuminate\Validation\Rule;
 
 class AssignmentController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $assignments = Assignment::with(['student', 'locker', 'period', 'usuario'])->get();
+        $query = Assignment::with(['student', 'locker', 'period', 'usuario']);
 
-        return view('assignments.index', compact('assignments'));
+        if ($request->filled('idPeriodo')) {
+            $query->where('idPeriodo', (int) $request->idPeriodo);
+        }
+
+        if ($request->filled('grupo')) {
+            $group = $request->grupo;
+            $query->whereHas('student', function ($studentQuery) use ($group) {
+                $studentQuery->where('grupo', $group);
+            });
+        }
+
+        $assignments = $query->orderByDesc('idasigna')->get();
+        $periods = Period::orderBy('idperiodo', 'desc')->get();
+        $groups = Student::whereNotNull('grupo')->distinct()->orderBy('grupo')->pluck('grupo');
+
+        return view('assignments.index', compact('assignments', 'periods', 'groups'));
     }
 
     public function create()

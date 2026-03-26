@@ -21,6 +21,7 @@ class Student extends Model
         'nombre',
         'idcarrera',
         'cuatrimestre',
+        'grupo',
         'apellidoPaterno',
         'apellidoMaterno',
         'numero_telefonico',
@@ -50,5 +51,10 @@ class Student extends Model
     public function sanctions()
     {
         return $this->hasMany(Sanction::class);
+    }
+
+    public function lockerRequests()
+    {
+        return $this->hasMany(LockerRequest::class, 'matricula', 'matricula');
     }
 }

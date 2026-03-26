@@ -24,10 +24,19 @@ class ReportsController extends Controller
     public function byGroup(Request $request)
     {
         $careers = \App\Models\Career::all();
+        $groups = Student::whereNotNull('grupo')->distinct()->orderBy('grupo')->pluck('grupo');
+        $buildings = \App\Models\Building::orderBy('num_edific')->get();
 
-        $data = $this->buildByGroupData($request->input('idcarrera'));
+        $filters = [
+            'idcarrera' => $request->input('idcarrera'),
+            'cuatrimestre' => $request->input('cuatrimestre'),
+            'grupo' => $request->input('grupo'),
+            'idedificio' => $request->input('idedificio'),
+        ];
 
-        return view('reports.by_group', compact('data', 'careers'));
+        $data = $this->buildByGroupData($filters);
+
+        return view('reports.by_group', compact('data', 'careers', 'groups', 'buildings', 'filters'));
     }
 
     public function exportOccupancy()
@@ -45,15 +54,36 @@ class ReportsController extends Controller
 
     public function exportByGroup(Request $request)
     {
-        $data = $this->buildByGroupData($request->input('idcarrera'));
+        $filters = [
+            'idcarrera' => $request->input('idcarrera'),
+            'cuatrimestre' => $request->input('cuatrimestre'),
+            'grupo' => $request->input('grupo'),
+            'idedificio' => $request->input('idedificio'),
+        ];
+
+        $data = $this->buildByGroupData($filters);
+
+        $careerName = null;
+        if (!empty($filters['idcarrera'])) {
+            $careerName = optional(\App\Models\Career::find($filters['idcarrera']))->nombre_carre;
+        }
+
+        $pdfFilters = [
+            'carrera' => $careerName ?: 'Todas',
+            'cuatrimestre' => $filters['cuatrimestre'] ?: 'Todos',
+            'grupo' => $filters['grupo'] ?: 'Todos',
+            'edificio' => !empty($filters['idedificio'])
+                ? ('Edif. ' . optional(\App\Models\Building::find($filters['idedificio']))->num_edific)
+                : 'Todos',
+        ];
 
         if (app()->bound('dompdf.wrapper')) {
             $pdf = app('dompdf.wrapper');
-            $pdf->loadView('reports.by_group_pdf', compact('data'));
+            $pdf->loadView('reports.by_group_pdf', compact('data', 'pdfFilters'));
             return $pdf->download('reporte_por_grupo.pdf');
         }
 
-        return response()->view('reports.by_group_pdf', compact('data'));
+        return response()->view('reports.by_group_pdf', compact('data', 'pdfFilters'));
     }
 
     private function buildOccupancyData(): array
@@ -76,12 +106,30 @@ class ReportsController extends Controller
         ];
     }
 
-    private function buildByGroupData(?string $careerId = null)
+    private function buildByGroupData(array $filters = [])
     {
         $query = Student::with(['assignments', 'career']);
 
-        if (!empty($careerId)) {
-            $query->where('idcarrera', $careerId);
+        if (!empty($filters['idcarrera'])) {
+            $query->where('idcarrera', (int) $filters['idcarrera']);
+        }
+
+        if (!empty($filters['cuatrimestre'])) {
+            $query->where('cuatrimestre', (int) $filters['cuatrimestre']);
+        }
+
+        if (!empty($filters['grupo'])) {
+            $query->where('grupo', (string) $filters['grupo']);
+        }
+
+        if (!empty($filters['idedificio'])) {
+            $buildingId = (int) $filters['idedificio'];
+            $query->whereHas('assignments', function ($assignmentQuery) use ($buildingId) {
+                $assignmentQuery->whereNull('released_at')
+                    ->whereHas('locker', function ($lockerQuery) use ($buildingId) {
+                        $lockerQuery->where('idedificio', $buildingId);
+                    });
+            });
         }
 
         $students = $query->get();

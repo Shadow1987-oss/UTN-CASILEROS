@@ -23,12 +23,41 @@
                         {{ optional($assignment->locker)->numeroCasiller ?? '-' }}</div>
                     <div class="detail-row"><strong>Ubicación:</strong>
                         {{ optional(optional($assignment->locker)->building)->num_edific ?? 'Sin edificio' }}</div>
+                    <div class="detail-row"><strong>Área:</strong> {{ optional($assignment->locker)->area ?? '-' }}</div>
+                    <div class="detail-row"><strong>Planta:</strong> {{ optional($assignment->locker)->planta ?? '-' }}
+                    </div>
                     <div class="detail-row"><strong>Estado:</strong> {{ optional($assignment->locker)->estado ?? '-' }}
                     </div>
                 </div>
             @else
                 <p class="muted">No tienes un casillero activo asignado actualmente.</p>
             @endif
+
+            <div style="margin-top: 20px;">
+                <h3>Solicitar casillero</h3>
+                <form class="form" method="POST" action="{{ route('student.request_locker') }}">
+                    @csrf
+                    <div class="field">
+                        <label for="idperiodo">Período</label>
+                        <select id="idperiodo" name="idperiodo" class="input" required>
+                            <option value="">Seleccionar período</option>
+                            @foreach ($periods as $period)
+                                <option value="{{ $period->idperiodo }}"
+                                    {{ old('idperiodo') == $period->idperiodo ? 'selected' : '' }}>
+                                    {{ $period->nombrePerio }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label for="observaciones">Observaciones (opcional)</label>
+                        <textarea id="observaciones" name="observaciones" class="input" rows="3" maxlength="255">{{ old('observaciones') }}</textarea>
+                    </div>
+                    <div class="actions">
+                        <button class="btn" type="submit">Enviar solicitud</button>
+                    </div>
+                </form>
+            </div>
         @endif
     </div>
 @endsection

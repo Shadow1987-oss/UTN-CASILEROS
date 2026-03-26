@@ -13,13 +13,26 @@ class LockerController extends Controller
     {
         $query = Locker::with('building');
 
-        if ($request->has('estado') && $request->estado) {
+        if ($request->filled('estado')) {
             $query->where('estado', $request->estado);
         }
 
-        $lockers = $query->get();
+        if ($request->filled('idedificio')) {
+            $query->where('idedificio', $request->idedificio);
+        }
 
-        return view('lockers.index', compact('lockers'));
+        if ($request->filled('area')) {
+            $query->where('area', $request->area);
+        }
+
+        if ($request->filled('planta')) {
+            $query->where('planta', $request->planta);
+        }
+
+        $lockers = $query->orderBy('idedificio')->orderBy('area')->orderBy('planta')->orderBy('numeroCasiller')->get();
+        $buildings = \App\Models\Building::orderBy('num_edific')->get();
+
+        return view('lockers.index', compact('lockers', 'buildings'));
     }
 
     public function create()
@@ -33,8 +46,11 @@ class LockerController extends Controller
         $data = $request->validate([
             'idcasillero' => ['required', 'integer', 'unique:casilleros,idcasillero'],
             'idedificio' => ['nullable', 'integer', 'exists:edificios,idedificio'],
+            'area' => ['nullable', 'string', 'max:50'],
+            'planta' => ['nullable', 'in:baja,alta'],
             'numeroCasiller' => ['required', 'integer'],
             'estado' => ['required', 'string', 'max:10'],
+            'observaciones' => ['nullable', 'string', 'max:255'],
         ]);
 
         Locker::create($data);
@@ -52,8 +68,11 @@ class LockerController extends Controller
     {
         $data = $request->validate([
             'idedificio' => ['nullable', 'integer', 'exists:edificios,idedificio'],
+            'area' => ['nullable', 'string', 'max:50'],
+            'planta' => ['nullable', 'in:baja,alta'],
             'numeroCasiller' => ['required', 'integer'],
             'estado' => ['required', 'string', 'max:10'],
+            'observaciones' => ['nullable', 'string', 'max:255'],
         ]);
 
         $locker->update($data);

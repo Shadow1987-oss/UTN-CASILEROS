@@ -10,7 +10,9 @@
                 <p class="muted">Información completa del estudiante.</p>
             </div>
             <div>
-                <a class="btn secondary" href="{{ route('students.edit', $student) }}">Editar</a>
+                @if (auth()->user()->role === 'admin')
+                    <a class="btn secondary" href="{{ route('students.edit', $student) }}">Editar</a>
+                @endif
                 <a class="btn secondary" href="{{ route('students.index') }}">Volver</a>
             </div>
         </div>
@@ -27,6 +29,9 @@
             </div>
             <div class="detail-row">
                 <strong>Cuatrimestre:</strong> {{ $student->cuatrimestre }}
+            </div>
+            <div class="detail-row">
+                <strong>Grupo:</strong> {{ $student->grupo ?? '-' }}
             </div>
             <div class="detail-row">
                 <strong>Apellido Paterno:</strong> {{ $student->apellidoPaterno }}

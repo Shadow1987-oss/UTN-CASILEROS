@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Career;
+use App\Models\LockerRequest;
+use App\Models\Period;
 use App\Models\Student;
 use App\Models\User;
 use Illuminate\Database\QueryException;
@@ -28,9 +30,42 @@ class StudentController extends Controller
             }
         }
 
-        $students = $query->get();
+        if ($request->filled('idcarrera')) {
+            $query->where('idcarrera', (int) $request->idcarrera);
+        }
 
-        return view('students.index', compact('students', 'searchError'));
+        if ($request->filled('cuatrimestre')) {
+            $query->where('cuatrimestre', (int) $request->cuatrimestre);
+        }
+
+        if ($request->filled('grupo')) {
+            $query->where('grupo', $request->grupo);
+        }
+
+        if ($request->filled('idperiodo')) {
+            $periodId = (int) $request->idperiodo;
+            $query->whereHas('assignments', function ($assignmentQuery) use ($periodId) {
+                $assignmentQuery->where('idPeriodo', $periodId)->whereNull('released_at');
+            });
+        }
+
+        if ($request->filled('idedificio')) {
+            $buildingId = (int) $request->idedificio;
+            $query->whereHas('assignments', function ($assignmentQuery) use ($buildingId) {
+                $assignmentQuery->whereNull('released_at')
+                    ->whereHas('locker', function ($lockerQuery) use ($buildingId) {
+                        $lockerQuery->where('idedificio', $buildingId);
+                    });
+            });
+        }
+
+        $students = $query->get();
+        $careers = Career::orderBy('nombre_carre')->get();
+        $periods = Period::orderBy('idperiodo', 'desc')->get();
+        $buildings = \App\Models\Building::orderBy('num_edific')->get();
+        $groups = Student::whereNotNull('grupo')->distinct()->orderBy('grupo')->pluck('grupo');
+
+        return view('students.index', compact('students', 'searchError', 'careers', 'periods', 'buildings', 'groups'));
     }
 
     public function create()
@@ -48,6 +83,7 @@ class StudentController extends Controller
             'nombre' => ['required', 'string', 'max:50'],
             'idcarrera' => ['nullable', 'integer', 'exists:carreras,idcarrera'],
             'cuatrimestre' => ['nullable', 'integer'],
+            'grupo' => ['nullable', 'string', 'max:50'],
             'apellidoPaterno' => ['nullable', 'string', 'max:50'],
             'apellidoMaterno' => ['nullable', 'string', 'max:50'],
             'numero_telefonico' => ['nullable', 'string', 'max:50'],
@@ -81,6 +117,7 @@ class StudentController extends Controller
             'nombre' => ['required', 'string', 'max:50'],
             'idcarrera' => ['nullable', 'integer', 'exists:carreras,idcarrera'],
             'cuatrimestre' => ['nullable', 'integer'],
+            'grupo' => ['nullable', 'string', 'max:50'],
             'apellidoPaterno' => ['nullable', 'string', 'max:50'],
             'apellidoMaterno' => ['nullable', 'string', 'max:50'],
             'numero_telefonico' => ['nullable', 'string', 'max:50'],
@@ -118,7 +155,41 @@ class StudentController extends Controller
                 ->first();
         }
 
-        return view('students.my_locker', compact('student', 'assignment'));
+        $periods = Period::orderBy('fechaInicio', 'desc')->get();
+
+        return view('students.my_locker', compact('student', 'assignment', 'periods'));
+    }
+
+    public function requestLocker(Request $request)
+    {
+        $student = Student::where('user_id', auth()->id())->first();
+
+        if (!$student) {
+            return redirect()->route('student.home')->with('status', 'Tu cuenta no está vinculada a un estudiante.');
+        }
+
+        $data = $request->validate([
+            'idperiodo' => ['required', 'integer', 'exists:periodos,idperiodo'],
+            'observaciones' => ['nullable', 'string', 'max:255'],
+        ]);
+
+        $alreadyRequested = LockerRequest::where('matricula', $student->matricula)
+            ->where('idperiodo', (int) $data['idperiodo'])
+            ->where('estado', 'pendiente')
+            ->exists();
+
+        if ($alreadyRequested) {
+            return redirect()->route('student.home')->with('status', 'Ya tienes una solicitud pendiente para ese período.');
+        }
+
+        LockerRequest::create([
+            'matricula' => $student->matricula,
+            'idperiodo' => (int) $data['idperiodo'],
+            'estado' => 'pendiente',
+            'observaciones' => $data['observaciones'] ?? null,
+        ]);
+
+        return redirect()->route('student.home')->with('status', 'Solicitud de casillero enviada correctamente.');
     }
 
     private function normalizeStudentPhoneData(array $data): array

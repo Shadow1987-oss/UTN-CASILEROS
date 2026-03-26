@@ -9,6 +9,37 @@
             </div>
             <a class="btn" href="{{ route('assignments.create') }}">Nueva asignación</a>
         </div>
+        <form method="GET" action="{{ route('assignments.index') }}" class="form" style="margin-bottom: 16px;">
+            <div class="grid grid-3">
+                <div class="field">
+                    <label for="idPeriodo">Período</label>
+                    <select id="idPeriodo" name="idPeriodo" class="input">
+                        <option value="">Todos</option>
+                        @foreach ($periods as $period)
+                            <option value="{{ $period->idperiodo }}"
+                                {{ request('idPeriodo') == $period->idperiodo ? 'selected' : '' }}>
+                                {{ $period->nombrePerio }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="field">
+                    <label for="grupo">Grupo</label>
+                    <select id="grupo" name="grupo" class="input">
+                        <option value="">Todos</option>
+                        @foreach ($groups as $group)
+                            <option value="{{ $group }}" {{ request('grupo') == $group ? 'selected' : '' }}>
+                                {{ $group }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
+            <div class="actions">
+                <button class="btn" type="submit">Filtrar</button>
+                <a class="btn secondary" href="{{ route('assignments.index') }}">Limpiar</a>
+            </div>
+        </form>
         <table>
             <thead>
                 <tr>
@@ -25,7 +56,8 @@
             <tbody>
                 @forelse ($assignments as $assignment)
                     <tr>
-                        <td>{{ $assignment->student->nombre ?? '-' }} {{ $assignment->student->apellidoPaterno ?? '' }}</td>
+                        <td>{{ $assignment->student->nombre ?? '-' }} {{ $assignment->student->apellidoPaterno ?? '' }}
+                        </td>
                         <td>{{ $assignment->matricula }}</td>
                         <td>#{{ $assignment->locker->numeroCasiller ?? '-' }}</td>
                         <td>{{ $assignment->period->nombrePerio ?? '-' }}</td>

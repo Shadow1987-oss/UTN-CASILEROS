@@ -58,6 +58,12 @@
                 'placeholder' => 'Ej. 3',
             ])
             @include('partials.form-field', [
+                'label' => 'Grupo',
+                'name' => 'grupo',
+                'value' => old('grupo', $student->grupo),
+                'placeholder' => 'Ej. TIC-3A',
+            ])
+            @include('partials.form-field', [
                 'label' => 'Apellido Paterno',
                 'name' => 'apellidoPaterno',
                 'value' => old('apellidoPaterno', $student->apellidoPaterno),

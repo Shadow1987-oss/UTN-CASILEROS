@@ -42,6 +42,12 @@
 <body>
     <h1>Reporte por Grupo</h1>
     <p class="muted">Generado: {{ now()->format('d/m/Y H:i') }}</p>
+    <p class="muted">
+        Carrera: {{ $pdfFilters['carrera'] ?? 'Todas' }} |
+        Cuatrimestre: {{ $pdfFilters['cuatrimestre'] ?? 'Todos' }} |
+        Grupo: {{ $pdfFilters['grupo'] ?? 'Todos' }} |
+        Edificio: {{ $pdfFilters['edificio'] ?? 'Todos' }}
+    </p>
 
     <table>
         <thead>

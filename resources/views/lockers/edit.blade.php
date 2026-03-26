@@ -24,6 +24,25 @@
                 @enderror
             </div>
             @include('partials.form-field', [
+                'label' => 'Área',
+                'name' => 'area',
+                'value' => old('area', $locker->area),
+                'placeholder' => 'Ej. Laboratorios',
+            ])
+            <div class="field">
+                <label for="planta">Planta</label>
+                <select id="planta" name="planta" class="input">
+                    <option value="">Seleccionar</option>
+                    <option value="baja" {{ old('planta', $locker->planta) == 'baja' ? 'selected' : '' }}>Planta baja
+                    </option>
+                    <option value="alta" {{ old('planta', $locker->planta) == 'alta' ? 'selected' : '' }}>Planta alta
+                    </option>
+                </select>
+                @error('planta')
+                    <div class="field-help error">{{ $message }}</div>
+                @enderror
+            </div>
+            @include('partials.form-field', [
                 'label' => 'Número de casillero',
                 'name' => 'numeroCasiller',
                 'value' => old('numeroCasiller', $locker->numeroCasiller),
@@ -44,6 +63,13 @@
                     <div class="field-help error">{{ $message }}</div>
                 @enderror
             </div>
+            @include('partials.form-field', [
+                'label' => 'Observaciones',
+                'name' => 'observaciones',
+                'type' => 'textarea',
+                'value' => old('observaciones', $locker->observaciones),
+                'maxlength' => 255,
+            ])
             <div class="actions">
                 <button class="btn" type="submit">Actualizar</button>
                 <a class="btn secondary" href="{{ route('lockers.index') }}">Cancelar</a>

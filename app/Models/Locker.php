@@ -18,8 +18,11 @@ class Locker extends Model
     protected $fillable = [
         'idcasillero',
         'idedificio',
+        'area',
+        'planta',
         'numeroCasiller',
         'estado',
+        'observaciones',
     ];
 
     public function assignments()

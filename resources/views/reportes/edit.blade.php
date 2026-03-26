@@ -49,6 +49,14 @@
                 'required' => true,
                 'maxlength' => 50,
             ])
+            @include('partials.form-field', [
+                'label' => 'Observaciones',
+                'name' => 'observaciones',
+                'type' => 'textarea',
+                'value' => old('observaciones', $report->observaciones),
+                'required' => false,
+                'maxlength' => 255,
+            ])
             <div class="field">
                 <label for="casilleros">Casilleros del alumno</label>
                 <select id="casilleros" name="casilleros[]" class="input" multiple size="8" required>

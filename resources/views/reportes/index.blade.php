@@ -54,7 +54,7 @@
             </div>
 
             <div class="field">
-                <label for="search">Buscar por ID o descripción</label>
+                <label for="search">Buscar por ID, descripción u observaciones</label>
                 <input id="search" name="search" type="text" class="input" value="{{ request('search') }}">
             </div>
 
@@ -71,6 +71,7 @@
                     <th>Tutor</th>
                     <th>Alumno</th>
                     <th>Descripción</th>
+                    <th>Observaciones</th>
                     <th>Casilleros vinculados</th>
                     <th></th>
                 </tr>
@@ -88,6 +89,7 @@
                             @endif
                         </td>
                         <td>{{ $report->descripcion }}</td>
+                        <td>{{ $report->observaciones ?? '-' }}</td>
                         <td>{{ $report->casilleros->count() }}</td>
                         <td class="actions">
                             <a class="btn secondary" href="{{ route('reportes.show', $report) }}">Ver</a>
@@ -102,7 +104,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="6" class="muted">Sin reportes aún.</td>
+                        <td colspan="7" class="muted">Sin reportes aún.</td>
                     </tr>
                 @endforelse
             </tbody>

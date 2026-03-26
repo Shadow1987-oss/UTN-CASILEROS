@@ -35,7 +35,8 @@ class ReportController extends Controller
         if ($request->filled('search')) {
             $search = trim((string) $request->input('search'));
             $query->where(function ($subQuery) use ($search) {
-                $subQuery->where('descripcion', 'like', "%{$search}%");
+                $subQuery->where('descripcion', 'like', "%{$search}%")
+                    ->orWhere('observaciones', 'like', "%{$search}%");
 
                 if (ctype_digit($search)) {
                     $subQuery->orWhere('idreporte', (int) $search);
@@ -68,6 +69,7 @@ class ReportController extends Controller
             })],
             'matricula' => ['required', 'integer', 'exists:alumnos,matricula'],
             'descripcion' => ['required', 'string', 'max:50'],
+            'observaciones' => ['nullable', 'string', 'max:255'],
             'casilleros' => ['required', 'array', 'min:1'],
             'casilleros.*' => ['integer', 'exists:casilleros,idcasillero'],
         ]);
@@ -84,6 +86,7 @@ class ReportController extends Controller
                 'idusuario' => $data['idusuario'],
                 'matricula' => $data['matricula'],
                 'descripcion' => $data['descripcion'],
+                'observaciones' => $data['observaciones'] ?? null,
             ]);
 
             $this->syncReportLockers((int) $report->idreporte, $data['casilleros'] ?? []);
@@ -117,6 +120,7 @@ class ReportController extends Controller
             })],
             'matricula' => ['required', 'integer', 'exists:alumnos,matricula'],
             'descripcion' => ['required', 'string', 'max:50'],
+            'observaciones' => ['nullable', 'string', 'max:255'],
             'casilleros' => ['required', 'array', 'min:1'],
             'casilleros.*' => ['integer', 'exists:casilleros,idcasillero'],
         ]);
@@ -133,6 +137,7 @@ class ReportController extends Controller
                 'idusuario' => $data['idusuario'],
                 'matricula' => $data['matricula'],
                 'descripcion' => $data['descripcion'],
+                'observaciones' => $data['observaciones'] ?? null,
             ]);
 
             $this->syncReportLockers((int) $report->idreporte, $data['casilleros'] ?? []);

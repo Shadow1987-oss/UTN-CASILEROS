@@ -49,6 +49,8 @@
                                     class="{{ request()->routeIs('dashboard') ? 'active' : '' }}">Tablero</a>
                                 <a href="{{ route('students.index') }}"
                                     class="{{ request()->routeIs('students.*') ? 'active' : '' }}">Estudiantes</a>
+                                <a href="{{ route('lockers.index') }}"
+                                    class="{{ request()->routeIs('lockers.*') ? 'active' : '' }}">Casilleros</a>
                                 <a href="{{ route('assignments.index') }}"
                                     class="{{ request()->routeIs('assignments.*') ? 'active' : '' }}">Asignaciones</a>
                                 <a href="{{ route('reports.index') }}"

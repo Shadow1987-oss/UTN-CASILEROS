@@ -38,12 +38,16 @@ Route::middleware('auth')->group(function () {
     Route::get('/mi-casillero', [StudentController::class, 'myLocker'])
         ->middleware('role:estudiante')
         ->name('student.home');
+    Route::post('/mi-casillero/solicitar', [StudentController::class, 'requestLocker'])
+        ->middleware('role:estudiante')
+        ->name('student.request_locker');
 
     Route::middleware('role:admin,tutor')->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
         Route::get('students', [StudentController::class, 'index'])->name('students.index');
         Route::get('students/{student}', [StudentController::class, 'show'])->name('students.show');
+        Route::get('lockers', [LockerController::class, 'index'])->name('lockers.index');
 
         Route::get('assignments', [AssignmentController::class, 'index'])->name('assignments.index');
         Route::get('assignments/create', [AssignmentController::class, 'create'])->name('assignments.create');
@@ -68,7 +72,7 @@ Route::middleware('auth')->group(function () {
         Route::resource('students', StudentController::class)->except(['index', 'show', 'create', 'store']);
         Route::post('students/import', [StudentImportController::class, 'store'])->name('students.import');
 
-        Route::resource('lockers', LockerController::class);
+        Route::resource('lockers', LockerController::class)->except(['index']);
         Route::resource('periods', PeriodController::class);
 
         Route::delete('assignments/{assignment}', [AssignmentController::class, 'destroy'])->name('assignments.destroy');

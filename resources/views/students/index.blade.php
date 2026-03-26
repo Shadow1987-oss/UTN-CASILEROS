@@ -11,14 +11,74 @@
             </div>
         </div>
 
-        <form method="GET" action="{{ route('students.index') }}" style="margin-bottom: 20px;">
-            <div class="field">
-                <label for="search">Buscar por matrícula</label>
-                <input type="number" name="search" id="search" value="{{ request('search') }}" placeholder="Ej. 320072">
-                <button type="submit" class="btn">Buscar</button>
-                @if (!empty($searchError))
-                    <div class="field-help error">{{ $searchError }}</div>
-                @endif
+        <form method="GET" action="{{ route('students.index') }}" class="form" style="margin-bottom: 20px;">
+            <div class="grid grid-3">
+                <div class="field">
+                    <label for="search">Matrícula</label>
+                    <input type="number" name="search" id="search" class="input" value="{{ request('search') }}"
+                        placeholder="Ej. 320072">
+                </div>
+                <div class="field">
+                    <label for="idcarrera">Carrera</label>
+                    <select id="idcarrera" name="idcarrera" class="input">
+                        <option value="">Todas</option>
+                        @foreach ($careers as $career)
+                            <option value="{{ $career->idcarrera }}"
+                                {{ request('idcarrera') == $career->idcarrera ? 'selected' : '' }}>
+                                {{ $career->nombre_carre }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="field">
+                    <label for="cuatrimestre">Cuatrimestre</label>
+                    <input type="number" name="cuatrimestre" id="cuatrimestre" class="input"
+                        value="{{ request('cuatrimestre') }}" placeholder="Ej. 3">
+                </div>
+            </div>
+            <div class="grid grid-3">
+                <div class="field">
+                    <label for="grupo">Grupo</label>
+                    <select id="grupo" name="grupo" class="input">
+                        <option value="">Todos</option>
+                        @foreach ($groups as $group)
+                            <option value="{{ $group }}" {{ request('grupo') == $group ? 'selected' : '' }}>
+                                {{ $group }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="field">
+                    <label for="idedificio">Edificio</label>
+                    <select id="idedificio" name="idedificio" class="input">
+                        <option value="">Todos</option>
+                        @foreach ($buildings as $building)
+                            <option value="{{ $building->idedificio }}"
+                                {{ request('idedificio') == $building->idedificio ? 'selected' : '' }}>
+                                {{ $building->num_edific }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="field">
+                    <label for="idperiodo">Período</label>
+                    <select id="idperiodo" name="idperiodo" class="input">
+                        <option value="">Todos</option>
+                        @foreach ($periods as $period)
+                            <option value="{{ $period->idperiodo }}"
+                                {{ request('idperiodo') == $period->idperiodo ? 'selected' : '' }}>
+                                {{ $period->nombrePerio }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
+            @if (!empty($searchError))
+                <div class="field-help error">{{ $searchError }}</div>
+            @endif
+            <div class="actions">
+                <button type="submit" class="btn">Filtrar</button>
+                <a class="btn secondary" href="{{ route('students.index') }}">Limpiar</a>
             </div>
         </form>
 
@@ -44,6 +104,7 @@
                     <th>Matrícula</th>
                     <th>Carrera</th>
                     <th>Cuatrimestre</th>
+                    <th>Grupo</th>
                     <th>Teléfono</th>
                     <th></th>
                 </tr>
@@ -56,6 +117,7 @@
                         <td>{{ $student->matricula }}</td>
                         <td>{{ optional($student->career)->nombre_carre ?? $student->idcarrera }}</td>
                         <td>{{ $student->cuatrimestre }}</td>
+                        <td>{{ $student->grupo ?? '-' }}</td>
                         <td>{{ $student->numero_telefonico ?? ($student->numero_telefono ?? '-') }}</td>
                         <td class="actions">
                             <a class="btn secondary" href="{{ route('students.show', $student) }}">Ver</a>
@@ -72,7 +134,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="6" class="muted">No hay estudiantes registrados.</td>
+                        <td colspan="7" class="muted">No hay estudiantes registrados.</td>
                     </tr>
                 @endforelse
             </tbody>
