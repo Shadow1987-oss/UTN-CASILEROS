@@ -11,7 +11,7 @@ class Building extends Model
 
     protected $table = 'edificios';
     protected $primaryKey = 'idedificio';
-    public $incrementing = true;
+    public $incrementing = false;
     protected $keyType = 'int';
     public $timestamps = false;
 

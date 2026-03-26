@@ -8,18 +8,16 @@ class CreateLockersTable extends Migration
 {
     public function up()
     {
-        Schema::create('lockers', function (Blueprint $table) {
-            $table->id();
-            $table->string('code')->unique();
-            $table->string('location');
-            $table->text('notes')->nullable();
-            $table->boolean('active')->default(true);
-            $table->timestamps();
+        Schema::create('casilleros', function (Blueprint $table) {
+            $table->integer('idcasillero')->primary();
+            $table->integer('idedificio')->nullable();
+            $table->integer('numeroCasiller');
+            $table->string('estado', 10);
         });
     }
 
     public function down()
     {
-        Schema::dropIfExists('lockers');
+        Schema::dropIfExists('casilleros');
     }
 }

@@ -8,18 +8,30 @@ use Illuminate\Database\Eloquent\Model;
 class Assignment extends Model
 {
     use HasFactory;
-    protected $table = 'asignaciones';
+    protected $table = 'asignamientos';
     protected $primaryKey = 'idasigna';
-    public $incrementing = true;
+    public $incrementing = false;
     protected $keyType = 'int';
     public $timestamps = false;
 
     protected $fillable = [
+        'idasigna',
         'matricula',
         'idusuario',
         'idcasillero',
         'idPeriodo',
         'fechaAsignacion',
+        'released_at',
+        'status',
+    ];
+
+    protected $casts = [
+        'fechaAsignacion' => 'date',
+        'released_at' => 'datetime',
+    ];
+
+    protected $appends = [
+        'status_label',
     ];
 
     public function student()
@@ -40,5 +52,20 @@ class Assignment extends Model
     public function usuario()
     {
         return $this->belongsTo(Usuario::class, 'idusuario', 'idusuario');
+    }
+
+    public function getStatusLabelAttribute(): string
+    {
+        $status = strtolower((string) ($this->status ?? ''));
+
+        if ($status === 'released' || $status === 'liberado') {
+            return 'Liberado';
+        }
+
+        if ($status === 'active' || $status === 'activo' || $status === '') {
+            return 'Activo';
+        }
+
+        return ucfirst($status);
     }
 }

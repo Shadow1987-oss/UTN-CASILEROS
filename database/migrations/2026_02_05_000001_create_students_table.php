@@ -8,19 +8,19 @@ class CreateStudentsTable extends Migration
 {
     public function up()
     {
-        Schema::create('students', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->string('enrollment')->unique();
-            $table->string('program');
-            $table->string('term');
-            $table->string('email')->nullable();
-            $table->timestamps();
+        Schema::create('alumnos', function (Blueprint $table) {
+            $table->integer('matricula')->primary();
+            $table->string('nombre', 50);
+            $table->integer('idcarrera')->nullable();
+            $table->integer('cuatrimestre')->nullable();
+            $table->string('apellidoPaterno', 50)->nullable();
+            $table->string('apellidoMaterno', 50)->nullable();
+            $table->string('numero_telefonico', 50)->nullable();
         });
     }
 
     public function down()
     {
-        Schema::dropIfExists('students');
+        Schema::dropIfExists('alumnos');
     }
 }

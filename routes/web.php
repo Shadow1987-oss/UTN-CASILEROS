@@ -1,11 +1,15 @@
 <?php
 
 use App\Http\Controllers\AssignmentController;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\BuildingController;
+use App\Http\Controllers\CareerController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\LockerController;
 use App\Http\Controllers\PeriodController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\StudentImportController;
+use App\Http\Controllers\UsuarioController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -21,16 +25,56 @@ use Illuminate\Support\Facades\Route;
 
 Route::redirect('/', '/dashboard');
 
-Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+Route::middleware('guest')->group(function () {
+    Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
+    Route::post('/login', [AuthController::class, 'login'])->name('login.attempt');
+    Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
+    Route::post('/register', [AuthController::class, 'register'])->name('register.attempt');
+});
 
-Route::resource('students', StudentController::class);
-Route::post('students/import', [StudentImportController::class, 'store'])->name('students.import');
+Route::middleware('auth')->group(function () {
+    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-Route::resource('lockers', LockerController::class);
-Route::resource('periods', PeriodController::class);
-Route::resource('assignments', AssignmentController::class);
-Route::post('assignments/{assignment}/release', [AssignmentController::class, 'release'])->name('assignments.release');
+    Route::get('/mi-casillero', [StudentController::class, 'myLocker'])
+        ->middleware('role:estudiante')
+        ->name('student.home');
 
-Route::resource('reportes', App\Http\Controllers\ReportController::class);
-Route::resource('sanciones', App\Http\Controllers\SanctionController::class);
-Route::resource('recibe', App\Http\Controllers\ReceiptController::class);
+    Route::middleware('role:admin,tutor')->group(function () {
+        Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+        Route::get('students', [StudentController::class, 'index'])->name('students.index');
+        Route::get('students/{student}', [StudentController::class, 'show'])->name('students.show');
+
+        Route::get('assignments', [AssignmentController::class, 'index'])->name('assignments.index');
+        Route::get('assignments/create', [AssignmentController::class, 'create'])->name('assignments.create');
+        Route::post('assignments', [AssignmentController::class, 'store'])->name('assignments.store');
+        Route::get('assignments/{assignment}', [AssignmentController::class, 'show'])->name('assignments.show');
+        Route::get('assignments/{assignment}/edit', [AssignmentController::class, 'edit'])->name('assignments.edit');
+        Route::put('assignments/{assignment}', [AssignmentController::class, 'update'])->name('assignments.update');
+        Route::post('assignments/{assignment}/release', [AssignmentController::class, 'release'])->name('assignments.release');
+
+        Route::get('reports', [App\Http\Controllers\ReportsController::class, 'index'])->name('reports.index');
+        Route::get('reports/occupancy', [App\Http\Controllers\ReportsController::class, 'occupancy'])->name('reports.occupancy');
+        Route::get('reports/by-group', [App\Http\Controllers\ReportsController::class, 'byGroup'])->name('reports.by_group');
+        Route::get('reports/occupancy/export', [App\Http\Controllers\ReportsController::class, 'exportOccupancy'])->name('reports.occupancy.export');
+        Route::get('reports/by-group/export', [App\Http\Controllers\ReportsController::class, 'exportByGroup'])->name('reports.by_group.export');
+    });
+
+    Route::middleware('role:admin')->group(function () {
+        Route::resource('careers', CareerController::class);
+        Route::resource('buildings', BuildingController::class);
+        Route::resource('usuarios', UsuarioController::class)->except(['create', 'store']);
+
+        Route::resource('students', StudentController::class)->except(['index', 'show', 'create', 'store']);
+        Route::post('students/import', [StudentImportController::class, 'store'])->name('students.import');
+
+        Route::resource('lockers', LockerController::class);
+        Route::resource('periods', PeriodController::class);
+
+        Route::delete('assignments/{assignment}', [AssignmentController::class, 'destroy'])->name('assignments.destroy');
+
+        Route::resource('reportes', App\Http\Controllers\ReportController::class);
+        Route::resource('sanciones', App\Http\Controllers\SanctionController::class);
+        Route::resource('recibe', App\Http\Controllers\ReceiptController::class);
+    });
+});

@@ -11,7 +11,7 @@ class Usuario extends Model
 
     protected $table = 'usuarios';
     protected $primaryKey = 'idusuario';
-    public $incrementing = true;
+    public $incrementing = false;
     protected $keyType = 'int';
     public $timestamps = false;
 

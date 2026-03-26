@@ -41,7 +41,7 @@ class StudentImportController extends Controller
                         return strtolower(trim((string) $value));
                     });
 
-                                $required = ['nombre', 'matricula'];
+                    $required = ['nombre', 'matricula'];
                     $missing = collect($required)->diff($columns)->values();
 
                     if ($missing->isNotEmpty()) {
@@ -54,7 +54,9 @@ class StudentImportController extends Controller
                         'matricula' => $columns->search('matricula'),
                         'idcarrera' => $columns->search('idcarrera'),
                         'cuatrimestre' => $columns->search('cuatrimestre'),
-                        'numero_telefono' => $columns->search('numero_telefono'),
+                        'numero_telefonico' => $columns->search('numero_telefonico') !== false
+                            ? $columns->search('numero_telefonico')
+                            : $columns->search('numero_telefono'),
                     ];
 
                     $isHeader = false;
@@ -74,7 +76,7 @@ class StudentImportController extends Controller
                         'nombre' => $nombre,
                         'idcarrera' => isset($indexes['idcarrera']) && $indexes['idcarrera'] !== false ? trim((string) ($cells[$indexes['idcarrera']] ?? null)) : null,
                         'cuatrimestre' => isset($indexes['cuatrimestre']) && $indexes['cuatrimestre'] !== false ? trim((string) ($cells[$indexes['cuatrimestre']] ?? null)) : null,
-                        'numero_telefono' => isset($indexes['numero_telefono']) && $indexes['numero_telefono'] !== false ? trim((string) ($cells[$indexes['numero_telefono']] ?? null)) : null,
+                        'numero_telefonico' => isset($indexes['numero_telefonico']) && $indexes['numero_telefonico'] !== false ? trim((string) ($cells[$indexes['numero_telefonico']] ?? null)) : null,
                     ]
                 );
 

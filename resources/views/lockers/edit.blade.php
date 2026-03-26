@@ -3,18 +3,51 @@
 @section('titulo', 'Editar Casillero - UTN Lockers')
 
 @section('contenido')
-<div class="card">
-    <h2>Editar casillero</h2>
-    <form class="form" method="POST" action="{{ route('lockers.update', $locker) }}" id="locker-form">
-        @csrf
-        @method('PUT')
-        @include('partials.form-field', ['label' => 'Edificio (id)', 'name' => 'idedificio', 'value' => old('idedificio', $locker->idedificio), 'placeholder' => 'ID Edificio'])
-        @include('partials.form-field', ['label' => 'Número de casillero', 'name' => 'numeroCasiller', 'value' => old('numeroCasiller', $locker->numeroCasiller), 'placeholder' => 'Ej. 101', 'required' => true])
-        @include('partials.form-field', ['label' => 'Estado', 'name' => 'estado', 'value' => old('estado', $locker->estado), 'placeholder' => 'Ej. libre/ocupado', 'required' => true])
-        <div class="actions">
-            <button class="btn" type="submit">Actualizar</button>
-            <a class="btn secondary" href="{{ route('lockers.index') }}">Cancelar</a>
-        </div>
-    </form>
-</div>
+    <div class="card">
+        <h2>Editar casillero</h2>
+        <form class="form" method="POST" action="{{ route('lockers.update', $locker) }}" id="locker-form">
+            @csrf
+            @method('PUT')
+            <div class="field">
+                <label for="idedificio">Edificio</label>
+                <select id="idedificio" name="idedificio" class="input">
+                    <option value="">Sin edificio</option>
+                    @foreach ($buildings as $building)
+                        <option value="{{ $building->idedificio }}"
+                            {{ old('idedificio', $locker->idedificio) == $building->idedificio ? 'selected' : '' }}>
+                            {{ $building->idedificio }} - {{ $building->num_edific }}
+                        </option>
+                    @endforeach
+                </select>
+                @error('idedificio')
+                    <div class="field-help error">{{ $message }}</div>
+                @enderror
+            </div>
+            @include('partials.form-field', [
+                'label' => 'Número de casillero',
+                'name' => 'numeroCasiller',
+                'value' => old('numeroCasiller', $locker->numeroCasiller),
+                'placeholder' => 'Ej. 101',
+                'required' => true,
+            ])
+            <div class="field">
+                <label for="estado">Estado</label>
+                <select id="estado" name="estado" class="input" required>
+                    <option value="disponible" {{ old('estado', $locker->estado) == 'disponible' ? 'selected' : '' }}>
+                        Disponible</option>
+                    <option value="ocupado" {{ old('estado', $locker->estado) == 'ocupado' ? 'selected' : '' }}>Ocupado
+                    </option>
+                    <option value="dañado" {{ old('estado', $locker->estado) == 'dañado' ? 'selected' : '' }}>Dañado
+                    </option>
+                </select>
+                @error('estado')
+                    <div class="field-help error">{{ $message }}</div>
+                @enderror
+            </div>
+            <div class="actions">
+                <button class="btn" type="submit">Actualizar</button>
+                <a class="btn secondary" href="{{ route('lockers.index') }}">Cancelar</a>
+            </div>
+        </form>
+    </div>
 @endsection

@@ -8,19 +8,16 @@ class CreatePeriodsTable extends Migration
 {
     public function up()
     {
-        Schema::create('periods', function (Blueprint $table) {
-            $table->id();
-            $table->string('code')->unique();
-            $table->string('name');
-            $table->date('start_date')->nullable();
-            $table->date('end_date')->nullable();
-            $table->boolean('active')->default(true);
-            $table->timestamps();
+        Schema::create('periodos', function (Blueprint $table) {
+            $table->integer('idperiodo')->primary();
+            $table->string('nombrePerio', 50);
+            $table->date('fechaInicio')->nullable();
+            $table->date('fechaFin')->nullable();
         });
     }
 
     public function down()
     {
-        Schema::dropIfExists('periods');
+        Schema::dropIfExists('periodos');
     }
 }

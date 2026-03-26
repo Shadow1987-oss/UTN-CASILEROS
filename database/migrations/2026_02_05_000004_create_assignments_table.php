@@ -8,23 +8,20 @@ class CreateAssignmentsTable extends Migration
 {
     public function up()
     {
-        Schema::create('assignments', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('student_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('locker_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('period_id')->constrained()->cascadeOnDelete();
-            $table->timestamp('assigned_at')->useCurrent();
+        Schema::create('asignamientos', function (Blueprint $table) {
+            $table->integer('idasigna')->primary();
+            $table->integer('matricula');
+            $table->integer('idusuario')->nullable();
+            $table->integer('idcasillero');
+            $table->integer('idPeriodo');
+            $table->date('fechaAsignacion');
             $table->timestamp('released_at')->nullable();
-            $table->string('status')->default('active');
-            $table->text('notes')->nullable();
-            $table->timestamps();
-
-            $table->unique(['student_id', 'period_id']);
+            $table->string('status')->default('activo');
         });
     }
 
     public function down()
     {
-        Schema::dropIfExists('assignments');
+        Schema::dropIfExists('asignamientos');
     }
 }

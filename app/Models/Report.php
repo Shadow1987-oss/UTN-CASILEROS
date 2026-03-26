@@ -11,15 +11,20 @@ class Report extends Model
 
     protected $table = 'reportes';
     protected $primaryKey = 'idreporte';
-    public $incrementing = true;
+    public $incrementing = false;
     protected $keyType = 'int';
     public $timestamps = false;
 
     protected $guarded = [];
 
-    public function usuario()
+    public function tutor()
     {
-        return $this->belongsTo(Usuario::class, 'idusuario', 'idusuario');
+        return $this->belongsTo(User::class, 'idusuario', 'id');
+    }
+
+    public function student()
+    {
+        return $this->belongsTo(Student::class, 'matricula', 'matricula');
     }
 
     public function casilleros()

@@ -11,7 +11,7 @@ class Sanction extends Model
 
     protected $table = 'sanciones';
     protected $primaryKey = 'idsancion';
-    public $incrementing = true;
+    public $incrementing = false;
     protected $keyType = 'int';
     public $timestamps = false;
 

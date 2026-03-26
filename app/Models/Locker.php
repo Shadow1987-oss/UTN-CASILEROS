@@ -11,11 +11,12 @@ class Locker extends Model
 
     protected $table = 'casilleros';
     protected $primaryKey = 'idcasillero';
-    public $incrementing = true;
+    public $incrementing = false;
     protected $keyType = 'int';
     public $timestamps = false;
 
     protected $fillable = [
+        'idcasillero',
         'idedificio',
         'numeroCasiller',
         'estado',

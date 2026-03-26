@@ -11,7 +11,7 @@ class Receipt extends Model
 
     protected $table = 'recibe';
     protected $primaryKey = 'idrecibe';
-    public $incrementing = true;
+    public $incrementing = false;
     protected $keyType = 'int';
     public $timestamps = false;
 

@@ -1,0 +1,30 @@
+@extends('plantilla')
+
+@section('titulo', 'Nueva Carrera - UTN Lockers')
+
+@section('contenido')
+    <div class="card">
+        <h2>Nueva carrera</h2>
+        <form class="form" method="POST" action="{{ route('careers.store') }}">
+            @csrf
+            @include('partials.form-field', [
+                'label' => 'ID de carrera',
+                'name' => 'idcarrera',
+                'type' => 'number',
+                'value' => old('idcarrera'),
+                'required' => true,
+            ])
+            @include('partials.form-field', [
+                'label' => 'Nombre de carrera',
+                'name' => 'nombre_carre',
+                'value' => old('nombre_carre'),
+                'required' => true,
+                'maxlength' => 50,
+            ])
+            <div class="actions">
+                <button class="btn" type="submit">Guardar</button>
+                <a class="btn secondary" href="{{ route('careers.index') }}">Cancelar</a>
+            </div>
+        </form>
+    </div>
+@endsection

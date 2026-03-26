@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Period;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 
@@ -23,6 +24,7 @@ class PeriodController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
+            'idperiodo' => ['required', 'integer', 'unique:periodos,idperiodo'],
             'nombrePerio' => ['required', 'string', 'max:50'],
             'fechaInicio' => ['nullable', 'date'],
             'fechaFin' => ['nullable', 'date', 'after_or_equal:fechaInicio'],
@@ -51,10 +53,19 @@ class PeriodController extends Controller
         return redirect()->route('periods.index')->with('status', 'Período actualizado.');
     }
 
+    public function show(Period $period)
+    {
+        return redirect()->route('periods.index');
+    }
+
     public function destroy(Period $period)
     {
-        $period->delete();
+        try {
+            $period->delete();
+        } catch (QueryException $exception) {
+            return redirect()->route('periods.index')->with('status', 'No se puede eliminar el período porque está relacionado con otros registros.');
+        }
 
-        return redirect()->route('periods.index')->with('status', 'Period deleted.');
+        return redirect()->route('periods.index')->with('status', 'Período eliminado.');
     }
 }

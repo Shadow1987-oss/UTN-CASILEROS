@@ -11,7 +11,7 @@ class Career extends Model
 
     protected $table = 'carreras';
     protected $primaryKey = 'idcarrera';
-    public $incrementing = true;
+    public $incrementing = false;
     protected $keyType = 'int';
     public $timestamps = false;
 

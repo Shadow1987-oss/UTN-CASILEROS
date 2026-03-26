@@ -11,12 +11,19 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        // Sin base de datos - mostrando solo datos de ejemplo
-        $students = 0;
-        $lockers = 0;
-        $periods = 0;
-        $active_assignments = 0;
+        $students = Student::count();
+        $lockers = Locker::count();
+        $periods = Period::count();
+        $active_assignments = Assignment::whereNull('released_at')->count();
 
-        return view('dashboard', compact('students', 'lockers', 'periods', 'active_assignments'));
+        $damaged_lockers = Locker::where('estado', 'dañado')->count();
+
+        $occupied_lockers = Assignment::whereNull('released_at')
+            ->distinct('idcasillero')
+            ->count('idcasillero');
+
+        $available_lockers = max(0, ($lockers - $damaged_lockers) - $occupied_lockers);
+
+        return view('dashboard', compact('students', 'lockers', 'periods', 'active_assignments', 'available_lockers', 'occupied_lockers', 'damaged_lockers'));
     }
 }

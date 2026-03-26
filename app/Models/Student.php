@@ -11,18 +11,26 @@ class Student extends Model
 
     protected $table = 'alumnos';
     protected $primaryKey = 'matricula';
-    public $incrementing = true;
+    public $incrementing = false;
     protected $keyType = 'int';
     public $timestamps = false;
 
     protected $fillable = [
+        'matricula',
+        'user_id',
         'nombre',
         'idcarrera',
         'cuatrimestre',
         'apellidoPaterno',
         'apellidoMaterno',
+        'numero_telefonico',
         'numero_telefono',
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id', 'id');
+    }
 
     public function assignments()
     {
