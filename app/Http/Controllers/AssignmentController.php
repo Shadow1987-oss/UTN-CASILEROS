@@ -6,6 +6,8 @@ use App\Models\Assignment;
 use App\Models\Locker;
 use App\Models\Period;
 use App\Models\Student;
+use App\Models\Usuario;
+use App\Models\UserNotification;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -27,21 +29,40 @@ class AssignmentController extends Controller
             });
         }
 
-        $assignments = $query->orderByDesc('idasigna')->get();
+        if ($request->filled('idusuario')) {
+            $query->where('idusuario', (int) $request->idusuario);
+        }
+
+        $assignments = $query->orderByDesc('idasigna')->paginate(20)->withQueryString();
         $periods = Period::orderBy('idperiodo', 'desc')->get();
         $groups = Student::whereNotNull('grupo')->distinct()->orderBy('grupo')->pluck('grupo');
+        $usuarios = Usuario::orderBy('nombre')->orderBy('apellidoP')->get();
 
-        return view('assignments.index', compact('assignments', 'periods', 'groups'));
+        $tutorLoads = Assignment::query()
+            ->selectRaw('idusuario, COUNT(*) as active_assignments')
+            ->whereNotNull('idusuario')
+            ->whereNull('released_at')
+            ->groupBy('idusuario')
+            ->pluck('active_assignments', 'idusuario');
+
+        return view('assignments.index', compact('assignments', 'periods', 'groups', 'usuarios', 'tutorLoads'));
     }
 
     public function create()
     {
-        $students = Student::all();
+        $students = Student::orderBy('matricula')->get();
         $lockers = Locker::all();
         $periods = Period::all();
-        $usuarios = \App\Models\Usuario::all();
+        $usuarios = Usuario::orderBy('nombre')->orderBy('apellidoP')->get();
 
-        return view('assignments.create', compact('students', 'lockers', 'periods', 'usuarios'));
+        $tutorLoads = Assignment::query()
+            ->selectRaw('idusuario, COUNT(*) as active_assignments')
+            ->whereNotNull('idusuario')
+            ->whereNull('released_at')
+            ->groupBy('idusuario')
+            ->pluck('active_assignments', 'idusuario');
+
+        return view('assignments.create', compact('students', 'lockers', 'periods', 'usuarios', 'tutorLoads'));
     }
 
     public function store(Request $request)
@@ -65,6 +86,7 @@ class AssignmentController extends Controller
 
         $activeCount = Assignment::where('idcasillero', $data['idcasillero'])
             ->where('idPeriodo', $data['idPeriodo'])
+            ->whereNull('released_at')
             ->count();
 
         if ($activeCount >= 2) {
@@ -76,10 +98,24 @@ class AssignmentController extends Controller
             return back()->withInput()->withErrors(['idcasillero' => 'No se puede asignar un casillero dañado.']);
         }
 
-        Assignment::create(array_merge($data, [
+        $assignment = Assignment::create(array_merge($data, [
             'status' => 'activo',
             'released_at' => null,
         ]));
+
+        $student = Student::where('matricula', $assignment->matricula)->first();
+        if ($student && $student->user_id) {
+            UserNotification::create([
+                'user_id' => $student->user_id,
+                'type' => 'assignment',
+                'title' => 'Casillero asignado',
+                'message' => 'Se te asignó un casillero para el período seleccionado.',
+                'payload' => [
+                    'idasigna' => (string) $assignment->idasigna,
+                    'idPeriodo' => (string) $assignment->idPeriodo,
+                ],
+            ]);
+        }
 
         $this->syncLockerStatus((int) $data['idcasillero']);
 
@@ -88,12 +124,19 @@ class AssignmentController extends Controller
 
     public function edit(Assignment $assignment)
     {
-        $students = Student::all();
+        $students = Student::orderBy('matricula')->get();
         $lockers = Locker::all();
         $periods = Period::all();
-        $usuarios = \App\Models\Usuario::all();
+        $usuarios = Usuario::orderBy('nombre')->orderBy('apellidoP')->get();
 
-        return view('assignments.edit', compact('assignment', 'students', 'lockers', 'periods', 'usuarios'));
+        $tutorLoads = Assignment::query()
+            ->selectRaw('idusuario, COUNT(*) as active_assignments')
+            ->whereNotNull('idusuario')
+            ->whereNull('released_at')
+            ->groupBy('idusuario')
+            ->pluck('active_assignments', 'idusuario');
+
+        return view('assignments.edit', compact('assignment', 'students', 'lockers', 'periods', 'usuarios', 'tutorLoads'));
     }
 
     public function update(Request $request, Assignment $assignment)
@@ -121,6 +164,7 @@ class AssignmentController extends Controller
         $activeCount = Assignment::where('idcasillero', $data['idcasillero'])
             ->where('idPeriodo', $data['idPeriodo'])
             ->where('idasigna', '!=', $assignment->idasigna)
+            ->whereNull('released_at')
             ->count();
 
         if ($activeCount >= 2) {
@@ -159,6 +203,20 @@ class AssignmentController extends Controller
             'released_at' => now(),
             'status' => 'liberado',
         ]);
+
+        $student = Student::where('matricula', $assignment->matricula)->first();
+        if ($student && $student->user_id) {
+            UserNotification::create([
+                'user_id' => $student->user_id,
+                'type' => 'assignment',
+                'title' => 'Casillero liberado',
+                'message' => 'Tu asignación de casillero fue liberada.',
+                'payload' => [
+                    'idasigna' => (string) $assignment->idasigna,
+                    'idPeriodo' => (string) $assignment->idPeriodo,
+                ],
+            ]);
+        }
 
         $this->syncLockerStatus((int) $assignment->idcasillero);
 

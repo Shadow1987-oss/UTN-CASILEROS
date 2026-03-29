@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Receipt;
 use App\Models\Sanction;
+use App\Models\Student;
 use App\Models\Usuario;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
@@ -12,14 +14,15 @@ class SanctionController extends Controller
 {
     public function index()
     {
-        $sanciones = Sanction::with('usuario')->get();
+        $sanciones = Sanction::with(['usuario', 'receipt.student'])->orderByDesc('idsancion')->paginate(20);
         return view('sanciones.index', compact('sanciones'));
     }
 
     public function create()
     {
         $usuarios = Usuario::all();
-        return view('sanciones.create', compact('usuarios'));
+        $students = Student::orderBy('matricula')->get();
+        return view('sanciones.create', compact('usuarios', 'students'));
     }
 
     public function store(Request $request)
@@ -27,11 +30,24 @@ class SanctionController extends Controller
         $data = $request->validate([
             'idsancion' => ['required', 'integer', 'unique:sanciones,idsancion'],
             'idusuario' => ['nullable', 'integer', 'exists:usuarios,idusuario'],
+            'matricula' => ['required', 'string', 'max:20', 'regex:/^[A-Za-z]{2,10}-?\d{3,10}$/', 'exists:alumnos,matricula'],
             'sancion' => ['required', 'string', 'max:50'],
             'motivo' => ['nullable', 'string', 'max:50'],
         ]);
 
+        $normalizedMatricula = $this->normalizeMatricula((string) $data['matricula']) ?? (string) $data['matricula'];
+
+        unset($data['matricula']);
+
         Sanction::create($data);
+
+        Receipt::updateOrCreate(
+            ['idsancion' => (int) $data['idsancion']],
+            [
+                'idrecibe' => (int) ((int) Receipt::max('idrecibe') + 1),
+                'matricula' => $normalizedMatricula,
+            ]
+        );
 
         return redirect()->route('sanciones.index')->with('status', 'Sanción creada.');
     }
@@ -39,7 +55,9 @@ class SanctionController extends Controller
     public function edit(Sanction $sancione)
     {
         $usuarios = Usuario::all();
-        return view('sanciones.edit', ['sancione' => $sancione, 'usuarios' => $usuarios]);
+        $students = Student::orderBy('matricula')->get();
+        $selectedMatricula = optional($sancione->receipt)->matricula;
+        return view('sanciones.edit', ['sancione' => $sancione, 'usuarios' => $usuarios, 'students' => $students, 'selectedMatricula' => $selectedMatricula]);
     }
 
     public function update(Request $request, Sanction $sancione)
@@ -47,11 +65,24 @@ class SanctionController extends Controller
         $data = $request->validate([
             'idsancion' => ['required', 'integer', Rule::unique('sanciones', 'idsancion')->ignore($sancione->idsancion, 'idsancion')],
             'idusuario' => ['nullable', 'integer', 'exists:usuarios,idusuario'],
+            'matricula' => ['required', 'string', 'max:20', 'regex:/^[A-Za-z]{2,10}-?\d{3,10}$/', 'exists:alumnos,matricula'],
             'sancion' => ['required', 'string', 'max:50'],
             'motivo' => ['nullable', 'string', 'max:50'],
         ]);
 
+        $normalizedMatricula = $this->normalizeMatricula((string) $data['matricula']) ?? (string) $data['matricula'];
+
+        unset($data['matricula']);
+
         $sancione->update($data);
+
+        Receipt::updateOrCreate(
+            ['idsancion' => (int) $sancione->idsancion],
+            [
+                'idrecibe' => optional($sancione->receipt)->idrecibe ? (int) $sancione->receipt->idrecibe : (int) ((int) Receipt::max('idrecibe') + 1),
+                'matricula' => $normalizedMatricula,
+            ]
+        );
 
         return redirect()->route('sanciones.index')->with('status', 'Sanción actualizada.');
     }
@@ -64,11 +95,32 @@ class SanctionController extends Controller
     public function destroy(Sanction $sancione)
     {
         try {
+            Receipt::where('idsancion', (int) $sancione->idsancion)->delete();
             $sancione->delete();
         } catch (QueryException $exception) {
             return redirect()->route('sanciones.index')->with('status', 'No se puede eliminar la sanción porque está relacionada con otros registros.');
         }
 
         return redirect()->route('sanciones.index')->with('status', 'Sanción eliminada.');
+    }
+
+    private function normalizeMatricula(?string $matricula): ?string
+    {
+        if ($matricula === null) {
+            return null;
+        }
+
+        $normalized = strtoupper(trim((string) $matricula));
+        $normalized = preg_replace('/\s+/', '', $normalized);
+
+        if ($normalized === '') {
+            return null;
+        }
+
+        if (preg_match('/^([A-Z]{2,10})-?(\d{3,10})$/', $normalized, $matches)) {
+            return $matches[1] . '-' . $matches[2];
+        }
+
+        return $normalized;
     }
 }

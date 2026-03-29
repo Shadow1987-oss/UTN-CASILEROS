@@ -32,18 +32,39 @@
                                     class="{{ request()->routeIs('students.*') ? 'active' : '' }}">Estudiantes</a>
                                 <a href="{{ route('lockers.index') }}"
                                     class="{{ request()->routeIs('lockers.*') ? 'active' : '' }}">Casilleros</a>
-                                <a href="{{ route('periods.index') }}"
-                                    class="{{ request()->routeIs('periods.*') ? 'active' : '' }}">Períodos</a>
                                 <a href="{{ route('assignments.index') }}"
                                     class="{{ request()->routeIs('assignments.*') ? 'active' : '' }}">Asignaciones</a>
-                                <a href="{{ route('careers.index') }}"
-                                    class="{{ request()->routeIs('careers.*') ? 'active' : '' }}">Carreras</a>
-                                <a href="{{ route('buildings.index') }}"
-                                    class="{{ request()->routeIs('buildings.*') ? 'active' : '' }}">Edificios</a>
-                                <a href="{{ route('usuarios.index') }}"
-                                    class="{{ request()->routeIs('usuarios.*') ? 'active' : '' }}">Tutores</a>
+                                <a href="{{ route('locker_requests.index') }}"
+                                    class="{{ request()->routeIs('locker_requests.*') ? 'active' : '' }}">Solicitudes</a>
                                 <a href="{{ route('reportes.index') }}"
                                     class="{{ request()->routeIs('reportes.*') ? 'active' : '' }}">Reportes</a>
+                                @php
+                                    $adminMoreActive =
+                                        request()->routeIs('periods.*') ||
+                                        request()->routeIs('careers.*') ||
+                                        request()->routeIs('buildings.*') ||
+                                        request()->routeIs('usuarios.*') ||
+                                        request()->routeIs('sanciones.*') ||
+                                        request()->routeIs('recibe.*');
+                                @endphp
+                                <div class="nav-more">
+                                    <button type="button"
+                                        class="nav-more-toggle {{ $adminMoreActive ? 'active' : '' }}">Más</button>
+                                    <div class="nav-more-menu">
+                                        <a href="{{ route('periods.index') }}"
+                                            class="{{ request()->routeIs('periods.*') ? 'active' : '' }}">Períodos</a>
+                                        <a href="{{ route('careers.index') }}"
+                                            class="{{ request()->routeIs('careers.*') ? 'active' : '' }}">Carreras</a>
+                                        <a href="{{ route('buildings.index') }}"
+                                            class="{{ request()->routeIs('buildings.*') ? 'active' : '' }}">Edificios</a>
+                                        <a href="{{ route('usuarios.index') }}"
+                                            class="{{ request()->routeIs('usuarios.*') ? 'active' : '' }}">Tutores</a>
+                                        <a href="{{ route('sanciones.index') }}"
+                                            class="{{ request()->routeIs('sanciones.*') ? 'active' : '' }}">Sanciones</a>
+                                        <a href="{{ route('recibe.index') }}"
+                                            class="{{ request()->routeIs('recibe.*') ? 'active' : '' }}">Recibos</a>
+                                    </div>
+                                </div>
                             @elseif (auth()->user()->role === 'tutor')
                                 <a href="{{ route('dashboard') }}"
                                     class="{{ request()->routeIs('dashboard') ? 'active' : '' }}">Tablero</a>
@@ -53,12 +74,26 @@
                                     class="{{ request()->routeIs('lockers.*') ? 'active' : '' }}">Casilleros</a>
                                 <a href="{{ route('assignments.index') }}"
                                     class="{{ request()->routeIs('assignments.*') ? 'active' : '' }}">Asignaciones</a>
-                                <a href="{{ route('reports.index') }}"
-                                    class="{{ request()->routeIs('reports.*') ? 'active' : '' }}">Reportes</a>
+                                <a href="{{ route('locker_requests.index') }}"
+                                    class="{{ request()->routeIs('locker_requests.*') ? 'active' : '' }}">Solicitudes</a>
+                                @php
+                                    $tutorMoreActive = request()->routeIs('reports.*');
+                                @endphp
+                                <div class="nav-more">
+                                    <button type="button"
+                                        class="nav-more-toggle {{ $tutorMoreActive ? 'active' : '' }}">Más</button>
+                                    <div class="nav-more-menu">
+                                        <a href="{{ route('reports.index') }}"
+                                            class="{{ request()->routeIs('reports.*') ? 'active' : '' }}">Reportes</a>
+                                    </div>
+                                </div>
                             @else
                                 <a href="{{ route('student.home') }}"
                                     class="{{ request()->routeIs('student.home') ? 'active' : '' }}">Mi casillero</a>
                             @endif
+                            <a href="{{ route('notifications.index') }}"
+                                class="nav-icon-link {{ request()->routeIs('notifications.*') ? 'active' : '' }}"
+                                title="Notificaciones" aria-label="Notificaciones">🔔</a>
                             <form method="POST" action="{{ route('logout') }}" style="display:inline;">
                                 @csrf
                                 <button class="btn secondary" type="submit" style="padding:8px 12px;">Salir</button>
@@ -106,26 +141,26 @@
         <footer id="pie-pagina">
             <div class="footer-content">
                 <div class="footer-section">
-                    <h4>Acerca de UTNAY Lockers</h4>
-                    <p>Sistema de asignación y control de casilleros para estudiantes de la Universidad Tecnológica de
-                        Nayarit en Xalisco.</p>
+                    <h4>UTNAY Lockers</h4>
+                    <p>Sistema institucional para la asignación y control de casilleros.</p>
                 </div>
                 <div class="footer-section">
-                    <h4>Funcionalidades</h4>
-                    <a href="{{ route('students.index') }}">Gestión de Estudiantes</a>
-                    <a href="{{ route('lockers.index') }}">Gestión de Casilleros</a>
-                    <a href="{{ route('periods.index') }}">Gestión de Períodos</a>
-                    <a href="{{ route('assignments.index') }}">Gestión de Asignaciones</a>
-                    <a href="{{ route('careers.index') }}">Gestión de Carreras</a>
-                    <a href="{{ route('buildings.index') }}">Gestión de Edificios</a>
-                    <a href="{{ route('usuarios.index') }}">Gestión de Tutores</a>
-                    <a href="{{ route('reportes.index') }}">Gestión de Reportes</a>
-
+                    <h4>Accesos rápidos</h4>
+                    @auth
+                        @if (auth()->user()->role === 'estudiante')
+                            <a href="{{ route('student.home') }}">Mi casillero</a>
+                        @else
+                            <a href="{{ route('dashboard') }}">Tablero</a>
+                            <a href="{{ route('students.index') }}">Estudiantes</a>
+                            <a href="{{ route('lockers.index') }}">Casilleros</a>
+                        @endif
+                    @else
+                        <a href="{{ route('login') }}">Iniciar sesión</a>
+                    @endauth
                 </div>
                 <div class="footer-section">
-                    <h4>Información</h4>
+                    <h4>Contacto</h4>
                     <p><strong>Versión:</strong> 1.0.0</p>
-                    <p><strong>Desarrollado con:</strong> Laravel</p>
                     <p><strong>Contacto:</strong> lockers@utnay.edu.mx</p>
                     <p><strong>Teléfono:</strong> +52 (311) 211-0128</p>
                 </div>

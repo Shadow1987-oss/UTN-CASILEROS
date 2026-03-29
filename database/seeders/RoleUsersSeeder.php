@@ -11,12 +11,14 @@ class RoleUsersSeeder extends Seeder
 {
     public function run(): void
     {
-        $adminId = DB::table('users')->updateOrInsert(
+        DB::table('users')->updateOrInsert(
             ['email' => 'admin@utnlockers.test'],
             [
                 'name' => 'Administrador General',
                 'role' => 'admin',
                 'password' => Hash::make('password123'),
+                'updated_at' => now(),
+                'created_at' => now(),
             ]
         );
 
@@ -26,6 +28,8 @@ class RoleUsersSeeder extends Seeder
                 'name' => 'Tutor Operativo',
                 'role' => 'tutor',
                 'password' => Hash::make('password123'),
+                'updated_at' => now(),
+                'created_at' => now(),
             ]
         );
 
@@ -35,10 +39,11 @@ class RoleUsersSeeder extends Seeder
                 'name' => 'Estudiante Demo',
                 'role' => 'estudiante',
                 'password' => Hash::make('password123'),
+                'updated_at' => now(),
+                'created_at' => now(),
             ]
         );
 
-        $admin = DB::table('users')->where('email', 'admin@utnlockers.test')->first();
         $studentUser = DB::table('users')->where('email', 'estudiante@utnlockers.test')->first();
 
         DB::table('carreras')->updateOrInsert(
@@ -84,6 +89,7 @@ class RoleUsersSeeder extends Seeder
             'nombre' => 'Estudiante',
             'idcarrera' => 101,
             'cuatrimestre' => 3,
+            'grupo' => 'TIC-3A',
             'apellidoPaterno' => 'Demo',
             'apellidoMaterno' => 'UTN',
         ];
@@ -95,14 +101,14 @@ class RoleUsersSeeder extends Seeder
         }
 
         DB::table('alumnos')->updateOrInsert(
-            ['matricula' => 320072],
+            ['matricula' => 'TIC-320072'],
             $studentData
         );
 
         DB::table('asignamientos')->updateOrInsert(
             ['idasigna' => 1],
             [
-                'matricula' => 320072,
+                'matricula' => 'TIC-320072',
                 'idusuario' => 1,
                 'idcasillero' => 1,
                 'idPeriodo' => 1,

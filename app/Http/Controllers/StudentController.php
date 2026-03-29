@@ -20,10 +20,10 @@ class StudentController extends Controller
         $searchError = null;
 
         if ($request->filled('search')) {
-            $search = trim((string) $request->search);
+            $search = $this->normalizeMatricula((string) $request->search);
 
-            if (!ctype_digit($search)) {
-                $searchError = 'Ingresa solo el número de matrícula (ej. 320072).';
+            if ($search === null || !preg_match('/^[A-Z]{2,10}-\d{3,10}$/', $search)) {
+                $searchError = 'Ingresa una matrícula válida (ej. TIC-320072).';
                 $query->whereRaw('1 = 0');
             } else {
                 $query->where('matricula', $search);
@@ -59,7 +59,7 @@ class StudentController extends Controller
             });
         }
 
-        $students = $query->get();
+        $students = $query->orderBy('matricula')->paginate(20)->withQueryString();
         $careers = Career::orderBy('nombre_carre')->get();
         $periods = Period::orderBy('idperiodo', 'desc')->get();
         $buildings = \App\Models\Building::orderBy('num_edific')->get();
@@ -78,7 +78,7 @@ class StudentController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'matricula' => ['required', 'integer', 'unique:alumnos,matricula'],
+            'matricula' => ['required', 'string', 'max:20', 'regex:/^[A-Za-z]{2,10}-?\d{3,10}$/', 'unique:alumnos,matricula'],
             'user_id' => ['nullable', 'integer', 'exists:users,id', 'unique:alumnos,user_id'],
             'nombre' => ['required', 'string', 'max:50'],
             'idcarrera' => ['nullable', 'integer', 'exists:carreras,idcarrera'],
@@ -88,6 +88,8 @@ class StudentController extends Controller
             'apellidoMaterno' => ['nullable', 'string', 'max:50'],
             'numero_telefonico' => ['nullable', 'string', 'max:50'],
         ]);
+
+        $data['matricula'] = $this->normalizeMatricula($data['matricula']) ?? $data['matricula'];
 
         $data = $this->normalizeStudentPhoneData($data);
 
@@ -112,7 +114,7 @@ class StudentController extends Controller
     public function update(Request $request, Student $student)
     {
         $data = $request->validate([
-            'matricula' => ['required', 'integer', Rule::unique('alumnos', 'matricula')->ignore($student->matricula, 'matricula')],
+            'matricula' => ['required', 'string', 'max:20', 'regex:/^[A-Za-z]{2,10}-?\d{3,10}$/', Rule::unique('alumnos', 'matricula')->ignore($student->matricula, 'matricula')],
             'user_id' => ['nullable', 'integer', 'exists:users,id', Rule::unique('alumnos', 'user_id')->ignore($student->matricula, 'matricula')],
             'nombre' => ['required', 'string', 'max:50'],
             'idcarrera' => ['nullable', 'integer', 'exists:carreras,idcarrera'],
@@ -122,6 +124,8 @@ class StudentController extends Controller
             'apellidoMaterno' => ['nullable', 'string', 'max:50'],
             'numero_telefonico' => ['nullable', 'string', 'max:50'],
         ]);
+
+        $data['matricula'] = $this->normalizeMatricula($data['matricula']) ?? $data['matricula'];
 
         $data = $this->normalizeStudentPhoneData($data);
 
@@ -146,6 +150,7 @@ class StudentController extends Controller
         $student = Student::where('user_id', auth()->id())->first();
 
         $assignment = null;
+        $lockerRequests = collect();
 
         if ($student) {
             $assignment = $student->assignments()
@@ -153,11 +158,16 @@ class StudentController extends Controller
                 ->whereNull('released_at')
                 ->orderByDesc('fechaAsignacion')
                 ->first();
+
+            $lockerRequests = $student->lockerRequests()
+                ->with(['period', 'reviewer'])
+                ->orderByDesc('created_at')
+                ->paginate(10);
         }
 
         $periods = Period::orderBy('fechaInicio', 'desc')->get();
 
-        return view('students.my_locker', compact('student', 'assignment', 'periods'));
+        return view('students.my_locker', compact('student', 'assignment', 'periods', 'lockerRequests'));
     }
 
     public function requestLocker(Request $request)
@@ -182,7 +192,7 @@ class StudentController extends Controller
             return redirect()->route('student.home')->with('status', 'Ya tienes una solicitud pendiente para ese período.');
         }
 
-        LockerRequest::create([
+        $lockerRequest = LockerRequest::create([
             'matricula' => $student->matricula,
             'idperiodo' => (int) $data['idperiodo'],
             'estado' => 'pendiente',
@@ -210,5 +220,25 @@ class StudentController extends Controller
         }
 
         return $data;
+    }
+
+    private function normalizeMatricula(?string $matricula): ?string
+    {
+        if ($matricula === null) {
+            return null;
+        }
+
+        $normalized = strtoupper(trim((string) $matricula));
+        $normalized = preg_replace('/\s+/', '', $normalized);
+
+        if ($normalized === '') {
+            return null;
+        }
+
+        if (preg_match('/^([A-Z]{2,10})-?(\d{3,10})$/', $normalized, $matches)) {
+            return $matches[1] . '-' . $matches[2];
+        }
+
+        return $normalized;
     }
 }

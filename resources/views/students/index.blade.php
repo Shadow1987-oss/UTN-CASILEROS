@@ -15,8 +15,8 @@
             <div class="grid grid-3">
                 <div class="field">
                     <label for="search">Matrícula</label>
-                    <input type="number" name="search" id="search" class="input" value="{{ request('search') }}"
-                        placeholder="Ej. 320072">
+                    <input type="text" name="search" id="search" class="input" value="{{ request('search') }}"
+                        placeholder="Ej. TIC-320072">
                 </div>
                 <div class="field">
                     <label for="idcarrera">Carrera</label>
@@ -90,8 +90,8 @@
                     <label for="file">Importar CSV o XLSX</label>
                     <input id="file" type="file" name="file"
                         accept=".csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,text/csv" required>
-                    <p class="muted">Encabezados: nombre, matricula, idcarrera, cuatrimestre, numero_telefonico (o
-                        numero_telefono) opcional.</p>
+                    <p class="muted">Encabezados: nombre, matricula. Opcionales: idcarrera, cuatrimestre, grupo,
+                        numero_telefonico (o numero_telefono).</p>
                 </div>
                 <button class="btn secondary" type="submit">Importar</button>
             </form>
@@ -112,9 +112,8 @@
             <tbody>
                 @forelse ($students as $student)
                     <tr>
-                        <td>{{ $student->nombre }} {{ $student->apellidoPaterno ?? '' }}
-                            {{ $student->apellidoMaterno ?? '' }}</td>
-                        <td>{{ $student->matricula }}</td>
+                        <td>{{ $student->full_name }}</td>
+                        <td>{{ $student->matricula_display }}</td>
                         <td>{{ optional($student->career)->nombre_carre ?? $student->idcarrera }}</td>
                         <td>{{ $student->cuatrimestre }}</td>
                         <td>{{ $student->grupo ?? '-' }}</td>
@@ -139,5 +138,8 @@
                 @endforelse
             </tbody>
         </table>
+        <div style="margin-top: 16px;">
+            {{ $students->links() }}
+        </div>
     </div>
 @endsection

@@ -9,7 +9,7 @@
 @section('contenido')
     <div class="card" style="max-width: 480px; margin: 0 auto;">
         <h2>Iniciar sesión</h2>
-        <p class="muted">Accede con tu cuenta de administrador.</p>
+        <p class="muted">Accede con tu cuenta de administrador, tutor o estudiante.</p>
 
         <form class="form" method="POST" action="{{ route('login.attempt') }}">
             @csrf

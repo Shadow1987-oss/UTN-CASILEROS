@@ -16,7 +16,8 @@
             <thead>
                 <tr>
                     <th>ID</th>
-                    <th>Usuario</th>
+                    <th>Tutor responsable</th>
+                    <th>Estudiante sancionado</th>
                     <th>Sanción</th>
                     <th>Motivo</th>
                     <th></th>
@@ -28,7 +29,19 @@
                         <td>{{ $sancion->idsancion }}</td>
                         <td>{{ optional($sancion->usuario)->nombre ?? '-' }}
                             {{ optional($sancion->usuario)->apellidoP ?? '' }}
-                            ({{ optional($sancion->usuario)->cargo ?? 'Sin cargo' }})</td>
+                            ({{ optional($sancion->usuario)->cargo ?? 'Sin cargo' }})
+                        </td>
+                        <td>
+                            @if ($sancion->receipt && $sancion->receipt->student)
+                                {{ $sancion->receipt->student->matricula_display }} -
+                                {{ $sancion->receipt->student->full_name }}
+                                ({{ $sancion->receipt->student->grupo ?? '-' }})
+                            @elseif ($sancion->receipt)
+                                {{ \App\Models\Student::formatMatricula($sancion->receipt->matricula) }}
+                            @else
+                                -
+                            @endif
+                        </td>
                         <td>{{ $sancion->sancion }}</td>
                         <td>{{ $sancion->motivo }}</td>
                         <td class="actions">
@@ -43,10 +56,13 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="5" class="muted">Sin sanciones aún.</td>
+                        <td colspan="6" class="muted">Sin sanciones aún.</td>
                     </tr>
                 @endforelse
             </tbody>
         </table>
+        <div style="margin-top: 16px;">
+            {{ $sanciones->links() }}
+        </div>
     </div>
 @endsection

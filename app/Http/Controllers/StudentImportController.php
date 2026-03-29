@@ -54,6 +54,7 @@ class StudentImportController extends Controller
                         'matricula' => $columns->search('matricula'),
                         'idcarrera' => $columns->search('idcarrera'),
                         'cuatrimestre' => $columns->search('cuatrimestre'),
+                        'grupo' => $columns->search('grupo'),
                         'numero_telefonico' => $columns->search('numero_telefonico') !== false
                             ? $columns->search('numero_telefonico')
                             : $columns->search('numero_telefono'),
@@ -63,7 +64,7 @@ class StudentImportController extends Controller
                     continue;
                 }
 
-                $matricula = trim((string) ($cells[$indexes['matricula']] ?? ''));
+                $matricula = $this->normalizeMatricula(trim((string) ($cells[$indexes['matricula']] ?? '')));
                 $nombre = trim((string) ($cells[$indexes['nombre']] ?? ''));
 
                 if ($matricula === '' || $nombre === '') {
@@ -74,9 +75,18 @@ class StudentImportController extends Controller
                     ['matricula' => $matricula],
                     [
                         'nombre' => $nombre,
-                        'idcarrera' => isset($indexes['idcarrera']) && $indexes['idcarrera'] !== false ? trim((string) ($cells[$indexes['idcarrera']] ?? null)) : null,
-                        'cuatrimestre' => isset($indexes['cuatrimestre']) && $indexes['cuatrimestre'] !== false ? trim((string) ($cells[$indexes['cuatrimestre']] ?? null)) : null,
-                        'numero_telefonico' => isset($indexes['numero_telefonico']) && $indexes['numero_telefonico'] !== false ? trim((string) ($cells[$indexes['numero_telefonico']] ?? null)) : null,
+                        'idcarrera' => isset($indexes['idcarrera']) && $indexes['idcarrera'] !== false
+                            ? $this->nullableTrim($cells[$indexes['idcarrera']] ?? null)
+                            : null,
+                        'cuatrimestre' => isset($indexes['cuatrimestre']) && $indexes['cuatrimestre'] !== false
+                            ? $this->nullableTrim($cells[$indexes['cuatrimestre']] ?? null)
+                            : null,
+                        'grupo' => isset($indexes['grupo']) && $indexes['grupo'] !== false
+                            ? $this->nullableTrim($cells[$indexes['grupo']] ?? null)
+                            : null,
+                        'numero_telefonico' => isset($indexes['numero_telefonico']) && $indexes['numero_telefonico'] !== false
+                            ? $this->nullableTrim($cells[$indexes['numero_telefonico']] ?? null)
+                            : null,
                     ]
                 );
 
@@ -93,5 +103,23 @@ class StudentImportController extends Controller
         }
 
         return redirect()->route('students.index')->with('status', "Imported {$imported} students.");
+    }
+
+    private function normalizeMatricula(string $matricula): string
+    {
+        $normalized = strtoupper(trim($matricula));
+        $normalized = preg_replace('/\s+/', '', $normalized);
+
+        if (preg_match('/^([A-Z]{2,10})-?(\d{3,10})$/', $normalized, $matches)) {
+            return $matches[1] . '-' . $matches[2];
+        }
+
+        return $normalized;
+    }
+
+    private function nullableTrim($value): ?string
+    {
+        $trimmed = trim((string) ($value ?? ''));
+        return $trimmed === '' ? null : $trimmed;
     }
 }

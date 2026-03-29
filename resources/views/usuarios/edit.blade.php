@@ -1,10 +1,10 @@
 @extends('plantilla')
 
-@section('titulo', 'Editar Usuario Interno - UTN Lockers')
+@section('titulo', 'Editar Tutor - UTN Lockers')
 
 @section('contenido')
     <div class="card">
-        <h2>Editar usuario interno</h2>
+        <h2>Editar tutor</h2>
         <form class="form" method="POST" action="{{ route('usuarios.update', $usuario) }}">
             @csrf
             @method('PUT')

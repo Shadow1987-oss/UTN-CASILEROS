@@ -119,7 +119,7 @@ class AuthController extends Controller
     {
         $email = strtolower(trim($email));
 
-        if (preg_match('/^[a-z]{2,10}-\d{6}@utnay\.edu\.mx$/', $email)) {
+        if (preg_match('/^[a-z]{2,10}-?\d{3,10}@utnay\.edu\.mx$/', $email)) {
             return 'estudiante';
         }
 
@@ -130,13 +130,13 @@ class AuthController extends Controller
         return null;
     }
 
-    private function extractStudentMatriculaFromEmail(string $email): ?int
+    private function extractStudentMatriculaFromEmail(string $email): ?string
     {
-        if (!preg_match('/^[a-z]{2,10}-(\d{6})@utnay\.edu\.mx$/', strtolower(trim($email)), $matches)) {
+        if (!preg_match('/^([a-z]{2,10})-?(\d{3,10})@utnay\.edu\.mx$/', strtolower(trim($email)), $matches)) {
             return null;
         }
 
-        return (int) $matches[1];
+        return strtoupper($matches[1]) . '-' . $matches[2];
     }
 
     public function login(Request $request)

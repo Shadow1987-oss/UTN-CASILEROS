@@ -29,9 +29,11 @@
                         <td>{{ $r->idrecibe }}</td>
                         <td>{{ optional($r->sanction)->sancion ?? $r->idsancion }}</td>
                         <td>{{ optional($r->sanction)->motivo ?? '-' }}</td>
-                        <td>{{ optional($r->student)->nombre ?? '-' }} {{ optional($r->student)->apellidoPaterno ?? '' }}
+                        <td>{{ optional($r->student)->full_name ?? '-' }}</td>
+                        <td>
+                            {{ optional($r->student)->matricula_display ?? \App\Models\Student::formatMatricula($r->matricula) }}
+                            ({{ optional($r->student)->grupo ?? '-' }})
                         </td>
-                        <td>{{ $r->matricula }}</td>
                         <td class="actions">
                             <a class="btn secondary" href="{{ route('recibe.edit', $r) }}">Editar</a>
                             <form method="POST" action="{{ route('recibe.destroy', $r) }}"

@@ -45,7 +45,7 @@ return new class extends Migration
             Schema::create('recibe', function (Blueprint $table) {
                 $table->integer('idrecibe')->primary();
                 $table->integer('idsancion');
-                $table->integer('matricula');
+                $table->string('matricula', 20);
             });
         }
 

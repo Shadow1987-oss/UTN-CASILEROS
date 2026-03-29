@@ -9,7 +9,7 @@ class CreateStudentsTable extends Migration
     public function up()
     {
         Schema::create('alumnos', function (Blueprint $table) {
-            $table->integer('matricula')->primary();
+            $table->string('matricula', 20)->primary();
             $table->string('nombre', 50);
             $table->integer('idcarrera')->nullable();
             $table->integer('cuatrimestre')->nullable();

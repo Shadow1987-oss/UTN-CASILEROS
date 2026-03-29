@@ -21,7 +21,8 @@
                     @foreach ($students as $student)
                         <option value="{{ $student->matricula }}"
                             {{ old('matricula') == $student->matricula ? 'selected' : '' }}>
-                            {{ $student->nombre }} ({{ $student->matricula }})
+                            {{ $student->full_name }} ({{ $student->matricula_display }}) - Grupo
+                            {{ $student->grupo ?? '-' }}
                         </option>
                     @endforeach
                 </select>
@@ -64,13 +65,14 @@
             </div>
 
             <div class="field">
-                <label for="idusuario">Usuario responsable</label>
+                <label for="idusuario">Tutor responsable</label>
                 <select id="idusuario" name="idusuario" class="input">
-                    <option value="">Seleccionar usuario</option>
+                    <option value="">Seleccionar tutor</option>
                     @foreach ($usuarios as $usuario)
                         <option value="{{ $usuario->idusuario }}"
                             {{ old('idusuario') == $usuario->idusuario ? 'selected' : '' }}>
                             {{ $usuario->nombre }} {{ $usuario->apellidoP }} ({{ $usuario->cargo }})
+                            - Casilleros activos: {{ $tutorLoads[$usuario->idusuario] ?? 0 }}
                         </option>
                     @endforeach
                 </select>

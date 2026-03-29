@@ -29,7 +29,9 @@ class LockerController extends Controller
             $query->where('planta', $request->planta);
         }
 
-        $lockers = $query->orderBy('idedificio')->orderBy('area')->orderBy('planta')->orderBy('numeroCasiller')->get();
+        $lockers = $query->orderBy('idedificio')->orderBy('area')->orderBy('planta')->orderBy('numeroCasiller')
+            ->paginate(20)
+            ->withQueryString();
         $buildings = \App\Models\Building::orderBy('num_edific')->get();
 
         return view('lockers.index', compact('lockers', 'buildings'));

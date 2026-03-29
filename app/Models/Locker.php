@@ -37,6 +37,6 @@ class Locker extends Model
 
     public function reports()
     {
-        return $this->hasMany(Report::class);
+        return $this->belongsToMany(Report::class, 'puede', 'idcasillero', 'idreporte');
     }
 }

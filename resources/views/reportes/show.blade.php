@@ -23,8 +23,8 @@
             <div class="detail-row"><strong>Correo tutor:</strong> {{ optional($report->tutor)->email ?? '-' }}</div>
             <div class="detail-row"><strong>Alumno:</strong>
                 @if ($report->student)
-                    {{ $report->student->matricula }} - {{ $report->student->nombre }}
-                    {{ $report->student->apellidoPaterno }} {{ $report->student->apellidoMaterno }}
+                    {{ $report->student->matricula_display }} - {{ $report->student->full_name }}
+                    (Grupo: {{ $report->student->grupo ?? '-' }})
                 @else
                     -
                 @endif
@@ -42,7 +42,10 @@
                                 @if ($locker->building)
                                     (Edif. {{ $locker->building->num_edific }})
                                 @endif
-                                - {{ ucfirst($locker->estado) }}
+                                - Área: {{ $locker->area ?? '-' }}
+                                - Planta: {{ $locker->planta ? ucfirst($locker->planta) : '-' }}
+                                - Estado: {{ ucfirst($locker->estado) }}
+                                - Observaciones: {{ $locker->observaciones ?? '-' }}
                             </li>
                         @endforeach
                     </ul>

@@ -32,8 +32,7 @@
                     @foreach ($students as $student)
                         <option value="{{ $student->matricula }}"
                             {{ old('matricula', $report->matricula) == $student->matricula ? 'selected' : '' }}>
-                            {{ $student->matricula }} - {{ $student->nombre }} {{ $student->apellidoPaterno }}
-                            {{ $student->apellidoMaterno }}
+                            {{ $student->matricula_display }} - {{ $student->full_name }} ({{ $student->grupo ?? '-' }})
                         </option>
                     @endforeach
                 </select>
@@ -61,7 +60,10 @@
                 <label for="casilleros">Casilleros del alumno</label>
                 <select id="casilleros" name="casilleros[]" class="input" multiple size="8" required>
                     @foreach ($lockers as $locker)
-                        <option value="{{ $locker->idcasillero }}"
+                        @php
+                            $allowedStudents = $lockerStudentMap[$locker->idcasillero] ?? [];
+                        @endphp
+                        <option value="{{ $locker->idcasillero }}" data-students="{{ implode(',', $allowedStudents) }}"
                             {{ collect(old('casilleros', $selectedLockers))->contains($locker->idcasillero) ? 'selected' : '' }}>
                             #{{ $locker->numeroCasiller }}
                             @if ($locker->building)
@@ -77,7 +79,8 @@
                 @error('casilleros.*')
                     <div class="field-help error">{{ $message }}</div>
                 @enderror
-                <div class="field-help">Selecciona solo casilleros activos asignados al alumno. Usa Ctrl/Cmd para múltiples.
+                <div class="field-help" id="casilleros-help">Selecciona un alumno para ver únicamente sus casilleros
+                    activos. Usa Ctrl/Cmd para múltiples.
                 </div>
             </div>
             <div class="actions">
@@ -86,4 +89,61 @@
             </div>
         </form>
     </div>
+@endsection
+
+@section('scripts')
+    <script>
+        (function() {
+            const studentSelect = document.getElementById('matricula');
+            const lockersSelect = document.getElementById('casilleros');
+            const help = document.getElementById('casilleros-help');
+
+            if (!studentSelect || !lockersSelect) {
+                return;
+            }
+
+            const normalizeMatricula = (value) => {
+                const raw = String(value || '').toUpperCase().replace(/\s+/g, '');
+                const match = raw.match(/^([A-Z]{2,10})-?(\d{3,10})$/);
+                return match ? `${match[1]}-${match[2]}` : raw;
+            };
+
+            const filterLockersByStudent = () => {
+                const selectedMatricula = normalizeMatricula(studentSelect.value);
+                let visibleCount = 0;
+
+                Array.from(lockersSelect.options).forEach((option) => {
+                    const allowed = String(option.dataset.students || '')
+                        .split(',')
+                        .map((item) => item.trim())
+                        .filter(Boolean);
+
+                    const isAllowed = selectedMatricula !== '' && allowed.includes(selectedMatricula);
+                    option.hidden = !isAllowed;
+
+                    if (!isAllowed) {
+                        option.selected = false;
+                    } else {
+                        visibleCount++;
+                    }
+                });
+
+                if (selectedMatricula === '') {
+                    help.textContent = 'Selecciona un alumno para ver únicamente sus casilleros activos.';
+                    return;
+                }
+
+                if (visibleCount === 0) {
+                    help.textContent = 'El alumno seleccionado no tiene casilleros activos reportables.';
+                    return;
+                }
+
+                help.textContent =
+                    `Casilleros activos disponibles: ${visibleCount}. Usa Ctrl/Cmd para seleccionar múltiples.`;
+            };
+
+            studentSelect.addEventListener('change', filterLockersByStudent);
+            filterLockersByStudent();
+        })();
+    </script>
 @endsection

@@ -36,7 +36,8 @@
                     @foreach ($students as $student)
                         <option value="{{ $student->matricula }}"
                             {{ old('matricula') == $student->matricula ? 'selected' : '' }}>
-                            {{ $student->nombre }} {{ $student->apellidoPaterno ?? '' }} ({{ $student->matricula }})
+                            {{ $student->full_name }} ({{ $student->matricula_display }}) - Grupo
+                            {{ $student->grupo ?? '-' }}
                         </option>
                     @endforeach
                 </select>

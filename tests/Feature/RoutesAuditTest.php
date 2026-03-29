@@ -25,6 +25,13 @@ class RoutesAuditTest extends TestCase
             'reports.by_group',
             'reports.occupancy.export',
             'reports.by_group.export',
+            'student.request_locker',
+            'locker_requests.index',
+            'locker_requests.approve',
+            'locker_requests.reject',
+            'notifications.index',
+            'notifications.read',
+            'notifications.read_all',
         ];
 
         foreach ($requiredRoutes as $routeName) {

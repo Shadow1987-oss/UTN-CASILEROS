@@ -33,7 +33,7 @@
                         @foreach ($students as $student)
                             <option value="{{ $student->matricula }}"
                                 {{ request('matricula') == $student->matricula ? 'selected' : '' }}>
-                                {{ $student->matricula }} - {{ $student->nombre }} {{ $student->apellidoPaterno }}
+                                {{ $student->matricula_display }} - {{ $student->full_name }} ({{ $student->grupo ?? '-' }})
                             </option>
                         @endforeach
                     </select>
@@ -83,7 +83,8 @@
                         <td>{{ optional($report->tutor)->name ?? '-' }}</td>
                         <td>
                             @if ($report->student)
-                                {{ $report->student->matricula }} - {{ $report->student->nombre }}
+                                {{ $report->student->matricula_display }} - {{ $report->student->full_name }}
+                                ({{ $report->student->grupo ?? '-' }})
                             @else
                                 -
                             @endif
@@ -109,5 +110,8 @@
                 @endforelse
             </tbody>
         </table>
+        <div style="margin-top: 16px;">
+            {{ $reports->links() }}
+        </div>
     </div>
 @endsection

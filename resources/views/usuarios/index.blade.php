@@ -29,7 +29,7 @@
                         <td class="actions">
                             <a class="btn secondary" href="{{ route('usuarios.edit', $usuario) }}">Editar</a>
                             <form method="POST" action="{{ route('usuarios.destroy', $usuario) }}" style="display:inline;"
-                                onsubmit="return confirm('¿Eliminar este usuario?');">
+                                onsubmit="return confirm('¿Eliminar este tutor?');">
                                 @csrf
                                 @method('DELETE')
                                 <button class="btn danger">Eliminar</button>

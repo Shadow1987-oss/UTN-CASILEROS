@@ -26,4 +26,9 @@ class Sanction extends Model
     {
         return $this->hasMany(Receipt::class, 'idsancion', 'idsancion');
     }
+
+    public function receipt()
+    {
+        return $this->hasOne(Receipt::class, 'idsancion', 'idsancion');
+    }
 }

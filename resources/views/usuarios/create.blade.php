@@ -1,14 +1,14 @@
 @extends('plantilla')
 
-@section('titulo', 'Nuevo Usuario Interno - UTN Lockers')
+@section('titulo', 'Nuevo Tutor - UTN Lockers')
 
 @section('contenido')
     <div class="card">
-        <h2>Nuevo usuario interno</h2>
+        <h2>Nuevo tutor</h2>
         <form class="form" method="POST" action="{{ route('usuarios.store') }}">
             @csrf
             @include('partials.form-field', [
-                'label' => 'ID de usuario',
+                'label' => 'ID de tutor',
                 'name' => 'idusuario',
                 'type' => 'number',
                 'value' => old('idusuario'),

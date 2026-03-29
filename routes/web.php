@@ -5,6 +5,8 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BuildingController;
 use App\Http\Controllers\CareerController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\LockerRequestController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\LockerController;
 use App\Http\Controllers\PeriodController;
 use App\Http\Controllers\StudentController;
@@ -35,6 +37,10 @@ Route::middleware('guest')->group(function () {
 Route::middleware('auth')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
+    Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
+    Route::post('/notifications/{notification}/read', [NotificationController::class, 'markRead'])->name('notifications.read');
+    Route::post('/notifications/read-all', [NotificationController::class, 'markAllRead'])->name('notifications.read_all');
+
     Route::get('/mi-casillero', [StudentController::class, 'myLocker'])
         ->middleware('role:estudiante')
         ->name('student.home');
@@ -62,12 +68,16 @@ Route::middleware('auth')->group(function () {
         Route::get('reports/by-group', [App\Http\Controllers\ReportsController::class, 'byGroup'])->name('reports.by_group');
         Route::get('reports/occupancy/export', [App\Http\Controllers\ReportsController::class, 'exportOccupancy'])->name('reports.occupancy.export');
         Route::get('reports/by-group/export', [App\Http\Controllers\ReportsController::class, 'exportByGroup'])->name('reports.by_group.export');
+
+        Route::get('locker-requests', [LockerRequestController::class, 'index'])->name('locker_requests.index');
+        Route::post('locker-requests/{lockerRequest}/approve', [LockerRequestController::class, 'approve'])->name('locker_requests.approve');
+        Route::post('locker-requests/{lockerRequest}/reject', [LockerRequestController::class, 'reject'])->name('locker_requests.reject');
     });
 
     Route::middleware('role:admin')->group(function () {
         Route::resource('careers', CareerController::class);
         Route::resource('buildings', BuildingController::class);
-        Route::resource('usuarios', UsuarioController::class)->except(['create', 'store']);
+        Route::resource('tutores', UsuarioController::class)->names('usuarios')->except(['create', 'store']);
 
         Route::resource('students', StudentController::class)->except(['index', 'show', 'create', 'store']);
         Route::post('students/import', [StudentImportController::class, 'store'])->name('students.import');

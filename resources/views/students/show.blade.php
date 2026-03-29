@@ -19,10 +19,10 @@
 
         <div class="details">
             <div class="detail-row">
-                <strong>Matrícula:</strong> {{ $student->matricula }}
+                <strong>Matrícula:</strong> {{ $student->matricula_display }}
             </div>
             <div class="detail-row">
-                <strong>Nombre:</strong> {{ $student->nombre }}
+                <strong>Nombre:</strong> {{ $student->full_name }}
             </div>
             <div class="detail-row">
                 <strong>Carrera:</strong> {{ $student->career->nombre_carre ?? 'N/A' }}
@@ -32,12 +32,6 @@
             </div>
             <div class="detail-row">
                 <strong>Grupo:</strong> {{ $student->grupo ?? '-' }}
-            </div>
-            <div class="detail-row">
-                <strong>Apellido Paterno:</strong> {{ $student->apellidoPaterno }}
-            </div>
-            <div class="detail-row">
-                <strong>Apellido Materno:</strong> {{ $student->apellidoMaterno }}
             </div>
             <div class="detail-row">
                 <strong>Teléfono:</strong>

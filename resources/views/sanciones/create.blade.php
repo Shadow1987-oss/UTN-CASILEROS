@@ -15,9 +15,9 @@
                 'required' => true,
             ])
             <div class="field">
-                <label for="idusuario">Usuario responsable</label>
+                <label for="idusuario">Tutor responsable</label>
                 <select id="idusuario" name="idusuario" class="input">
-                    <option value="">Seleccionar usuario</option>
+                    <option value="">Seleccionar tutor</option>
                     @foreach ($usuarios as $usuario)
                         <option value="{{ $usuario->idusuario }}"
                             {{ old('idusuario') == $usuario->idusuario ? 'selected' : '' }}>
@@ -26,6 +26,21 @@
                     @endforeach
                 </select>
                 @error('idusuario')
+                    <div class="field-help error">{{ $message }}</div>
+                @enderror
+            </div>
+            <div class="field">
+                <label for="matricula">Estudiante sancionado</label>
+                <select id="matricula" name="matricula" class="input" required>
+                    <option value="">Seleccionar estudiante</option>
+                    @foreach ($students as $student)
+                        <option value="{{ $student->matricula }}"
+                            {{ old('matricula') == $student->matricula ? 'selected' : '' }}>
+                            {{ $student->matricula_display }} - {{ $student->full_name }} ({{ $student->grupo ?? '-' }})
+                        </option>
+                    @endforeach
+                </select>
+                @error('matricula')
                     <div class="field-help error">{{ $message }}</div>
                 @enderror
             </div>

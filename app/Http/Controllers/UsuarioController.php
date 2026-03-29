@@ -32,7 +32,7 @@ class UsuarioController extends Controller
 
         Usuario::create($data);
 
-        return redirect()->route('usuarios.index')->with('status', 'Usuario creado.');
+        return redirect()->route('usuarios.index')->with('status', 'Tutor creado.');
     }
 
     public function show(Usuario $usuario)
@@ -57,7 +57,7 @@ class UsuarioController extends Controller
 
         $usuario->update($data);
 
-        return redirect()->route('usuarios.index')->with('status', 'Usuario actualizado.');
+        return redirect()->route('usuarios.index')->with('status', 'Tutor actualizado.');
     }
 
     public function destroy(Usuario $usuario)
@@ -65,9 +65,9 @@ class UsuarioController extends Controller
         try {
             $usuario->delete();
         } catch (QueryException $exception) {
-            return redirect()->route('usuarios.index')->with('status', 'No se puede eliminar el usuario porque está relacionado con otros registros.');
+            return redirect()->route('usuarios.index')->with('status', 'No se puede eliminar el tutor porque está relacionado con otros registros.');
         }
 
-        return redirect()->route('usuarios.index')->with('status', 'Usuario eliminado.');
+        return redirect()->route('usuarios.index')->with('status', 'Tutor eliminado.');
     }
 }

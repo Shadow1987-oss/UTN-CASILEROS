@@ -11,7 +11,7 @@ return new class extends Migration
         if (!Schema::hasTable('solicitudes_casillero')) {
             Schema::create('solicitudes_casillero', function (Blueprint $table) {
                 $table->bigIncrements('id');
-                $table->integer('matricula');
+                $table->string('matricula', 20);
                 $table->integer('idperiodo');
                 $table->string('estado', 20)->default('pendiente');
                 $table->string('observaciones', 255)->nullable();

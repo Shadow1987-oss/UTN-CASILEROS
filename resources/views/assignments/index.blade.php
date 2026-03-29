@@ -34,20 +34,57 @@
                         @endforeach
                     </select>
                 </div>
+                <div class="field">
+                    <label for="idusuario">Tutor responsable</label>
+                    <select id="idusuario" name="idusuario" class="input">
+                        <option value="">Todos</option>
+                        @foreach ($usuarios as $usuario)
+                            <option value="{{ $usuario->idusuario }}"
+                                {{ request('idusuario') == $usuario->idusuario ? 'selected' : '' }}>
+                                {{ $usuario->nombre }} {{ $usuario->apellidoP ?? '' }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
             </div>
             <div class="actions">
                 <button class="btn" type="submit">Filtrar</button>
                 <a class="btn secondary" href="{{ route('assignments.index') }}">Limpiar</a>
             </div>
         </form>
+
+        <div class="card" style="margin-bottom: 16px; box-shadow: none;">
+            <h3 style="margin-top: 0;">Carga activa por tutor</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Tutor</th>
+                        <th>Casilleros asignados activos</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse ($usuarios as $usuario)
+                        <tr>
+                            <td>{{ $usuario->nombre }} {{ $usuario->apellidoP ?? '' }}</td>
+                            <td>{{ $tutorLoads[$usuario->idusuario] ?? 0 }}</td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="2" class="muted">Sin tutores registrados.</td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
         <table>
             <thead>
                 <tr>
                     <th>Estudiante</th>
                     <th>Matrícula</th>
+                    <th>Grupo</th>
                     <th>Casillero</th>
                     <th>Período</th>
-                    <th>Usuario responsable</th>
+                    <th>Tutor responsable</th>
                     <th>Fecha asignación</th>
                     <th>Estado</th>
                     <th></th>
@@ -56,9 +93,10 @@
             <tbody>
                 @forelse ($assignments as $assignment)
                     <tr>
-                        <td>{{ $assignment->student->nombre ?? '-' }} {{ $assignment->student->apellidoPaterno ?? '' }}
+                        <td>{{ optional($assignment->student)->full_name ?? '-' }}
                         </td>
-                        <td>{{ $assignment->matricula }}</td>
+                        <td>{{ \App\Models\Student::formatMatricula($assignment->matricula) }}</td>
+                        <td>{{ optional($assignment->student)->grupo ?? '-' }}</td>
                         <td>#{{ $assignment->locker->numeroCasiller ?? '-' }}</td>
                         <td>{{ $assignment->period->nombrePerio ?? '-' }}</td>
                         <td>{{ optional($assignment->usuario)->nombre ?? '-' }}
@@ -84,10 +122,13 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="8" class="muted">Sin asignaciones aún.</td>
+                        <td colspan="9" class="muted">Sin asignaciones aún.</td>
                     </tr>
                 @endforelse
             </tbody>
         </table>
+        <div style="margin-top: 16px;">
+            {{ $assignments->links() }}
+        </div>
     </div>
 @endsection

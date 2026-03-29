@@ -10,7 +10,7 @@ class CreateAssignmentsTable extends Migration
     {
         Schema::create('asignamientos', function (Blueprint $table) {
             $table->integer('idasigna')->primary();
-            $table->integer('matricula');
+            $table->string('matricula', 20);
             $table->integer('idusuario')->nullable();
             $table->integer('idcasillero');
             $table->integer('idPeriodo');

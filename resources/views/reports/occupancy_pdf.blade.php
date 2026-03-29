@@ -42,6 +42,12 @@
 <body>
     <h1>Reporte de Ocupación</h1>
     <p class="muted">Generado: {{ now()->format('d/m/Y H:i') }}</p>
+    <p class="muted">
+        Edificio: {{ $pdfFilters['edificio'] ?? 'Todos' }} |
+        Área: {{ $pdfFilters['area'] ?? 'Todas' }} |
+        Planta: {{ $pdfFilters['planta'] ?? 'Todas' }} |
+        Período: {{ $pdfFilters['periodo'] ?? 'Todos' }}
+    </p>
 
     <table>
         <thead>
@@ -71,6 +77,38 @@
                 <td>Asignaciones activas</td>
                 <td>{{ $data['active_assignments'] }}</td>
             </tr>
+            <tr>
+                <td>Promedio días de ocupación</td>
+                <td>{{ $data['average_occupancy_days'] }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2 style="margin-top: 14px;">Resumen por edificio</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Edificio</th>
+                <th>Total</th>
+                <th>Ocupados</th>
+                <th>Dañados</th>
+                <th>Disponibles</th>
+            </tr>
+        </thead>
+        <tbody>
+            @forelse ($data['by_building'] as $row)
+                <tr>
+                    <td>{{ $row['building'] }}</td>
+                    <td>{{ $row['total'] }}</td>
+                    <td>{{ $row['occupied'] }}</td>
+                    <td>{{ $row['damaged'] }}</td>
+                    <td>{{ $row['available'] }}</td>
+                </tr>
+            @empty
+                <tr>
+                    <td colspan="5">No hay datos para los filtros seleccionados.</td>
+                </tr>
+            @endforelse
         </tbody>
     </table>
 </body>

@@ -16,6 +16,17 @@ class LockerRequest extends Model
         'idperiodo',
         'estado',
         'observaciones',
+        'review_notes',
+        'reviewed_by',
+        'reviewed_at',
+    ];
+
+    protected $casts = [
+        'reviewed_at' => 'datetime',
+    ];
+
+    protected $appends = [
+        'status_label',
     ];
 
     public function student()
@@ -26,5 +37,25 @@ class LockerRequest extends Model
     public function period()
     {
         return $this->belongsTo(Period::class, 'idperiodo', 'idperiodo');
+    }
+
+    public function reviewer()
+    {
+        return $this->belongsTo(User::class, 'reviewed_by', 'id');
+    }
+
+    public function getStatusLabelAttribute(): string
+    {
+        $status = strtolower((string) $this->estado);
+
+        if ($status === 'aprobada') {
+            return 'Aprobada';
+        }
+
+        if ($status === 'rechazada') {
+            return 'Rechazada';
+        }
+
+        return 'Pendiente';
     }
 }

@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Assignment;
+use App\Models\Building;
 use App\Models\Locker;
+use App\Models\Period;
 use App\Models\Student;
 use Illuminate\Http\Request;
 
@@ -14,11 +16,21 @@ class ReportsController extends Controller
         return view('reports.index');
     }
 
-    public function occupancy()
+    public function occupancy(Request $request)
     {
-        $data = $this->buildOccupancyData();
+        $filters = [
+            'idedificio' => $request->input('idedificio'),
+            'area' => $request->input('area'),
+            'planta' => $request->input('planta'),
+            'idperiodo' => $request->input('idperiodo'),
+        ];
 
-        return view('reports.occupancy', compact('data'));
+        $data = $this->buildOccupancyData($filters);
+        $buildings = Building::orderBy('num_edific')->get();
+        $periods = Period::orderBy('idperiodo', 'desc')->get();
+        $areas = Locker::whereNotNull('area')->distinct()->orderBy('area')->pluck('area');
+
+        return view('reports.occupancy', compact('data', 'buildings', 'periods', 'areas', 'filters'));
     }
 
     public function byGroup(Request $request)
@@ -39,17 +51,35 @@ class ReportsController extends Controller
         return view('reports.by_group', compact('data', 'careers', 'groups', 'buildings', 'filters'));
     }
 
-    public function exportOccupancy()
+    public function exportOccupancy(Request $request)
     {
-        $data = $this->buildOccupancyData();
+        $filters = [
+            'idedificio' => $request->input('idedificio'),
+            'area' => $request->input('area'),
+            'planta' => $request->input('planta'),
+            'idperiodo' => $request->input('idperiodo'),
+        ];
+
+        $data = $this->buildOccupancyData($filters);
+
+        $pdfFilters = [
+            'edificio' => !empty($filters['idedificio'])
+                ? ('Edif. ' . optional(Building::find($filters['idedificio']))->num_edific)
+                : 'Todos',
+            'area' => $filters['area'] ?: 'Todas',
+            'planta' => $filters['planta'] ?: 'Todas',
+            'periodo' => !empty($filters['idperiodo'])
+                ? (optional(Period::find($filters['idperiodo']))->nombrePerio ?: 'Todos')
+                : 'Todos',
+        ];
 
         if (app()->bound('dompdf.wrapper')) {
             $pdf = app('dompdf.wrapper');
-            $pdf->loadView('reports.occupancy_pdf', compact('data'));
+            $pdf->loadView('reports.occupancy_pdf', compact('data', 'pdfFilters'));
             return $pdf->download('reporte_ocupacion.pdf');
         }
 
-        return response()->view('reports.occupancy_pdf', compact('data'));
+        return response()->view('reports.occupancy_pdf', compact('data', 'pdfFilters'));
     }
 
     public function exportByGroup(Request $request)
@@ -86,23 +116,75 @@ class ReportsController extends Controller
         return response()->view('reports.by_group_pdf', compact('data', 'pdfFilters'));
     }
 
-    private function buildOccupancyData(): array
+    private function buildOccupancyData(array $filters = []): array
     {
-        $totalLockers = Locker::count();
-        $damaged = Locker::where('estado', 'dañado')->count();
+        $lockerQuery = Locker::query();
 
-        $occupied = Assignment::whereNull('released_at')
+        if (!empty($filters['idedificio'])) {
+            $lockerQuery->where('idedificio', (int) $filters['idedificio']);
+        }
+        if (!empty($filters['area'])) {
+            $lockerQuery->where('area', (string) $filters['area']);
+        }
+        if (!empty($filters['planta'])) {
+            $lockerQuery->where('planta', (string) $filters['planta']);
+        }
+
+        $lockers = (clone $lockerQuery)->with('building')->get();
+        $lockerIds = $lockers->pluck('idcasillero')->map(fn($id) => (int) $id)->all();
+
+        $assignmentBase = Assignment::query();
+        if (!empty($filters['idperiodo'])) {
+            $assignmentBase->where('idPeriodo', (int) $filters['idperiodo']);
+        }
+        if (!empty($lockerIds)) {
+            $assignmentBase->whereIn('idcasillero', $lockerIds);
+        } else {
+            $assignmentBase->whereRaw('1 = 0');
+        }
+
+        $activeAssignmentsQuery = (clone $assignmentBase)->whereNull('released_at');
+
+        $totalLockers = $lockers->count();
+        $damaged = $lockers->where('estado', 'dañado')->count();
+
+        $occupied = (clone $activeAssignmentsQuery)
             ->distinct('idcasillero')
             ->count('idcasillero');
 
         $available = max(0, ($totalLockers - $damaged) - $occupied);
+
+        $averageOccupancyDays = (float) ((clone $assignmentBase)
+            ->selectRaw('AVG(DATEDIFF(COALESCE(released_at, NOW()), fechaAsignacion)) AS avg_days')
+            ->value('avg_days') ?? 0);
+
+        $occupiedLockerIds = (clone $activeAssignmentsQuery)->pluck('idcasillero')->unique();
+
+        $byBuilding = $lockers->groupBy('idedificio')->map(function ($group, $buildingId) use ($occupiedLockerIds) {
+            $buildingName = optional($group->first()->building)->num_edific ?? (string) $buildingId;
+            $total = $group->count();
+            $damaged = $group->where('estado', 'dañado')->count();
+            $occupied = $group->filter(function ($locker) use ($occupiedLockerIds) {
+                return $occupiedLockerIds->contains($locker->idcasillero);
+            })->count();
+
+            return [
+                'building' => $buildingName,
+                'total' => $total,
+                'damaged' => $damaged,
+                'occupied' => $occupied,
+                'available' => max(0, ($total - $damaged) - $occupied),
+            ];
+        })->sortBy('building')->values();
 
         return [
             'total_lockers' => $totalLockers,
             'available' => $available,
             'occupied' => $occupied,
             'damaged' => $damaged,
-            'active_assignments' => Assignment::whereNull('released_at')->count(),
+            'active_assignments' => (clone $activeAssignmentsQuery)->count(),
+            'average_occupancy_days' => round($averageOccupancyDays, 2),
+            'by_building' => $byBuilding,
         ];
     }
 

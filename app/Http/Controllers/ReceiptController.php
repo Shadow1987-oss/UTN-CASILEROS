@@ -29,8 +29,10 @@ class ReceiptController extends Controller
         $data = $request->validate([
             'idrecibe' => ['required', 'integer', 'unique:recibe,idrecibe'],
             'idsancion' => ['required', 'integer', 'exists:sanciones,idsancion'],
-            'matricula' => ['required', 'integer', 'exists:alumnos,matricula'],
+            'matricula' => ['required', 'string', 'max:20', 'regex:/^[A-Za-z]{2,10}-?\d{3,10}$/', 'exists:alumnos,matricula'],
         ]);
+
+        $data['matricula'] = $this->normalizeMatricula((string) $data['matricula']) ?? $data['matricula'];
 
         Receipt::create($data);
 
@@ -54,8 +56,10 @@ class ReceiptController extends Controller
         $data = $request->validate([
             'idrecibe' => ['required', 'integer', Rule::unique('recibe', 'idrecibe')->ignore($recibo->idrecibe, 'idrecibe')],
             'idsancion' => ['required', 'integer', 'exists:sanciones,idsancion'],
-            'matricula' => ['required', 'integer', 'exists:alumnos,matricula'],
+            'matricula' => ['required', 'string', 'max:20', 'regex:/^[A-Za-z]{2,10}-?\d{3,10}$/', 'exists:alumnos,matricula'],
         ]);
+
+        $data['matricula'] = $this->normalizeMatricula((string) $data['matricula']) ?? $data['matricula'];
 
         $recibo->update($data);
 
@@ -71,5 +75,25 @@ class ReceiptController extends Controller
         }
 
         return redirect()->route('recibe.index')->with('status', 'Recibo eliminado.');
+    }
+
+    private function normalizeMatricula(?string $matricula): ?string
+    {
+        if ($matricula === null) {
+            return null;
+        }
+
+        $normalized = strtoupper(trim((string) $matricula));
+        $normalized = preg_replace('/\s+/', '', $normalized);
+
+        if ($normalized === '') {
+            return null;
+        }
+
+        if (preg_match('/^([A-Z]{2,10})-?(\d{3,10})$/', $normalized, $matches)) {
+            return $matches[1] . '-' . $matches[2];
+        }
+
+        return $normalized;
     }
 }

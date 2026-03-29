@@ -98,5 +98,8 @@
                 @endforelse
             </tbody>
         </table>
+        <div style="margin-top: 16px;">
+            {{ $lockers->links() }}
+        </div>
     </div>
 @endsection
