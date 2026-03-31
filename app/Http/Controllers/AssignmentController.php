@@ -7,6 +7,7 @@ use App\Models\Locker;
 use App\Models\Period;
 use App\Models\Student;
 use App\Models\Usuario;
+use App\Models\User;
 use App\Models\UserNotification;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
@@ -117,6 +118,13 @@ class AssignmentController extends Controller
             ]);
         }
 
+        // Notificar a todos los admin y tutores
+        $this->notifyStaff(
+            'Nueva asignación de casillero',
+            "Se asignó el casillero #{$assignment->idcasillero} al estudiante {$assignment->matricula}.",
+            ['idasigna' => (string) $assignment->idasigna]
+        );
+
         $this->syncLockerStatus((int) $data['idcasillero']);
 
         return redirect()->route('assignments.index')->with('status', 'Asignación creada.');
@@ -220,6 +228,13 @@ class AssignmentController extends Controller
 
         $this->syncLockerStatus((int) $assignment->idcasillero);
 
+        // Notificar a todos los admin y tutores
+        $this->notifyStaff(
+            'Casillero liberado',
+            "Se liberó el casillero #{$assignment->idcasillero} del estudiante {$assignment->matricula}.",
+            ['idasigna' => (string) $assignment->idasigna]
+        );
+
         return redirect()->route('assignments.index')->with('status', 'Asignación liberada.');
     }
 
@@ -253,5 +268,19 @@ class AssignmentController extends Controller
         $locker->update([
             'estado' => $hasActiveAssignment ? 'ocupado' : 'disponible',
         ]);
+    }
+
+    private function notifyStaff(string $title, string $message, array $payload = []): void
+    {
+        $staffUsers = User::whereIn('role', ['admin', 'tutor'])->get(['id']);
+        foreach ($staffUsers as $staffUser) {
+            UserNotification::create([
+                'user_id' => (int) $staffUser->id,
+                'type' => 'assignment',
+                'title' => $title,
+                'message' => $message,
+                'payload' => $payload,
+            ]);
+        }
     }
 }

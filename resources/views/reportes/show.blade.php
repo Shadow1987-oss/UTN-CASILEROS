@@ -18,9 +18,9 @@
         <div class="details">
             <div class="detail-row"><strong>ID:</strong> {{ $report->idreporte }}</div>
             <div class="detail-row"><strong>Tutor:</strong>
-                {{ optional($report->tutor)->name ?? '-' }}
+                {{ optional($report->tutor)->nombre ?? '-' }} {{ optional($report->tutor)->apellidoP ?? '' }}
             </div>
-            <div class="detail-row"><strong>Correo tutor:</strong> {{ optional($report->tutor)->email ?? '-' }}</div>
+            <div class="detail-row"><strong>Cargo tutor:</strong> {{ optional($report->tutor)->cargo ?? '-' }}</div>
             <div class="detail-row"><strong>Alumno:</strong>
                 @if ($report->student)
                     {{ $report->student->matricula_display }} - {{ $report->student->full_name }}

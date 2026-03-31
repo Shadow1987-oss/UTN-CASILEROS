@@ -198,7 +198,7 @@ class ReportsController extends Controller
 
         if (!empty($filters['cuatrimestre'])) {
             $cuatrimestre = (int) $filters['cuatrimestre'];
-            if ($cuatrimestre >= 1 && $cuatrimestre <= 12) {
+            if ($cuatrimestre >= 1 && $cuatrimestre <= 10) {
                 $query->where('cuatrimestre', $cuatrimestre);
             } else {
                 $query->whereRaw('1 = 0');

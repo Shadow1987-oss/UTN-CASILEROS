@@ -31,7 +31,7 @@
 
                 <div class="field">
                     <label for="cuatrimestre">Cuatrimestre</label>
-                    <input id="cuatrimestre" name="cuatrimestre" type="number" class="input" min="1"
+                    <input id="cuatrimestre" name="cuatrimestre" type="number" class="input" min="1" max="10"
                         value="{{ request('cuatrimestre') }}" placeholder="Ej. 3">
                 </div>
 

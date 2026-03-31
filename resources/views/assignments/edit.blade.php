@@ -11,16 +11,19 @@
             <input type="hidden" name="idasigna" value="{{ old('idasigna', $assignment->idasigna) }}">
             <div class="field">
                 <label for="matricula">Estudiante</label>
-                <select id="matricula" name="matricula" class="input" required>
-                    <option value="">Seleccionar</option>
+                <input type="hidden" name="matricula" value="{{ old('matricula', $assignment->matricula) }}">
+                <select id="matricula" class="input" disabled>
                     @foreach ($students as $student)
-                        <option value="{{ $student->matricula }}"
-                            {{ old('matricula', $assignment->matricula) == $student->matricula ? 'selected' : '' }}>
-                            {{ $student->full_name }} ({{ $student->matricula_display }}) - Grupo
-                            {{ $student->grupo ?? '-' }}
-                        </option>
+                        @if ($student->matricula == $assignment->matricula)
+                            <option value="{{ $student->matricula }}" selected>
+                                {{ $student->full_name }} ({{ $student->matricula_display }}) - Grupo
+                                {{ $student->grupo ?? '-' }}
+                            </option>
+                        @endif
                     @endforeach
                 </select>
+                <div class="field-help">El estudiante no se puede cambiar. Para reasignar, elimina esta asignación y crea
+                    una nueva.</div>
                 @error('matricula')
                     <div class="field-help error">{{ $message }}</div>
                 @enderror

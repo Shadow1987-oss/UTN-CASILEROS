@@ -37,7 +37,7 @@ class StudentController extends Controller
 
         if ($request->filled('cuatrimestre')) {
             $cuatrimestre = (int) $request->cuatrimestre;
-            if ($cuatrimestre >= 1 && $cuatrimestre <= 12) {
+            if ($cuatrimestre >= 1 && $cuatrimestre <= 10) {
                 $query->where('cuatrimestre', $cuatrimestre);
             } else {
                 $query->whereRaw('1 = 0');
@@ -88,7 +88,7 @@ class StudentController extends Controller
             'user_id' => ['nullable', 'integer', 'exists:users,id', 'unique:alumnos,user_id'],
             'nombre' => ['required', 'string', 'max:50'],
             'idcarrera' => ['nullable', 'integer', 'exists:carreras,idcarrera'],
-            'cuatrimestre' => ['nullable', 'integer', 'between:1,12'],
+            'cuatrimestre' => ['nullable', 'integer', 'between:1,10'],
             'grupo' => ['nullable', 'string', 'max:50'],
             'apellidoPaterno' => ['nullable', 'string', 'max:50'],
             'apellidoMaterno' => ['nullable', 'string', 'max:50'],
@@ -124,7 +124,7 @@ class StudentController extends Controller
             'user_id' => ['nullable', 'integer', 'exists:users,id', Rule::unique('alumnos', 'user_id')->ignore($student->matricula, 'matricula')],
             'nombre' => ['required', 'string', 'max:50'],
             'idcarrera' => ['nullable', 'integer', 'exists:carreras,idcarrera'],
-            'cuatrimestre' => ['nullable', 'integer', 'between:1,12'],
+            'cuatrimestre' => ['nullable', 'integer', 'between:1,10'],
             'grupo' => ['nullable', 'string', 'max:50'],
             'apellidoPaterno' => ['nullable', 'string', 'max:50'],
             'apellidoMaterno' => ['nullable', 'string', 'max:50'],

@@ -62,6 +62,7 @@ Route::middleware('auth')->group(function () {
         Route::get('assignments/{assignment}/edit', [AssignmentController::class, 'edit'])->name('assignments.edit');
         Route::put('assignments/{assignment}', [AssignmentController::class, 'update'])->name('assignments.update');
         Route::post('assignments/{assignment}/release', [AssignmentController::class, 'release'])->name('assignments.release');
+        Route::delete('assignments/{assignment}', [AssignmentController::class, 'destroy'])->name('assignments.destroy');
 
         Route::get('reports', [App\Http\Controllers\ReportsController::class, 'index'])->name('reports.index');
         Route::get('reports/occupancy', [App\Http\Controllers\ReportsController::class, 'occupancy'])->name('reports.occupancy');
@@ -87,8 +88,6 @@ Route::middleware('auth')->group(function () {
 
         Route::resource('lockers', LockerController::class)->except(['index']);
         Route::resource('periods', PeriodController::class);
-
-        Route::delete('assignments/{assignment}', [AssignmentController::class, 'destroy'])->name('assignments.destroy');
 
         Route::resource('reportes', App\Http\Controllers\ReportController::class)
             ->parameters(['reportes' => 'report']);

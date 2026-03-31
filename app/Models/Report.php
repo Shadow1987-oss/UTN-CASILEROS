@@ -19,7 +19,7 @@ class Report extends Model
 
     public function tutor()
     {
-        return $this->belongsTo(User::class, 'idusuario', 'id');
+        return $this->belongsTo(Usuario::class, 'idusuario', 'idusuario');
     }
 
     public function student()

@@ -28,7 +28,13 @@
                 </div>
                 <div class="field">
                     <label for="area">Área</label>
-                    <input type="text" name="area" id="area" class="input" value="{{ request('area') }}">
+                    <select name="area" id="area" class="input">
+                        <option value="">Todas</option>
+                        @foreach (['Laboratorios', 'Aulas', 'Biblioteca', 'Administrativo'] as $area)
+                            <option value="{{ $area }}" {{ request('area') == $area ? 'selected' : '' }}>
+                                {{ $area }}</option>
+                        @endforeach
+                    </select>
                 </div>
                 <div class="field">
                     <label for="planta">Planta</label>
@@ -43,7 +49,8 @@
                 <label for="estado">Estado</label>
                 <select name="estado" id="estado" class="input">
                     <option value="">Todos</option>
-                    <option value="disponible" {{ request('estado') == 'disponible' ? 'selected' : '' }}>Disponible</option>
+                    <option value="disponible" {{ request('estado') == 'disponible' ? 'selected' : '' }}>Disponible
+                    </option>
                     <option value="ocupado" {{ request('estado') == 'ocupado' ? 'selected' : '' }}>Ocupado</option>
                     <option value="dañado" {{ request('estado') == 'dañado' ? 'selected' : '' }}>Dañado</option>
                 </select>

@@ -6,7 +6,7 @@ use App\Models\Assignment;
 use App\Models\Locker;
 use App\Models\Report;
 use App\Models\Student;
-use App\Models\User;
+use App\Models\Usuario;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -45,7 +45,7 @@ class ReportController extends Controller
         }
 
         $reports = $query->orderBy('idreporte')->paginate(20)->withQueryString();
-        $tutors = User::where('role', 'tutor')->orderBy('name')->get();
+        $tutors = Usuario::orderBy('nombre')->orderBy('apellidoP')->get();
         $students = Student::orderBy('matricula')->get();
         $lockers = Locker::orderBy('numeroCasiller')->get();
 
@@ -54,7 +54,7 @@ class ReportController extends Controller
 
     public function create()
     {
-        $tutors = User::where('role', 'tutor')->orderBy('name')->get();
+        $tutors = Usuario::orderBy('nombre')->orderBy('apellidoP')->get();
         $students = Student::orderBy('matricula')->get();
         [$lockers, $lockerStudentMap] = $this->buildLockerSelectionData();
 
@@ -65,9 +65,7 @@ class ReportController extends Controller
     {
         $data = $request->validate([
             'idreporte' => ['required', 'integer', 'min:1', 'unique:reportes,idreporte'],
-            'idusuario' => ['required', 'integer', 'min:1', Rule::exists('users', 'id')->where(function ($query) {
-                $query->where('role', 'tutor');
-            })],
+            'idusuario' => ['required', 'integer', 'min:1', 'exists:usuarios,idusuario'],
             'matricula' => ['required', 'string', 'max:20', 'regex:/^[A-Za-z]{2,10}-?\d{3,10}$/', 'exists:alumnos,matricula'],
             'descripcion' => ['required', 'string', 'max:50'],
             'observaciones' => ['nullable', 'string', 'max:255'],
@@ -100,7 +98,7 @@ class ReportController extends Controller
 
     public function edit(Report $report)
     {
-        $tutors = User::where('role', 'tutor')->orderBy('name')->get();
+        $tutors = Usuario::orderBy('nombre')->orderBy('apellidoP')->get();
         $students = Student::orderBy('matricula')->get();
         $selectedLockers = $report->casilleros()->pluck('casilleros.idcasillero')->toArray();
         [$lockers, $lockerStudentMap] = $this->buildLockerSelectionData($selectedLockers, (string) $report->matricula);
@@ -118,9 +116,7 @@ class ReportController extends Controller
     {
         $data = $request->validate([
             'idreporte' => ['required', 'integer', 'min:1', Rule::unique('reportes', 'idreporte')->ignore($report->idreporte, 'idreporte')],
-            'idusuario' => ['required', 'integer', 'min:1', Rule::exists('users', 'id')->where(function ($query) {
-                $query->where('role', 'tutor');
-            })],
+            'idusuario' => ['required', 'integer', 'min:1', 'exists:usuarios,idusuario'],
             'matricula' => ['required', 'string', 'max:20', 'regex:/^[A-Za-z]{2,10}-?\d{3,10}$/', 'exists:alumnos,matricula'],
             'descripcion' => ['required', 'string', 'max:50'],
             'observaciones' => ['nullable', 'string', 'max:255'],

@@ -14,9 +14,9 @@
                 <select id="idusuario" name="idusuario" class="input" required>
                     <option value="">Seleccionar tutor</option>
                     @foreach ($tutors as $tutor)
-                        <option value="{{ $tutor->id }}"
-                            {{ old('idusuario', $report->idusuario) == $tutor->id ? 'selected' : '' }}>
-                            {{ $tutor->name }} ({{ $tutor->email }})
+                        <option value="{{ $tutor->idusuario }}"
+                            {{ old('idusuario', $report->idusuario) == $tutor->idusuario ? 'selected' : '' }}>
+                            {{ $tutor->nombre }} {{ $tutor->apellidoP ?? '' }} ({{ $tutor->cargo ?? '-' }})
                         </option>
                     @endforeach
                 </select>

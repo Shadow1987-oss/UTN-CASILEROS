@@ -84,7 +84,7 @@ class StudentImportController extends Controller
                                 ? $this->nullableInt($cells[$indexes['idcarrera']] ?? null, 1)
                                 : null,
                             'cuatrimestre' => isset($indexes['cuatrimestre']) && $indexes['cuatrimestre'] !== false
-                                ? $this->nullableInt($cells[$indexes['cuatrimestre']] ?? null, 1, 12)
+                                ? $this->nullableInt($cells[$indexes['cuatrimestre']] ?? null, 1, 10)
                                 : null,
                             'grupo' => isset($indexes['grupo']) && $indexes['grupo'] !== false
                                 ? $this->nullableTrim($cells[$indexes['grupo']] ?? null)

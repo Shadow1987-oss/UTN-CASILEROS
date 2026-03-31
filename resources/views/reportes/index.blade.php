@@ -19,8 +19,9 @@
                     <select id="tutor_id" name="tutor_id" class="input">
                         <option value="">Todos</option>
                         @foreach ($tutors as $tutor)
-                            <option value="{{ $tutor->id }}" {{ request('tutor_id') == $tutor->id ? 'selected' : '' }}>
-                                {{ $tutor->name }}
+                            <option value="{{ $tutor->idusuario }}"
+                                {{ request('tutor_id') == $tutor->idusuario ? 'selected' : '' }}>
+                                {{ $tutor->nombre }} {{ $tutor->apellidoP ?? '' }}
                             </option>
                         @endforeach
                     </select>
@@ -33,7 +34,8 @@
                         @foreach ($students as $student)
                             <option value="{{ $student->matricula }}"
                                 {{ request('matricula') == $student->matricula ? 'selected' : '' }}>
-                                {{ $student->matricula_display }} - {{ $student->full_name }} ({{ $student->grupo ?? '-' }})
+                                {{ $student->matricula_display }} - {{ $student->full_name }}
+                                ({{ $student->grupo ?? '-' }})
                             </option>
                         @endforeach
                     </select>
@@ -80,7 +82,8 @@
                 @forelse($reports as $report)
                     <tr>
                         <td>{{ $report->idreporte }}</td>
-                        <td>{{ optional($report->tutor)->name ?? '-' }}</td>
+                        <td>{{ optional($report->tutor)->nombre ?? '-' }} {{ optional($report->tutor)->apellidoP ?? '' }}
+                        </td>
                         <td>
                             @if ($report->student)
                                 {{ $report->student->matricula_display }} - {{ $report->student->full_name }}
