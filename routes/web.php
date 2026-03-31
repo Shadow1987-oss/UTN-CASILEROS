@@ -64,11 +64,11 @@ Route::middleware('auth')->group(function () {
         Route::post('assignments/{assignment}/release', [AssignmentController::class, 'release'])->name('assignments.release');
         Route::delete('assignments/{assignment}', [AssignmentController::class, 'destroy'])->name('assignments.destroy');
 
-        Route::get('reports', [App\Http\Controllers\ReportsController::class, 'index'])->name('reports.index');
-        Route::get('reports/occupancy', [App\Http\Controllers\ReportsController::class, 'occupancy'])->name('reports.occupancy');
-        Route::get('reports/by-group', [App\Http\Controllers\ReportsController::class, 'byGroup'])->name('reports.by_group');
-        Route::get('reports/occupancy/export', [App\Http\Controllers\ReportsController::class, 'exportOccupancy'])->name('reports.occupancy.export');
-        Route::get('reports/by-group/export', [App\Http\Controllers\ReportsController::class, 'exportByGroup'])->name('reports.by_group.export');
+        Route::get('estadisticas', [App\Http\Controllers\ReportsController::class, 'index'])->name('estadisticas.index');
+        Route::get('estadisticas/ocupacion', [App\Http\Controllers\ReportsController::class, 'occupancy'])->name('estadisticas.ocupacion');
+        Route::get('estadisticas/por-grupo', [App\Http\Controllers\ReportsController::class, 'byGroup'])->name('estadisticas.por_grupo');
+        Route::get('estadisticas/ocupacion/exportar', [App\Http\Controllers\ReportsController::class, 'exportOccupancy'])->name('estadisticas.ocupacion.exportar');
+        Route::get('estadisticas/por-grupo/exportar', [App\Http\Controllers\ReportsController::class, 'exportByGroup'])->name('estadisticas.por_grupo.exportar');
 
         Route::get('locker-requests', [LockerRequestController::class, 'index'])->name('locker_requests.index');
         Route::post('locker-requests/{lockerRequest}/approve', [LockerRequestController::class, 'approve'])->name('locker_requests.approve');

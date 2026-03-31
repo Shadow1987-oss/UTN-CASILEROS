@@ -9,10 +9,10 @@
                 <h2>Reporte de Ocupación</h2>
                 <p class="muted">Estadísticas de casilleros y asignaciones.</p>
             </div>
-            <a href="{{ route('reports.occupancy.export', request()->query()) }}" class="btn">Exportar PDF</a>
+            <a href="{{ route('estadisticas.ocupacion.exportar', request()->query()) }}" class="btn">Exportar PDF</a>
         </div>
 
-        <form method="GET" action="{{ route('reports.occupancy') }}" class="form" style="margin-bottom: 16px;">
+        <form method="GET" action="{{ route('estadisticas.ocupacion') }}" class="form" style="margin-bottom: 16px;">
             <div class="grid grid-4">
                 <div class="field">
                     <label for="idedificio">Edificio</label>
@@ -60,7 +60,7 @@
             </div>
             <div class="actions">
                 <button class="btn" type="submit">Filtrar</button>
-                <a class="btn secondary" href="{{ route('reports.occupancy') }}">Limpiar</a>
+                <a class="btn secondary" href="{{ route('estadisticas.ocupacion') }}">Limpiar</a>
             </div>
         </form>
 

@@ -77,14 +77,14 @@
                                 <a href="{{ route('locker_requests.index') }}"
                                     class="{{ request()->routeIs('locker_requests.*') ? 'active' : '' }}">Solicitudes</a>
                                 @php
-                                    $tutorMoreActive = request()->routeIs('reports.*');
+                                    $tutorMoreActive = request()->routeIs('estadisticas.*');
                                 @endphp
                                 <div class="nav-more">
                                     <button type="button"
                                         class="nav-more-toggle {{ $tutorMoreActive ? 'active' : '' }}">Más</button>
                                     <div class="nav-more-menu">
-                                        <a href="{{ route('reports.index') }}"
-                                            class="{{ request()->routeIs('reports.*') ? 'active' : '' }}">Reportes</a>
+                                        <a href="{{ route('estadisticas.index') }}"
+                                            class="{{ request()->routeIs('estadisticas.*') ? 'active' : '' }}">Estadísticas</a>
                                     </div>
                                 </div>
                             @else

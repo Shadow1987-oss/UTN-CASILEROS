@@ -10,11 +10,11 @@
                 <p class="muted">Estadísticas por carrera.</p>
             </div>
             <div>
-                <a href="{{ route('reports.by_group.export', request()->query()) }}" class="btn">Exportar PDF</a>
+                <a href="{{ route('estadisticas.por_grupo.exportar', request()->query()) }}" class="btn">Exportar PDF</a>
             </div>
         </div>
 
-        <form method="GET" action="{{ route('reports.by_group') }}" class="form" style="margin-bottom: 16px;">
+        <form method="GET" action="{{ route('estadisticas.por_grupo') }}" class="form" style="margin-bottom: 16px;">
             <div class="grid grid-4">
                 <div class="field">
                     <label for="idcarrera">Carrera</label>
@@ -62,7 +62,7 @@
             </div>
             <div class="actions">
                 <button class="btn" type="submit">Filtrar</button>
-                <a href="{{ route('reports.by_group') }}" class="btn secondary">Limpiar</a>
+                <a href="{{ route('estadisticas.por_grupo') }}" class="btn secondary">Limpiar</a>
             </div>
         </form>
 

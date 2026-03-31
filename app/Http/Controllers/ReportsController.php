@@ -13,7 +13,7 @@ class ReportsController extends Controller
 {
     public function index()
     {
-        return view('reports.index');
+        return view('estadisticas.index');
     }
 
     public function occupancy(Request $request)
@@ -30,7 +30,7 @@ class ReportsController extends Controller
         $periods = Period::orderBy('idperiodo', 'desc')->get();
         $areas = Locker::whereNotNull('area')->distinct()->orderBy('area')->pluck('area');
 
-        return view('reports.occupancy', compact('data', 'buildings', 'periods', 'areas', 'filters'));
+        return view('estadisticas.occupancy', compact('data', 'buildings', 'periods', 'areas', 'filters'));
     }
 
     public function byGroup(Request $request)
@@ -48,7 +48,7 @@ class ReportsController extends Controller
 
         $data = $this->buildByGroupData($filters);
 
-        return view('reports.by_group', compact('data', 'careers', 'groups', 'buildings', 'filters'));
+        return view('estadisticas.by_group', compact('data', 'careers', 'groups', 'buildings', 'filters'));
     }
 
     public function exportOccupancy(Request $request)
@@ -75,11 +75,11 @@ class ReportsController extends Controller
 
         if (app()->bound('dompdf.wrapper')) {
             $pdf = app('dompdf.wrapper');
-            $pdf->loadView('reports.occupancy_pdf', compact('data', 'pdfFilters'));
+            $pdf->loadView('estadisticas.occupancy_pdf', compact('data', 'pdfFilters'));
             return $pdf->download('reporte_ocupacion.pdf');
         }
 
-        return response()->view('reports.occupancy_pdf', compact('data', 'pdfFilters'));
+        return response()->view('estadisticas.occupancy_pdf', compact('data', 'pdfFilters'));
     }
 
     public function exportByGroup(Request $request)
@@ -109,11 +109,11 @@ class ReportsController extends Controller
 
         if (app()->bound('dompdf.wrapper')) {
             $pdf = app('dompdf.wrapper');
-            $pdf->loadView('reports.by_group_pdf', compact('data', 'pdfFilters'));
+            $pdf->loadView('estadisticas.by_group_pdf', compact('data', 'pdfFilters'));
             return $pdf->download('reporte_por_grupo.pdf');
         }
 
-        return response()->view('reports.by_group_pdf', compact('data', 'pdfFilters'));
+        return response()->view('estadisticas.by_group_pdf', compact('data', 'pdfFilters'));
     }
 
     private function buildOccupancyData(array $filters = []): array
