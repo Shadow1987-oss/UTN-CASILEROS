@@ -29,12 +29,19 @@
                     <div class="field-help error">{{ $message }}</div>
                 @enderror
             </div>
-            @include('partials.form-field', [
-                'label' => 'Área',
-                'name' => 'area',
-                'value' => old('area'),
-                'placeholder' => 'Ej. Laboratorios',
-            ])
+            <div class="field">
+                <label for="area">Área</label>
+                <select id="area" name="area" class="input" required>
+                    <option value="">Seleccionar</option>
+                    @foreach (['Laboratorios', 'Aulas', 'Biblioteca', 'Administrativo'] as $area)
+                        <option value="{{ $area }}" {{ old('area') == $area ? 'selected' : '' }}>{{ $area }}
+                        </option>
+                    @endforeach
+                </select>
+                @error('area')
+                    <div class="field-help error">{{ $message }}</div>
+                @enderror
+            </div>
             <div class="field">
                 <label for="planta">Planta</label>
                 <select id="planta" name="planta" class="input">
@@ -58,19 +65,11 @@
                 <select id="estado" name="estado" class="input" required>
                     <option value="disponible" {{ old('estado') == 'disponible' ? 'selected' : '' }}>Disponible</option>
                     <option value="ocupado" {{ old('estado') == 'ocupado' ? 'selected' : '' }}>Ocupado</option>
-                    <option value="dañado" {{ old('estado') == 'dañado' ? 'selected' : '' }}>Dañado</option>
                 </select>
                 @error('estado')
                     <div class="field-help error">{{ $message }}</div>
                 @enderror
             </div>
-            @include('partials.form-field', [
-                'label' => 'Observaciones',
-                'name' => 'observaciones',
-                'type' => 'textarea',
-                'value' => old('observaciones'),
-                'maxlength' => 255,
-            ])
             <div class="actions">
                 <button class="btn" type="submit">Guardar</button>
                 <a class="btn secondary" href="{{ route('lockers.index') }}">Cancelar</a>

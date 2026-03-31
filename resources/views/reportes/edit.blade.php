@@ -58,7 +58,7 @@
             ])
             <div class="field">
                 <label for="casilleros">Casilleros del alumno</label>
-                <select id="casilleros" name="casilleros[]" class="input" multiple size="8" required>
+                <select id="casilleros" name="casilleros[]" class="input" multiple size="8">
                     @foreach ($lockers as $locker)
                         @php
                             $allowedStudents = $lockerStudentMap[$locker->idcasillero] ?? [];
@@ -79,8 +79,8 @@
                 @error('casilleros.*')
                     <div class="field-help error">{{ $message }}</div>
                 @enderror
-                <div class="field-help" id="casilleros-help">Selecciona un alumno para ver únicamente sus casilleros
-                    activos. Usa Ctrl/Cmd para múltiples.
+                <div class="field-help" id="casilleros-help">Selecciona un alumno para ver sus casilleros activos. Si no
+                    tiene casilleros, puedes guardar el reporte sin seleccionar.
                 </div>
             </div>
             <div class="actions">

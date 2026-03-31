@@ -28,11 +28,11 @@ class SanctionController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'idsancion' => ['required', 'integer', 'unique:sanciones,idsancion'],
-            'idusuario' => ['nullable', 'integer', 'exists:usuarios,idusuario'],
+            'idsancion' => ['required', 'integer', 'min:1', 'unique:sanciones,idsancion'],
+            'idusuario' => ['nullable', 'integer', 'min:1', 'exists:usuarios,idusuario'],
             'matricula' => ['required', 'string', 'max:20', 'regex:/^[A-Za-z]{2,10}-?\d{3,10}$/', 'exists:alumnos,matricula'],
             'sancion' => ['required', 'string', 'max:50'],
-            'motivo' => ['nullable', 'string', 'max:50'],
+            'motivo' => ['required', 'string', 'max:50'],
         ]);
 
         $normalizedMatricula = $this->normalizeMatricula((string) $data['matricula']) ?? (string) $data['matricula'];
@@ -63,16 +63,13 @@ class SanctionController extends Controller
     public function update(Request $request, Sanction $sancione)
     {
         $data = $request->validate([
-            'idsancion' => ['required', 'integer', Rule::unique('sanciones', 'idsancion')->ignore($sancione->idsancion, 'idsancion')],
-            'idusuario' => ['nullable', 'integer', 'exists:usuarios,idusuario'],
-            'matricula' => ['required', 'string', 'max:20', 'regex:/^[A-Za-z]{2,10}-?\d{3,10}$/', 'exists:alumnos,matricula'],
+            'idsancion' => ['required', 'integer', 'min:1', Rule::unique('sanciones', 'idsancion')->ignore($sancione->idsancion, 'idsancion')],
             'sancion' => ['required', 'string', 'max:50'],
-            'motivo' => ['nullable', 'string', 'max:50'],
+            'motivo' => ['required', 'string', 'max:50'],
         ]);
 
-        $normalizedMatricula = $this->normalizeMatricula((string) $data['matricula']) ?? (string) $data['matricula'];
-
-        unset($data['matricula']);
+        $normalizedMatricula = $this->normalizeMatricula((string) optional($sancione->receipt)->matricula) ?? (string) optional($sancione->receipt)->matricula;
+        $data['idusuario'] = $sancione->idusuario;
 
         $sancione->update($data);
 

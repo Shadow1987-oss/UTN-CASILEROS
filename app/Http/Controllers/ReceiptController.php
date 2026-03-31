@@ -27,8 +27,8 @@ class ReceiptController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'idrecibe' => ['required', 'integer', 'unique:recibe,idrecibe'],
-            'idsancion' => ['required', 'integer', 'exists:sanciones,idsancion'],
+            'idrecibe' => ['required', 'integer', 'min:1', 'unique:recibe,idrecibe'],
+            'idsancion' => ['required', 'integer', 'min:1', 'exists:sanciones,idsancion'],
             'matricula' => ['required', 'string', 'max:20', 'regex:/^[A-Za-z]{2,10}-?\d{3,10}$/', 'exists:alumnos,matricula'],
         ]);
 
@@ -54,8 +54,8 @@ class ReceiptController extends Controller
     public function update(Request $request, Receipt $recibo)
     {
         $data = $request->validate([
-            'idrecibe' => ['required', 'integer', Rule::unique('recibe', 'idrecibe')->ignore($recibo->idrecibe, 'idrecibe')],
-            'idsancion' => ['required', 'integer', 'exists:sanciones,idsancion'],
+            'idrecibe' => ['required', 'integer', 'min:1', Rule::unique('recibe', 'idrecibe')->ignore($recibo->idrecibe, 'idrecibe')],
+            'idsancion' => ['required', 'integer', 'min:1', 'exists:sanciones,idsancion'],
             'matricula' => ['required', 'string', 'max:20', 'regex:/^[A-Za-z]{2,10}-?\d{3,10}$/', 'exists:alumnos,matricula'],
         ]);
 

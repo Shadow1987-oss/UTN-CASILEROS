@@ -64,20 +64,20 @@ class ReportController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'idreporte' => ['required', 'integer', 'unique:reportes,idreporte'],
-            'idusuario' => ['required', 'integer', Rule::exists('users', 'id')->where(function ($query) {
+            'idreporte' => ['required', 'integer', 'min:1', 'unique:reportes,idreporte'],
+            'idusuario' => ['required', 'integer', 'min:1', Rule::exists('users', 'id')->where(function ($query) {
                 $query->where('role', 'tutor');
             })],
             'matricula' => ['required', 'string', 'max:20', 'regex:/^[A-Za-z]{2,10}-?\d{3,10}$/', 'exists:alumnos,matricula'],
             'descripcion' => ['required', 'string', 'max:50'],
             'observaciones' => ['nullable', 'string', 'max:255'],
-            'casilleros' => ['required', 'array', 'min:1'],
-            'casilleros.*' => ['integer', 'exists:casilleros,idcasillero'],
+            'casilleros' => ['nullable', 'array'],
+            'casilleros.*' => ['integer', 'min:1', 'exists:casilleros,idcasillero'],
         ]);
 
         $data['matricula'] = $this->normalizeMatricula((string) $data['matricula']) ?? $data['matricula'];
 
-        if (!$this->studentOwnsLockers((string) $data['matricula'], $data['casilleros'])) {
+        if (!empty($data['casilleros']) && !$this->studentOwnsLockers((string) $data['matricula'], $data['casilleros'])) {
             return back()->withInput()->withErrors([
                 'casilleros' => 'Solo puedes reportar casilleros activos del alumno seleccionado.',
             ]);
@@ -117,20 +117,20 @@ class ReportController extends Controller
     public function update(Request $request, Report $report)
     {
         $data = $request->validate([
-            'idreporte' => ['required', 'integer', Rule::unique('reportes', 'idreporte')->ignore($report->idreporte, 'idreporte')],
-            'idusuario' => ['required', 'integer', Rule::exists('users', 'id')->where(function ($query) {
+            'idreporte' => ['required', 'integer', 'min:1', Rule::unique('reportes', 'idreporte')->ignore($report->idreporte, 'idreporte')],
+            'idusuario' => ['required', 'integer', 'min:1', Rule::exists('users', 'id')->where(function ($query) {
                 $query->where('role', 'tutor');
             })],
             'matricula' => ['required', 'string', 'max:20', 'regex:/^[A-Za-z]{2,10}-?\d{3,10}$/', 'exists:alumnos,matricula'],
             'descripcion' => ['required', 'string', 'max:50'],
             'observaciones' => ['nullable', 'string', 'max:255'],
-            'casilleros' => ['required', 'array', 'min:1'],
-            'casilleros.*' => ['integer', 'exists:casilleros,idcasillero'],
+            'casilleros' => ['nullable', 'array'],
+            'casilleros.*' => ['integer', 'min:1', 'exists:casilleros,idcasillero'],
         ]);
 
         $data['matricula'] = $this->normalizeMatricula((string) $data['matricula']) ?? $data['matricula'];
 
-        if (!$this->studentOwnsLockers((string) $data['matricula'], $data['casilleros'])) {
+        if (!empty($data['casilleros']) && !$this->studentOwnsLockers((string) $data['matricula'], $data['casilleros'])) {
             return back()->withInput()->withErrors([
                 'casilleros' => 'Solo puedes reportar casilleros activos del alumno seleccionado.',
             ]);

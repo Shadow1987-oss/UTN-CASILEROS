@@ -23,7 +23,7 @@ class UsuarioController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'idusuario' => ['required', 'integer', 'unique:usuarios,idusuario'],
+            'idusuario' => ['required', 'integer', 'min:1', 'unique:usuarios,idusuario'],
             'nombre' => ['required', 'string', 'max:50'],
             'apellidoP' => ['nullable', 'string', 'max:50'],
             'apellidoM' => ['nullable', 'string', 'max:50'],
@@ -48,7 +48,7 @@ class UsuarioController extends Controller
     public function update(Request $request, Usuario $usuario)
     {
         $data = $request->validate([
-            'idusuario' => ['required', 'integer', Rule::unique('usuarios', 'idusuario')->ignore($usuario->idusuario, 'idusuario')],
+            'idusuario' => ['required', 'integer', 'min:1', Rule::unique('usuarios', 'idusuario')->ignore($usuario->idusuario, 'idusuario')],
             'nombre' => ['required', 'string', 'max:50'],
             'apellidoP' => ['nullable', 'string', 'max:50'],
             'apellidoM' => ['nullable', 'string', 'max:50'],

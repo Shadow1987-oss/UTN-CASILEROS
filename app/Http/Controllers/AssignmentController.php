@@ -68,11 +68,11 @@ class AssignmentController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'idasigna' => ['required', 'integer', 'unique:asignamientos,idasigna'],
+            'idasigna' => ['required', 'integer', 'min:1', 'unique:asignamientos,idasigna'],
             'matricula' => ['required', 'exists:alumnos,matricula'],
-            'idcasillero' => ['required', 'exists:casilleros,idcasillero'],
-            'idPeriodo' => ['required', 'exists:periodos,idperiodo'],
-            'idusuario' => ['nullable', 'integer', 'exists:usuarios,idusuario'],
+            'idcasillero' => ['required', 'integer', 'min:1', 'exists:casilleros,idcasillero'],
+            'idPeriodo' => ['required', 'integer', 'min:1', 'exists:periodos,idperiodo'],
+            'idusuario' => ['nullable', 'integer', 'min:1', 'exists:usuarios,idusuario'],
             'fechaAsignacion' => ['required', 'date'],
         ]);
 
@@ -144,11 +144,11 @@ class AssignmentController extends Controller
         $previousLockerId = (int) $assignment->idcasillero;
 
         $data = $request->validate([
-            'idasigna' => ['required', 'integer', Rule::unique('asignamientos', 'idasigna')->ignore($assignment->idasigna, 'idasigna')],
+            'idasigna' => ['required', 'integer', 'min:1', Rule::unique('asignamientos', 'idasigna')->ignore($assignment->idasigna, 'idasigna')],
             'matricula' => ['required', 'exists:alumnos,matricula'],
-            'idcasillero' => ['required', 'exists:casilleros,idcasillero'],
-            'idPeriodo' => ['required', 'exists:periodos,idperiodo'],
-            'idusuario' => ['nullable', 'integer', 'exists:usuarios,idusuario'],
+            'idcasillero' => ['required', 'integer', 'min:1', 'exists:casilleros,idcasillero'],
+            'idPeriodo' => ['required', 'integer', 'min:1', 'exists:periodos,idperiodo'],
+            'idusuario' => ['nullable', 'integer', 'min:1', 'exists:usuarios,idusuario'],
             'fechaAsignacion' => ['required', 'date'],
         ]);
 

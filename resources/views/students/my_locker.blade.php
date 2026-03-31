@@ -43,28 +43,39 @@
 
             <div style="margin-top: 20px;">
                 <h3>Solicitar casillero</h3>
-                <form class="form" method="POST" action="{{ route('student.request_locker') }}">
-                    @csrf
-                    <div class="field">
-                        <label for="idperiodo">Período</label>
-                        <select id="idperiodo" name="idperiodo" class="input" required>
-                            <option value="">Seleccionar período</option>
-                            @foreach ($periods as $period)
-                                <option value="{{ $period->idperiodo }}"
-                                    {{ old('idperiodo') == $period->idperiodo ? 'selected' : '' }}>
-                                    {{ $period->nombrePerio }}
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="field">
-                        <label for="observaciones">Observaciones (opcional)</label>
-                        <textarea id="observaciones" name="observaciones" class="input" rows="3" maxlength="255">{{ old('observaciones') }}</textarea>
-                    </div>
-                    <div class="actions">
-                        <button class="btn" type="submit">Enviar solicitud</button>
-                    </div>
-                </form>
+                @php
+                    $hasPendingRequest = ($lockerRequests ?? collect())->contains(
+                        fn($item) => $item->estado === 'pendiente',
+                    );
+                @endphp
+                @if ($assignment)
+                    <p class="muted">Ya tienes un casillero activo. No puedes enviar nuevas solicitudes.</p>
+                @elseif ($hasPendingRequest)
+                    <p class="muted">Ya tienes una solicitud pendiente. Espera la revisión para enviar otra.</p>
+                @else
+                    <form class="form" method="POST" action="{{ route('student.request_locker') }}">
+                        @csrf
+                        <div class="field">
+                            <label for="idperiodo">Período</label>
+                            <select id="idperiodo" name="idperiodo" class="input" required>
+                                <option value="">Seleccionar período</option>
+                                @foreach ($periods as $period)
+                                    <option value="{{ $period->idperiodo }}"
+                                        {{ old('idperiodo') == $period->idperiodo ? 'selected' : '' }}>
+                                        {{ $period->nombrePerio }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="field">
+                            <label for="observaciones">Observaciones (opcional)</label>
+                            <textarea id="observaciones" name="observaciones" class="input" rows="3" maxlength="255">{{ old('observaciones') }}</textarea>
+                        </div>
+                        <div class="actions">
+                            <button class="btn" type="submit">Enviar solicitud</button>
+                        </div>
+                    </form>
+                @endif
             </div>
 
             <div style="margin-top: 20px;">

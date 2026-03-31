@@ -77,7 +77,10 @@ Route::middleware('auth')->group(function () {
     Route::middleware('role:admin')->group(function () {
         Route::resource('careers', CareerController::class);
         Route::resource('buildings', BuildingController::class);
-        Route::resource('tutores', UsuarioController::class)->names('usuarios')->except(['create', 'store']);
+        Route::resource('tutores', UsuarioController::class)
+            ->names('usuarios')
+            ->parameters(['tutores' => 'usuario'])
+            ->except(['create', 'store']);
 
         Route::resource('students', StudentController::class)->except(['index', 'show', 'create', 'store']);
         Route::post('students/import', [StudentImportController::class, 'store'])->name('students.import');
@@ -87,8 +90,10 @@ Route::middleware('auth')->group(function () {
 
         Route::delete('assignments/{assignment}', [AssignmentController::class, 'destroy'])->name('assignments.destroy');
 
-        Route::resource('reportes', App\Http\Controllers\ReportController::class);
+        Route::resource('reportes', App\Http\Controllers\ReportController::class)
+            ->parameters(['reportes' => 'report']);
         Route::resource('sanciones', App\Http\Controllers\SanctionController::class);
-        Route::resource('recibe', App\Http\Controllers\ReceiptController::class);
+        Route::resource('recibe', App\Http\Controllers\ReceiptController::class)
+            ->parameters(['recibe' => 'recibo']);
     });
 });

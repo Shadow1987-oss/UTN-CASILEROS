@@ -24,10 +24,10 @@ class PeriodController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'idperiodo' => ['required', 'integer', 'unique:periodos,idperiodo'],
+            'idperiodo' => ['required', 'integer', 'min:1', 'unique:periodos,idperiodo'],
             'nombrePerio' => ['required', 'string', 'max:50'],
-            'fechaInicio' => ['nullable', 'date'],
-            'fechaFin' => ['nullable', 'date', 'after_or_equal:fechaInicio'],
+            'fechaInicio' => ['required', 'date'],
+            'fechaFin' => ['required', 'date', 'after_or_equal:fechaInicio'],
         ]);
 
         Period::create($data);
@@ -44,8 +44,8 @@ class PeriodController extends Controller
     {
         $data = $request->validate([
             'nombrePerio' => ['required', 'string', 'max:50'],
-            'fechaInicio' => ['nullable', 'date'],
-            'fechaFin' => ['nullable', 'date', 'after_or_equal:fechaInicio'],
+            'fechaInicio' => ['required', 'date'],
+            'fechaFin' => ['required', 'date', 'after_or_equal:fechaInicio'],
         ]);
 
         $period->update($data);

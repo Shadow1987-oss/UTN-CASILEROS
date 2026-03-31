@@ -23,12 +23,19 @@
                     <div class="field-help error">{{ $message }}</div>
                 @enderror
             </div>
-            @include('partials.form-field', [
-                'label' => 'Área',
-                'name' => 'area',
-                'value' => old('area', $locker->area),
-                'placeholder' => 'Ej. Laboratorios',
-            ])
+            <div class="field">
+                <label for="area">Área</label>
+                <select id="area" name="area" class="input" required>
+                    <option value="">Seleccionar</option>
+                    @foreach (['Laboratorios', 'Aulas', 'Biblioteca', 'Administrativo'] as $area)
+                        <option value="{{ $area }}" {{ old('area', $locker->area) == $area ? 'selected' : '' }}>
+                            {{ $area }}</option>
+                    @endforeach
+                </select>
+                @error('area')
+                    <div class="field-help error">{{ $message }}</div>
+                @enderror
+            </div>
             <div class="field">
                 <label for="planta">Planta</label>
                 <select id="planta" name="planta" class="input">

@@ -33,10 +33,24 @@
 
             <div class="field">
                 <label for="idcasillero">Casillero</label>
+                <div class="grid grid-2" style="margin-bottom:8px;">
+                    <select id="filterArea" class="input">
+                        <option value="">Todas las áreas</option>
+                        @foreach ($lockers->pluck('area')->filter()->unique()->sort()->values() as $area)
+                            <option value="{{ $area }}">{{ $area }}</option>
+                        @endforeach
+                    </select>
+                    <select id="filterPlanta" class="input">
+                        <option value="">Todas las plantas</option>
+                        <option value="baja">Planta baja</option>
+                        <option value="alta">Planta alta</option>
+                    </select>
+                </div>
                 <select id="idcasillero" name="idcasillero" class="input" required>
                     <option value="">Seleccionar</option>
                     @foreach ($lockers as $locker)
-                        <option value="{{ $locker->idcasillero }}"
+                        <option value="{{ $locker->idcasillero }}" data-area="{{ $locker->area }}"
+                            data-planta="{{ $locker->planta }}"
                             {{ old('idcasillero') == $locker->idcasillero ? 'selected' : '' }}>
                             {{ $locker->numeroCasiller }} -
                             {{ optional($locker->building)->num_edific ?? $locker->idedificio }}
@@ -98,4 +112,43 @@
             </div>
         </form>
     </div>
+@endsection
+
+@section('scripts')
+    <script>
+        (function() {
+            const areaFilter = document.getElementById('filterArea');
+            const plantaFilter = document.getElementById('filterPlanta');
+            const lockerSelect = document.getElementById('idcasillero');
+
+            if (!areaFilter || !plantaFilter || !lockerSelect) {
+                return;
+            }
+
+            const applyFilters = () => {
+                const selectedArea = areaFilter.value;
+                const selectedPlanta = plantaFilter.value;
+
+                Array.from(lockerSelect.options).forEach((option, index) => {
+                    if (index === 0) {
+                        option.hidden = false;
+                        return;
+                    }
+
+                    const matchArea = !selectedArea || option.dataset.area === selectedArea;
+                    const matchPlanta = !selectedPlanta || option.dataset.planta === selectedPlanta;
+                    const visible = matchArea && matchPlanta;
+
+                    option.hidden = !visible;
+                    if (!visible && option.selected) {
+                        option.selected = false;
+                    }
+                });
+            };
+
+            areaFilter.addEventListener('change', applyFilters);
+            plantaFilter.addEventListener('change', applyFilters);
+            applyFilters();
+        })();
+    </script>
 @endsection

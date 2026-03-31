@@ -33,7 +33,7 @@
                 <div class="field">
                     <label for="cuatrimestre">Cuatrimestre</label>
                     <input type="number" name="cuatrimestre" id="cuatrimestre" class="input"
-                        value="{{ request('cuatrimestre') }}" placeholder="Ej. 3">
+                        value="{{ request('cuatrimestre') }}" placeholder="Ej. 3" min="1" max="12">
                 </div>
             </div>
             <div class="grid grid-3">

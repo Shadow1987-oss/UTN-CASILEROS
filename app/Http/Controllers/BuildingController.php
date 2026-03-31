@@ -23,7 +23,7 @@ class BuildingController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'idedificio' => ['required', 'integer', 'unique:edificios,idedificio'],
+            'idedificio' => ['required', 'integer', 'min:1', 'unique:edificios,idedificio'],
             'num_edific' => ['required', 'string', 'max:50'],
         ]);
 
@@ -45,7 +45,7 @@ class BuildingController extends Controller
     public function update(Request $request, Building $building)
     {
         $data = $request->validate([
-            'idedificio' => ['required', 'integer', Rule::unique('edificios', 'idedificio')->ignore($building->idedificio, 'idedificio')],
+            'idedificio' => ['required', 'integer', 'min:1', Rule::unique('edificios', 'idedificio')->ignore($building->idedificio, 'idedificio')],
             'num_edific' => ['required', 'string', 'max:50'],
         ]);
 

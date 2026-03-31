@@ -24,7 +24,7 @@ class CareerController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'idcarrera' => ['required', 'integer', 'unique:carreras,idcarrera'],
+            'idcarrera' => ['required', 'integer', 'min:1', 'unique:carreras,idcarrera'],
             'nombre_carre' => ['required', 'string', 'max:50'],
         ]);
 
@@ -46,7 +46,7 @@ class CareerController extends Controller
     public function update(Request $request, Career $career)
     {
         $data = $request->validate([
-            'idcarrera' => ['required', 'integer', Rule::unique('carreras', 'idcarrera')->ignore($career->idcarrera, 'idcarrera')],
+            'idcarrera' => ['required', 'integer', 'min:1', Rule::unique('carreras', 'idcarrera')->ignore($career->idcarrera, 'idcarrera')],
             'nombre_carre' => ['required', 'string', 'max:50'],
         ]);
 

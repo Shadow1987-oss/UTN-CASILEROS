@@ -7,6 +7,7 @@ use App\Models\LockerRequest;
 use App\Models\Period;
 use App\Models\Student;
 use App\Models\User;
+use App\Models\UserNotification;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Schema;
@@ -35,7 +36,12 @@ class StudentController extends Controller
         }
 
         if ($request->filled('cuatrimestre')) {
-            $query->where('cuatrimestre', (int) $request->cuatrimestre);
+            $cuatrimestre = (int) $request->cuatrimestre;
+            if ($cuatrimestre >= 1 && $cuatrimestre <= 12) {
+                $query->where('cuatrimestre', $cuatrimestre);
+            } else {
+                $query->whereRaw('1 = 0');
+            }
         }
 
         if ($request->filled('grupo')) {
@@ -82,7 +88,7 @@ class StudentController extends Controller
             'user_id' => ['nullable', 'integer', 'exists:users,id', 'unique:alumnos,user_id'],
             'nombre' => ['required', 'string', 'max:50'],
             'idcarrera' => ['nullable', 'integer', 'exists:carreras,idcarrera'],
-            'cuatrimestre' => ['nullable', 'integer'],
+            'cuatrimestre' => ['nullable', 'integer', 'between:1,12'],
             'grupo' => ['nullable', 'string', 'max:50'],
             'apellidoPaterno' => ['nullable', 'string', 'max:50'],
             'apellidoMaterno' => ['nullable', 'string', 'max:50'],
@@ -118,7 +124,7 @@ class StudentController extends Controller
             'user_id' => ['nullable', 'integer', 'exists:users,id', Rule::unique('alumnos', 'user_id')->ignore($student->matricula, 'matricula')],
             'nombre' => ['required', 'string', 'max:50'],
             'idcarrera' => ['nullable', 'integer', 'exists:carreras,idcarrera'],
-            'cuatrimestre' => ['nullable', 'integer'],
+            'cuatrimestre' => ['nullable', 'integer', 'between:1,12'],
             'grupo' => ['nullable', 'string', 'max:50'],
             'apellidoPaterno' => ['nullable', 'string', 'max:50'],
             'apellidoMaterno' => ['nullable', 'string', 'max:50'],
@@ -179,9 +185,22 @@ class StudentController extends Controller
         }
 
         $data = $request->validate([
-            'idperiodo' => ['required', 'integer', 'exists:periodos,idperiodo'],
+            'idperiodo' => ['required', 'integer', 'min:1', 'exists:periodos,idperiodo'],
             'observaciones' => ['nullable', 'string', 'max:255'],
         ]);
+
+        $hasActiveAssignment = $student->assignments()->whereNull('released_at')->exists();
+        if ($hasActiveAssignment) {
+            return redirect()->route('student.home')->with('status', 'Ya tienes un casillero activo, no puedes generar otra solicitud.');
+        }
+
+        $hasPendingRequest = LockerRequest::where('matricula', $student->matricula)
+            ->where('estado', 'pendiente')
+            ->exists();
+
+        if ($hasPendingRequest) {
+            return redirect()->route('student.home')->with('status', 'Ya tienes una solicitud pendiente de revisión.');
+        }
 
         $alreadyRequested = LockerRequest::where('matricula', $student->matricula)
             ->where('idperiodo', (int) $data['idperiodo'])
@@ -198,6 +217,21 @@ class StudentController extends Controller
             'estado' => 'pendiente',
             'observaciones' => $data['observaciones'] ?? null,
         ]);
+
+        $reviewerUsers = User::whereIn('role', ['admin', 'tutor'])->get(['id']);
+        foreach ($reviewerUsers as $reviewerUser) {
+            UserNotification::create([
+                'user_id' => (int) $reviewerUser->id,
+                'type' => 'locker_request',
+                'title' => 'Nueva solicitud de casillero',
+                'message' => 'Se registró una nueva solicitud pendiente de revisión.',
+                'payload' => [
+                    'locker_request_id' => (string) $lockerRequest->id,
+                    'matricula' => (string) $student->matricula,
+                    'idperiodo' => (string) $lockerRequest->idperiodo,
+                ],
+            ]);
+        }
 
         return redirect()->route('student.home')->with('status', 'Solicitud de casillero enviada correctamente.');
     }

@@ -89,6 +89,15 @@ class LockerRequestController extends Controller
             return redirect()->route('locker_requests.index')->with('status', 'La solicitud ya fue atendida.');
         }
 
+        $alreadyAssigned = Assignment::where('matricula', $lockerRequest->matricula)
+            ->where('idPeriodo', $lockerRequest->idperiodo)
+            ->whereNull('released_at')
+            ->exists();
+
+        if ($alreadyAssigned) {
+            return redirect()->route('locker_requests.index')->with('status', 'No se puede rechazar: el estudiante ya tiene una asignación activa en ese período.');
+        }
+
         $data = $request->validate([
             'review_notes' => ['required', 'string', 'max:255'],
         ]);

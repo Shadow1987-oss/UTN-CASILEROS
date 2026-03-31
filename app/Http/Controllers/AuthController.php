@@ -45,7 +45,7 @@ class AuthController extends Controller
 
         if ($role === null) {
             return back()->withInput($request->except('password', 'password_confirmation'))->withErrors([
-                'email' => 'Usa tu correo institucional válido. Alumno: tic-320072@utnay.edu.mx | Tutor: nombre.apellido@utnay.edu.mx',
+                'email' => 'Registro público disponible solo para alumnos con correo institucional (ej. tic-320072@utnay.edu.mx).',
             ]);
         }
 
@@ -121,10 +121,6 @@ class AuthController extends Controller
 
         if (preg_match('/^[a-z]{2,10}-?\d{3,10}@utnay\.edu\.mx$/', $email)) {
             return 'estudiante';
-        }
-
-        if (preg_match('/^[a-z]+(?:\.[a-z]+)+@utnay\.edu\.mx$/', $email)) {
-            return 'tutor';
         }
 
         return null;

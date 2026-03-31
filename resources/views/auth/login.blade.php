@@ -30,9 +30,9 @@
                 'required' => true,
             ])
 
-            <div class="field" style="display:flex; align-items:center; gap:8px;">
+            <div class="field remember-field">
+                <label for="remember">Recordarme</label>
                 <input type="checkbox" id="remember" name="remember" value="1" {{ old('remember') ? 'checked' : '' }}>
-                <label for="remember" style="margin:0;">Recordarme</label>
             </div>
 
             <div class="actions">

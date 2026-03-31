@@ -197,7 +197,12 @@ class ReportsController extends Controller
         }
 
         if (!empty($filters['cuatrimestre'])) {
-            $query->where('cuatrimestre', (int) $filters['cuatrimestre']);
+            $cuatrimestre = (int) $filters['cuatrimestre'];
+            if ($cuatrimestre >= 1 && $cuatrimestre <= 12) {
+                $query->where('cuatrimestre', $cuatrimestre);
+            } else {
+                $query->whereRaw('1 = 0');
+            }
         }
 
         if (!empty($filters['grupo'])) {

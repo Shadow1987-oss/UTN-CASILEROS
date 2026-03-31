@@ -289,6 +289,15 @@ td.actions .btn {
     background: #fff;
 }
 
+.form input[type="checkbox"],
+.form input[type="radio"] {
+    width: auto;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    accent-color: var(--accent);
+}
+
 .form textarea {
     min-height: 90px;
 }
@@ -354,6 +363,17 @@ td.actions .btn {
     color: #b42318;
 }
 
+.remember-field {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 8px;
+}
+
+.remember-field label {
+    margin: 0;
+}
+
 .btn[disabled] {
     opacity: 0.6;
     cursor: not-allowed;
@@ -380,6 +400,11 @@ td.actions .btn {
     border: 2px solid var(--border);
     border-radius: 50%;
     transition: all 0.3s ease;
+}
+
+.social-links a svg {
+    display: block;
+    margin: 0;
 }
 
 .social-links a:hover {
@@ -463,6 +488,14 @@ footer {
 
 .footer-section a:hover {
     text-decoration: underline;
+}
+
+.footer-section .social-links a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 0;
+    text-decoration: none;
 }
 
 .footer-bottom {

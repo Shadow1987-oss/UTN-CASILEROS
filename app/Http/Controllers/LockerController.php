@@ -46,12 +46,12 @@ class LockerController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'idcasillero' => ['required', 'integer', 'unique:casilleros,idcasillero'],
-            'idedificio' => ['nullable', 'integer', 'exists:edificios,idedificio'],
-            'area' => ['nullable', 'string', 'max:50'],
+            'idcasillero' => ['required', 'integer', 'min:1', 'unique:casilleros,idcasillero'],
+            'idedificio' => ['nullable', 'integer', 'min:1', 'exists:edificios,idedificio'],
+            'area' => ['required', Rule::in(['Laboratorios', 'Aulas', 'Biblioteca', 'Administrativo'])],
             'planta' => ['nullable', 'in:baja,alta'],
-            'numeroCasiller' => ['required', 'integer'],
-            'estado' => ['required', 'string', 'max:10'],
+            'numeroCasiller' => ['required', 'integer', 'min:1', 'unique:casilleros,numeroCasiller'],
+            'estado' => ['required', 'in:disponible,ocupado,dañado'],
             'observaciones' => ['nullable', 'string', 'max:255'],
         ]);
 
@@ -69,11 +69,11 @@ class LockerController extends Controller
     public function update(Request $request, Locker $locker)
     {
         $data = $request->validate([
-            'idedificio' => ['nullable', 'integer', 'exists:edificios,idedificio'],
-            'area' => ['nullable', 'string', 'max:50'],
+            'idedificio' => ['nullable', 'integer', 'min:1', 'exists:edificios,idedificio'],
+            'area' => ['required', Rule::in(['Laboratorios', 'Aulas', 'Biblioteca', 'Administrativo'])],
             'planta' => ['nullable', 'in:baja,alta'],
-            'numeroCasiller' => ['required', 'integer'],
-            'estado' => ['required', 'string', 'max:10'],
+            'numeroCasiller' => ['required', 'integer', 'min:1', Rule::unique('casilleros', 'numeroCasiller')->ignore($locker->idcasillero, 'idcasillero')],
+            'estado' => ['required', 'in:disponible,ocupado,dañado'],
             'observaciones' => ['nullable', 'string', 'max:255'],
         ]);
 

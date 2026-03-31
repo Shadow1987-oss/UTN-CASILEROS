@@ -2,6 +2,39 @@
 
 Sistema Laravel para gestionar asignación de casilleros, estudiantes, periodos, sanciones y reportes.
 
+## Inicio rápido (equipo)
+
+Clonar y entrar al proyecto:
+
+```powershell
+git clone <repo-url>
+cd Lockers
+```
+
+Ejecuta este script desde PowerShell en la raíz del proyecto:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\setup.ps1
+```
+
+Opcional (si prefieres migraciones en lugar de importar dump):
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\setup.ps1 -UseMigrations
+```
+
+Opcional (validar con pruebas):
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\setup.ps1 -RunTests
+```
+
+Opcional (dejar servidor encendido al final):
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\setup.ps1 -StartServer
+```
+
 ## Módulos
 
 - Estudiantes (`alumnos`)
@@ -36,6 +69,12 @@ php artisan key:generate
 ### 3) Configurar credenciales de BD
 
 Editar `.env` con tus credenciales.
+
+Si quieres habilitar el mapa del dashboard, agrega también:
+
+```env
+GOOGLE_MAPS_API_KEY=tu_api_key
+```
 
 ### 4) Ejecutar migraciones
 
