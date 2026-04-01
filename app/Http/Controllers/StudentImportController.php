@@ -11,7 +11,13 @@ class StudentImportController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'file' => ['required', 'file', 'mimes:csv,txt,xlsx,xls'],
+            'file' => ['required', 'file', function ($attribute, $value, $fail) {
+                $allowed = ['csv', 'txt', 'xlsx', 'xls'];
+                $ext = strtolower($value->getClientOriginalExtension());
+                if (!in_array($ext, $allowed, true)) {
+                    $fail('El archivo debe ser CSV, TXT, XLSX o XLS.');
+                }
+            }],
         ]);
 
         $file = $data['file'];
@@ -109,7 +115,25 @@ class StudentImportController extends Controller
 
             return redirect()->route('students.index')->with('status', "Se importaron {$imported} estudiantes.");
         } catch (\Throwable $exception) {
-            return back()->withErrors(['file' => 'No se pudo procesar el archivo. Verifica formato, columnas y codificación.']);
+            \Log::error('Student import failed', [
+                'message' => $exception->getMessage(),
+                'file' => $exception->getFile(),
+                'line' => $exception->getLine(),
+            ]);
+
+            $userMessage = 'No se pudo procesar el archivo.';
+
+            if (stripos($exception->getMessage(), 'column') !== false || stripos($exception->getMessage(), 'field') !== false) {
+                $userMessage .= ' Verifica que las columnas coincidan con el formato esperado.';
+            } elseif (stripos($exception->getMessage(), 'encoding') !== false || stripos($exception->getMessage(), 'utf') !== false) {
+                $userMessage .= ' Verifica que la codificación del archivo sea UTF-8.';
+            } elseif (stripos($exception->getMessage(), 'zip') !== false || stripos($exception->getMessage(), 'corrupt') !== false) {
+                $userMessage .= ' El archivo parece estar corrupto. Vuelve a guardarlo e inténtalo de nuevo.';
+            } else {
+                $userMessage .= ' Verifica formato, columnas y codificación. Detalle: ' . mb_strimwidth($exception->getMessage(), 0, 150, '...');
+            }
+
+            return back()->withErrors(['file' => $userMessage]);
         }
     }
 
