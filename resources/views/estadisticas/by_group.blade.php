@@ -1,3 +1,5 @@
+{{-- Estadística por grupo/carrera. Muestra estudiantes con y sin casillero
+     agrupados por carrera. Filtros: carrera, cuatrimestre, grupo, edificio. --}}
 @extends('plantilla')
 
 @section('titulo', 'Reporte por Grupo - UTN Lockers')

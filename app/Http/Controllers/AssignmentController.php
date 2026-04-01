@@ -13,8 +13,27 @@ use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 
+/**
+ * Controlador para la gestión de asignaciones de casilleros a estudiantes.
+ *
+ * Permite crear, editar, liberar y eliminar asignaciones. Cada asignación
+ * vincula un estudiante (matrícula) con un casillero en un período determinado,
+ * opcionalmente supervisado por un tutor (usuario). Incluye validaciones de
+ * negocio como límite de 2 estudiantes por casillero y bloqueo de casilleros dañados.
+ *
+ * Tabla: asignamientos
+ */
 class AssignmentController extends Controller
 {
+    /**
+     * Listado paginado de asignaciones con filtros opcionales.
+     *
+     * Filtros disponibles: idPeriodo, grupo del estudiante, idusuario (tutor).
+     * También calcula la carga activa de cada tutor para mostrarla en la vista.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\View\View
+     */
     public function index(Request $request)
     {
         $query = Assignment::with(['student', 'locker', 'period', 'usuario']);
@@ -49,6 +68,14 @@ class AssignmentController extends Controller
         return view('assignments.index', compact('assignments', 'periods', 'groups', 'usuarios', 'tutorLoads'));
     }
 
+    /**
+     * Formulario para crear una nueva asignación.
+     *
+     * Carga estudiantes, casilleros, períodos, tutores y la carga
+     * activa de cada tutor para orientar la distribución.
+     *
+     * @return \Illuminate\View\View
+     */
     public function create()
     {
         $students = Student::orderBy('matricula')->get();
@@ -66,6 +93,20 @@ class AssignmentController extends Controller
         return view('assignments.create', compact('students', 'lockers', 'periods', 'usuarios', 'tutorLoads'));
     }
 
+    /**
+     * Almacena una nueva asignación de casillero.
+     *
+     * Validaciones de negocio:
+     * - Un estudiante solo puede tener un casillero por período.
+     * - Máximo 2 estudiantes activos por casillero en el mismo período.
+     * - No se permite asignar casilleros con estado "dañado".
+     *
+     * Al crear, notifica al estudiante y al staff (admin/tutores),
+     * y sincroniza el estado del casillero (disponible/ocupado).
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function store(Request $request)
     {
         $data = $request->validate([
@@ -130,6 +171,12 @@ class AssignmentController extends Controller
         return redirect()->route('assignments.index')->with('status', 'Asignación creada.');
     }
 
+    /**
+     * Formulario de edición de una asignación existente.
+     *
+     * @param  \App\Models\Assignment  $assignment
+     * @return \Illuminate\View\View
+     */
     public function edit(Assignment $assignment)
     {
         $students = Student::orderBy('matricula')->get();
@@ -147,6 +194,17 @@ class AssignmentController extends Controller
         return view('assignments.edit', compact('assignment', 'students', 'lockers', 'periods', 'usuarios', 'tutorLoads'));
     }
 
+    /**
+     * Actualiza una asignación existente.
+     *
+     * Aplica las mismas reglas de negocio que store() excluyendo
+     * el registro actual. Si se cambia de casillero, sincroniza
+     * el estado tanto del casillero anterior como del nuevo.
+     *
+     * @param  \Illuminate\Http\Request   $request
+     * @param  \App\Models\Assignment      $assignment
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function update(Request $request, Assignment $assignment)
     {
         $previousLockerId = (int) $assignment->idcasillero;
@@ -201,6 +259,16 @@ class AssignmentController extends Controller
         return redirect()->route('assignments.index');
     }
 
+    /**
+     * Libera una asignación activa.
+     *
+     * Establece released_at y status='liberado'. Notifica al estudiante
+     * y al staff, y actualiza el estado del casillero a 'disponible'
+     * si no quedan más asignaciones activas.
+     *
+     * @param  \App\Models\Assignment  $assignment
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function release(Assignment $assignment)
     {
         if ($assignment->released_at) {
@@ -238,6 +306,12 @@ class AssignmentController extends Controller
         return redirect()->route('assignments.index')->with('status', 'Asignación liberada.');
     }
 
+    /**
+     * Elimina una asignación y sincroniza el estado del casillero.
+     *
+     * @param  \App\Models\Assignment  $assignment
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function destroy(Assignment $assignment)
     {
         $lockerId = (int) $assignment->idcasillero;
@@ -253,6 +327,16 @@ class AssignmentController extends Controller
         return redirect()->route('assignments.index')->with('status', 'Asignación eliminada.');
     }
 
+    /**
+     * Sincroniza el estado de un casillero según sus asignaciones activas.
+     *
+     * Si el casillero está marcado como "dañado" no se modifica.
+     * En caso contrario se pone "ocupado" u "disponible" según
+     * existan asignaciones sin liberar.
+     *
+     * @param  int  $lockerId  ID del casillero (idcasillero)
+     * @return void
+     */
     private function syncLockerStatus(int $lockerId): void
     {
         $locker = Locker::find($lockerId);
@@ -270,6 +354,14 @@ class AssignmentController extends Controller
         ]);
     }
 
+    /**
+     * Envía una notificación interna a todos los usuarios con rol admin o tutor.
+     *
+     * @param  string  $title    Título de la notificación
+     * @param  string  $message  Cuerpo del mensaje
+     * @param  array   $payload  Datos adicionales en formato clave-valor
+     * @return void
+     */
     private function notifyStaff(string $title, string $message, array $payload = []): void
     {
         $staffUsers = User::whereIn('role', ['admin', 'tutor'])->get(['id']);

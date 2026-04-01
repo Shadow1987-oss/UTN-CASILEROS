@@ -9,8 +9,21 @@ use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 
+/**
+ * Controlador CRUD para recibos de sanciones.
+ *
+ * Un recibo ("recibe") vincula una sanción con un estudiante,
+ * registrando que el alumno recibió la sanción correspondiente.
+ *
+ * Tabla: recibe  |  PK: idrecibe
+ */
 class ReceiptController extends Controller
 {
+    /**
+     * Listado de todos los recibos con sanciones y estudiantes.
+     *
+     * @return \Illuminate\View\View
+     */
     public function index()
     {
         $recibos = Receipt::with(['sanction', 'student'])->get();
@@ -77,6 +90,12 @@ class ReceiptController extends Controller
         return redirect()->route('recibe.index')->with('status', 'Recibo eliminado.');
     }
 
+    /**
+     * Normaliza la matrícula al formato estándar: LETRAS-NÚMEROS (ej. TIC-320072).
+     *
+     * @param  string|null  $matricula
+     * @return string|null
+     */
     private function normalizeMatricula(?string $matricula): ?string
     {
         if ($matricula === null) {

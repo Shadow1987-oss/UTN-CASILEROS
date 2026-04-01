@@ -1,3 +1,5 @@
+{{-- Listado de tutores/usuarios del dominio.
+     Acciones: editar, eliminar. Acceso: admin. --}}
 @extends('plantilla')
 
 @section('titulo', 'Tutores - UTN Lockers')

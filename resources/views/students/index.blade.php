@@ -1,3 +1,6 @@
+{{-- Listado paginado de estudiantes con filtros avanzados.
+     Filtros: matrícula, carrera, cuatrimestre, grupo, período, edificio.
+     Incluye botón de importación masiva CSV/XLSX. Acceso: admin, tutor. --}}
 @extends('plantilla')
 
 @section('titulo', 'Estudiantes - UTN Lockers')

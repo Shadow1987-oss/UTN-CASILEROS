@@ -7,6 +7,18 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Schema;
 
+/**
+ * Seeder de datos iniciales para desarrollo y pruebas.
+ *
+ * Crea:
+ * - 3 usuarios de autenticación: admin, tutor y estudiante demo
+ * - 1 carrera (TIC), 1 edificio, 1 período, 1 casillero
+ * - 1 tutor del dominio en tabla usuarios
+ * - 1 alumno demo vinculado al usuario estudiante
+ * - 1 asignación activa de prueba
+ *
+ * Contraseña por defecto: password123
+ */
 class RoleUsersSeeder extends Seeder
 {
     public function run(): void

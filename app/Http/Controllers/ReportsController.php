@@ -9,13 +9,38 @@ use App\Models\Period;
 use App\Models\Student;
 use Illuminate\Http\Request;
 
+/**
+ * Controlador de estadísticas y dashboards analíticos.
+ *
+ * Genera reportes de ocupación de casilleros (por edificio, área, planta,
+ * período) y reportes por grupo/carrera. Soporta exportación a PDF
+ * cuando está instalado el paquete dompdf.
+ *
+ * Nota: Este controlador maneja "estadísticas" (dashboards), no confundir
+ * con ReportController que gestiona "reportes" (incidencias CRUD).
+ */
 class ReportsController extends Controller
 {
+    /**
+     * Página principal del módulo de estadísticas.
+     *
+     * @return \Illuminate\View\View
+     */
     public function index()
     {
         return view('estadisticas.index');
     }
 
+    /**
+     * Estadística de ocupación de casilleros con filtros.
+     *
+     * Muestra totales, disponibles, ocupados y dañados,
+     * desglosados por edificio. Filtra por edificio, área,
+     * planta y período.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\View\View
+     */
     public function occupancy(Request $request)
     {
         $filters = [
@@ -33,6 +58,16 @@ class ReportsController extends Controller
         return view('estadisticas.occupancy', compact('data', 'buildings', 'periods', 'areas', 'filters'));
     }
 
+    /**
+     * Estadística por grupo/carrera.
+     *
+     * Agrupa estudiantes por carrera mostrando cuántos tienen
+     * casillero activo y cuántos no. Filtra por carrera,
+     * cuatrimestre, grupo y edificio.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\View\View
+     */
     public function byGroup(Request $request)
     {
         $careers = \App\Models\Career::all();
@@ -51,6 +86,12 @@ class ReportsController extends Controller
         return view('estadisticas.by_group', compact('data', 'careers', 'groups', 'buildings', 'filters'));
     }
 
+    /**
+     * Exporta la estadística de ocupación a PDF (requiere dompdf).
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
     public function exportOccupancy(Request $request)
     {
         $filters = [
@@ -82,6 +123,12 @@ class ReportsController extends Controller
         return response()->view('estadisticas.occupancy_pdf', compact('data', 'pdfFilters'));
     }
 
+    /**
+     * Exporta la estadística por grupo a PDF (requiere dompdf).
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
     public function exportByGroup(Request $request)
     {
         $filters = [
@@ -116,6 +163,15 @@ class ReportsController extends Controller
         return response()->view('estadisticas.by_group_pdf', compact('data', 'pdfFilters'));
     }
 
+    /**
+     * Construye los datos de ocupación de casilleros.
+     *
+     * Calcula totales globales y desglose por edificio:
+     * total, dañados, ocupados, disponibles y promedio de días de ocupación.
+     *
+     * @param  array  $filters  Filtros aplicables (idedificio, area, planta, idperiodo)
+     * @return array
+     */
     private function buildOccupancyData(array $filters = []): array
     {
         $lockerQuery = Locker::query();
@@ -188,6 +244,15 @@ class ReportsController extends Controller
         ];
     }
 
+    /**
+     * Construye datos agrupados por carrera.
+     *
+     * Por cada carrera indica total de estudiantes, cuántos
+     * tienen casillero activo y cuántos no.
+     *
+     * @param  array  $filters  Filtros (idcarrera, cuatrimestre, grupo, idedificio)
+     * @return \Illuminate\Support\Collection
+     */
     private function buildByGroupData(array $filters = [])
     {
         $query = Student::with(['assignments', 'career']);

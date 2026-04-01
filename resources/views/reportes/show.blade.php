@@ -1,3 +1,5 @@
+{{-- Vista de detalle de un reporte de incidencia.
+     Muestra tutor, estudiante, descripción, observaciones y casilleros afectados. --}}
 @extends('plantilla')
 
 @section('titulo', 'Detalle de Reporte - UTN Lockers')

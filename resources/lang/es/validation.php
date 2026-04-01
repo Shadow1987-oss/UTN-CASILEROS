@@ -1,5 +1,16 @@
 <?php
 
+/*
+|--------------------------------------------------------------------------
+| Traducciones de Validación (Español)
+|--------------------------------------------------------------------------
+|
+| Mensajes de error para todas las reglas de validación de Laravel
+| traducidos al español. La sección 'attributes' al final mapea
+| los nombres técnicos de campos a etiquetas legibles.
+|
+*/
+
 return [
 
     'accepted' => 'El campo :attribute debe ser aceptado.',

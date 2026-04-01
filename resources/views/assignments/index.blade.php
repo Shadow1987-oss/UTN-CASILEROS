@@ -1,3 +1,6 @@
+{{-- Listado paginado de asignaciones de casilleros.
+     Filtros: período, grupo, tutor. Muestra carga de cada tutor.
+     Acciones: crear, editar, liberar, eliminar. Acceso: admin, tutor. --}}
 @extends('plantilla')
 @section('titulo', 'Asignaciones - UTN Lockers')
 @section('contenido')

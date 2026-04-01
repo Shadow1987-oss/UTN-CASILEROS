@@ -1,3 +1,6 @@
+{{-- Panel principal (Dashboard) - Resumen de estadísticas generales:
+     total de alumnos, casilleros, períodos, asignaciones activas,
+     casilleros disponibles, ocupados y dañados. Acceso: admin, tutor. --}}
 @extends('plantilla')
 
 @section('titulo', 'Tablero - UTNAY Lockers')

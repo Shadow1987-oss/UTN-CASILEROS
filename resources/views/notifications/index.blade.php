@@ -1,3 +1,6 @@
+{{-- Listado de notificaciones del usuario autenticado.
+     Permite marcar como leída individual o masivamente.
+     Acceso: cualquier usuario autenticado. --}}
 @extends('plantilla')
 
 @section('titulo', 'Notificaciones - UTN Lockers')

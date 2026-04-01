@@ -1,3 +1,4 @@
+{{-- Listado de carreras universitarias con acciones CRUD. Acceso: admin. --}}
 @extends('plantilla')
 
 @section('titulo', 'Carreras - UTN Lockers')

@@ -1,3 +1,4 @@
+{{-- Listado de períodos académicos con acciones CRUD. Acceso: admin. --}}
 @extends('plantilla')
 
 @section('titulo', 'Períodos - UTN Lockers')

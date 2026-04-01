@@ -1,3 +1,5 @@
+{{-- Listado paginado de casilleros con filtros por estado, edificio,
+     área y planta. Acciones: crear, editar, eliminar. Acceso: admin (CRUD), tutor (lectura). --}}
 @extends('plantilla')
 @section('titulo', 'Casilleros - UTN Lockers')
 @section('contenido')

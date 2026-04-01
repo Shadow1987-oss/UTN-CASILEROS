@@ -1,3 +1,4 @@
+{{-- Formulario de creación de carrera. Acceso: admin. --}}
 @extends('plantilla')
 
 @section('titulo', 'Nueva Carrera - UTN Lockers')

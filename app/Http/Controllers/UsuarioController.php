@@ -7,6 +7,15 @@ use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 
+/**
+ * Controlador CRUD para tutores/usuarios del dominio.
+ *
+ * Los "usuarios" (tabla usuarios) representan tutores y administradores
+ * dentro del dominio de negocio (distintos de los users de autenticación).
+ * Se usan como responsables en asignaciones, reportes y sanciones.
+ *
+ * Tabla: usuarios  |  PK: idusuario
+ */
 class UsuarioController extends Controller
 {
     public function index()

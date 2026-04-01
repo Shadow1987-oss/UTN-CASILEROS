@@ -1,3 +1,5 @@
+{{-- Plantilla PDF para exportar el reporte de ocupación de casilleros.
+     Se genera con dompdf cuando está disponible. --}}
 <!doctype html>
 <html lang="es">
 

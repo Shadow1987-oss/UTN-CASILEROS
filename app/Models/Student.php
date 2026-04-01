@@ -5,6 +5,29 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * Modelo Eloquent para estudiantes (alumnos).
+ *
+ * PK es la matrícula (string, ej. 'TIC-320072'). Puede vincularse
+ * opcionalmente a un User de autenticación vía user_id.
+ *
+ * Tabla: alumnos  |  PK: matricula (string, no autoincremental)
+ *
+ * Relaciones:
+ * - user()           → belongsTo User
+ * - assignments()    → hasMany Assignment
+ * - career()         → belongsTo Career
+ * - reports()        → hasMany Report
+ * - sanctions()      → belongsToMany Sanction (vía tabla "recibe")
+ * - lockerRequests() → hasMany LockerRequest
+ *
+ * Accesores:
+ * - matricula_display: matrícula formateada
+ * - full_name: nombre completo (nombre + apellidos)
+ *
+ * Método estático:
+ * - formatMatricula(): normaliza cualquier matrícula al formato estándar
+ */
 class Student extends Model
 {
     use HasFactory;

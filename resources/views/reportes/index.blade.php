@@ -1,3 +1,6 @@
+{{-- Listado paginado de reportes de incidencias.
+     Filtros: tutor, matrícula, casillero, búsqueda libre.
+     Acciones: crear, editar, ver detalle, eliminar. Acceso: admin. --}}
 @extends('plantilla')
 
 @section('titulo', 'Reportes - UTN Lockers')

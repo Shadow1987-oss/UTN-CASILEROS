@@ -1,3 +1,5 @@
+{{-- Vista de detalle de estudiante.
+     Muestra datos personales y historial completo de asignaciones. Acceso: admin, tutor. --}}
 @extends('plantilla')
 
 @section('titulo', 'Detalles de Estudiante - UTN Lockers')

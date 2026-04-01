@@ -1,3 +1,4 @@
+{{-- Formulario de edición de recibo. Acceso: admin. --}}
 @extends('plantilla')
 
 @section('titulo', 'Editar Recibo - UTN Lockers')

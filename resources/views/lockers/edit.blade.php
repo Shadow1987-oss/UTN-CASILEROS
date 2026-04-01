@@ -1,3 +1,4 @@
+{{-- Formulario de edición de casillero. Acceso: admin. --}}
 @extends('plantilla')
 
 @section('titulo', 'Editar Casillero - UTN Lockers')

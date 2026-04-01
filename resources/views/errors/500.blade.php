@@ -1,3 +1,4 @@
+{{-- Página de error 500 - Error interno del servidor. --}}
 @extends('plantilla')
 
 @section('titulo', '500 - Error del servidor')

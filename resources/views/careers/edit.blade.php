@@ -1,3 +1,4 @@
+{{-- Formulario de edición de carrera. Acceso: admin. --}}
 @extends('plantilla')
 
 @section('titulo', 'Editar Carrera - UTN Lockers')

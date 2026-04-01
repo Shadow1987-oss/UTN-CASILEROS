@@ -1,3 +1,4 @@
+{{-- Página de error 404 - Recurso no encontrado. --}}
 @extends('plantilla')
 
 @section('titulo', '404 - Página no encontrada')

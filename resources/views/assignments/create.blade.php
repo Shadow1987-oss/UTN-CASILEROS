@@ -1,3 +1,6 @@
+{{-- Formulario de creación de asignación de casillero.
+     Selección de estudiante, casillero, período y tutor responsable.
+     Muestra la carga activa de cada tutor. Acceso: admin, tutor. --}}
 @extends('plantilla')
 
 @section('titulo', 'Nueva Asignación - UTN Lockers')

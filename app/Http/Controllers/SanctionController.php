@@ -10,6 +10,16 @@ use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 
+/**
+ * Controlador CRUD para sanciones.
+ *
+ * Una sanción registra una penalización (motivo y descripción)
+ * asociada a un tutor (usuario). Al crear/actualizar una sanción
+ * se crea automáticamente el recibo correspondiente en la tabla
+ * "recibe" para vincularla con el estudiante afectado.
+ *
+ * Tabla: sanciones  |  PK: idsancion
+ */
 class SanctionController extends Controller
 {
     public function index()
@@ -101,6 +111,12 @@ class SanctionController extends Controller
         return redirect()->route('sanciones.index')->with('status', 'Sanción eliminada.');
     }
 
+    /**
+     * Normaliza la matrícula al formato LETRAS-NÚMEROS (ej. TIC-320072).
+     *
+     * @param  string|null  $matricula
+     * @return string|null
+     */
     private function normalizeMatricula(?string $matricula): ?string
     {
         if ($matricula === null) {

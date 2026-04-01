@@ -7,8 +7,21 @@ use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 
+/**
+ * Controlador CRUD para períodos académicos.
+ *
+ * Cada período define un rango de fechas (inicio/fin) durante el cual
+ * se realizan las asignaciones de casilleros.
+ *
+ * Tabla: periodos  |  PK: idperiodo
+ */
 class PeriodController extends Controller
 {
+    /**
+     * Listado de todos los períodos.
+     *
+     * @return \Illuminate\View\View
+     */
     public function index()
     {
         $periods = Period::all();

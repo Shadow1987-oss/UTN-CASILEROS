@@ -1,3 +1,5 @@
+{{-- Formulario de creación de reporte de incidencia.
+     Vincula tutor, estudiante y casilleros afectados. Acceso: admin. --}}
 @extends('plantilla')
 
 @section('titulo', 'Nuevo Reporte - UTN Lockers')

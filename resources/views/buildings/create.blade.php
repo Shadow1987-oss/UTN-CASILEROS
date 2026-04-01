@@ -1,3 +1,4 @@
+{{-- Formulario de creación de edificio. Acceso: admin. --}}
 @extends('plantilla')
 
 @section('titulo', 'Nuevo Edificio - UTN Lockers')

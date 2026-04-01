@@ -1,3 +1,6 @@
+{{-- Formulario de creación de estudiante.
+     Campos: matrícula, nombre, carrera, cuatrimestre, grupo,
+     apellidos, teléfono, cuenta de usuario vinculada. Acceso: admin. --}}
 @extends('plantilla')
 
 @section('titulo', 'Nuevo Estudiante - UTN Lockers')

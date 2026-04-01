@@ -1,3 +1,4 @@
+{{-- Formulario de creación de período académico. Acceso: admin. --}}
 @extends('plantilla')
 
 @section('titulo', 'Nuevo Período - UTN Lockers')

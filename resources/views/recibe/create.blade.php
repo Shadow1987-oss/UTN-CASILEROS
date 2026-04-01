@@ -1,3 +1,4 @@
+{{-- Formulario de creación de recibo vinculando sanción con estudiante. Acceso: admin. --}}
 @extends('plantilla')
 
 @section('titulo', 'Nuevo Recibo - UTN Lockers')

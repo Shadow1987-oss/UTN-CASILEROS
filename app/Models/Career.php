@@ -5,6 +5,16 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * Modelo Eloquent para carreras universitarias.
+ *
+ * Catálogo de carreras al que se vinculan los alumnos.
+ *
+ * Tabla: carreras  |  PK: idcarrera (int, no autoincremental)
+ *
+ * Relaciones:
+ * - students() → hasMany Student
+ */
 class Career extends Model
 {
     use HasFactory;

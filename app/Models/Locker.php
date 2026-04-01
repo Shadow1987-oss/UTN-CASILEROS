@@ -5,6 +5,19 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * Modelo Eloquent para casilleros.
+ *
+ * Cada casillero pertenece a un edificio y tiene un número único.
+ * Estados posibles: disponible, ocupado, dañado.
+ *
+ * Tabla: casilleros  |  PK: idcasillero (int, no autoincremental)
+ *
+ * Relaciones:
+ * - assignments() → hasMany Assignment
+ * - building()    → belongsTo Building
+ * - reports()     → belongsToMany Report (vía tabla pivote "puede")
+ */
 class Locker extends Model
 {
     use HasFactory;

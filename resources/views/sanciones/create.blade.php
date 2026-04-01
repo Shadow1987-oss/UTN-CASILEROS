@@ -1,3 +1,6 @@
+{{-- Formulario de creación de sanción.
+     Selecciona tutor, estudiante, tipo de sanción y motivo.
+     Crea automáticamente el recibo asociado. Acceso: admin. --}}
 @extends('plantilla')
 
 @section('titulo', 'Nueva Sanción - UTN Lockers')

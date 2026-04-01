@@ -1,3 +1,5 @@
+{{-- Estadística de ocupación de casilleros con filtros por edificio, área,
+     planta y período. Muestra totales y desglose por edificio. Exporta a PDF. --}}
 @extends('plantilla')
 
 @section('titulo', 'Reporte de Ocupación - UTN Lockers')

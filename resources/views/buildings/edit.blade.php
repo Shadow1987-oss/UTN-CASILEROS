@@ -1,3 +1,4 @@
+{{-- Formulario de edición de edificio. Acceso: admin. --}}
 @extends('plantilla')
 
 @section('titulo', 'Editar Edificio - UTN Lockers')

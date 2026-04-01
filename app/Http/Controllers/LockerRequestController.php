@@ -9,8 +9,25 @@ use App\Models\Student;
 use App\Models\UserNotification;
 use Illuminate\Http\Request;
 
+/**
+ * Controlador para solicitudes de casillero de estudiantes.
+ *
+ * Los estudiantes crean solicitudes desde "Mi Casillero";
+ * los admin/tutores las revisan aquí (aprobar o rechazar).
+ * Al aprobar/rechazar se notifica al estudiante.
+ *
+ * Tabla: solicitudes_casillero
+ */
 class LockerRequestController extends Controller
 {
+    /**
+     * Listado paginado de solicitudes con filtros opcionales.
+     *
+     * Filtros: estado (pendiente/aprobada/rechazada), idperiodo, matricula.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\View\View
+     */
     public function index(Request $request)
     {
         $query = LockerRequest::with(['student.career', 'period', 'reviewer']);
@@ -40,6 +57,16 @@ class LockerRequestController extends Controller
         return view('locker_requests.index', compact('requests', 'periods'));
     }
 
+    /**
+     * Aprueba una solicitud pendiente.
+     *
+     * Verifica que el estudiante no tenga ya una asignación activa
+     * en el período solicitado. Notifica al estudiante.
+     *
+     * @param  \Illuminate\Http\Request           $request
+     * @param  \App\Models\LockerRequest           $lockerRequest
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function approve(Request $request, LockerRequest $lockerRequest)
     {
         if ($lockerRequest->estado !== 'pendiente') {
@@ -83,6 +110,16 @@ class LockerRequestController extends Controller
         return redirect()->route('locker_requests.index')->with('status', 'Solicitud aprobada correctamente.');
     }
 
+    /**
+     * Rechaza una solicitud pendiente.
+     *
+     * Requiere notas de revisión obligatorias como motivo.
+     * Notifica al estudiante con el motivo del rechazo.
+     *
+     * @param  \Illuminate\Http\Request           $request
+     * @param  \App\Models\LockerRequest           $lockerRequest
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function reject(Request $request, LockerRequest $lockerRequest)
     {
         if ($lockerRequest->estado !== 'pendiente') {

@@ -8,6 +8,17 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
+/**
+ * Modelo de autenticación de usuarios.
+ *
+ * Gestiona las cuentas de acceso al sistema. El campo 'role' determina
+ * los permisos: 'admin', 'tutor' o 'estudiante'.
+ *
+ * Tabla: users  |  PK: id (autoincremental)
+ *
+ * Relaciones:
+ * - student() → hasOne Student (vinculación con tabla alumnos vía user_id)
+ */
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
@@ -48,6 +59,12 @@ class User extends Authenticatable
         return $this->hasOne(Student::class, 'user_id', 'id');
     }
 
+    /**
+     * Verifica si el usuario tiene alguno de los roles proporcionados.
+     *
+     * @param  string  ...$roles  Roles a verificar (ej. 'admin', 'tutor')
+     * @return bool
+     */
     public function hasRole(string ...$roles): bool
     {
         return in_array($this->role, $roles, true);

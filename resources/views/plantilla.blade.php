@@ -1,3 +1,6 @@
+{{-- Layout principal de la aplicación UTN Lockers.
+     Incluye barra de navegación con menús según rol (admin/tutor/estudiante),
+     badge de notificaciones no leídas y sección de contenido dinámica. --}}
 <!DOCTYPE html>
 <html lang="es">
 

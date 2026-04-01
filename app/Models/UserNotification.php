@@ -5,6 +5,17 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * Modelo Eloquent para notificaciones internas del sistema.
+ *
+ * Almacena notificaciones dirigidas a usuarios específicos
+ * (asignaciones, solicitudes, etc.) con soporte de lectura.
+ *
+ * Tabla: user_notifications  |  PK: id (autoincremental)
+ *
+ * Relaciones:
+ * - user() → belongsTo User
+ */
 class UserNotification extends Model
 {
     use HasFactory;

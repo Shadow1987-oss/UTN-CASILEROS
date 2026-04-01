@@ -1,3 +1,4 @@
+{{-- Formulario de edición de reporte de incidencia. Acceso: admin. --}}
 @extends('plantilla')
 
 @section('titulo', 'Editar Reporte - UTN Lockers')

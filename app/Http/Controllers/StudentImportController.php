@@ -6,8 +6,31 @@ use App\Models\Student;
 use Illuminate\Http\Request;
 use Box\Spout\Reader\Common\Creator\ReaderEntityFactory;
 
+/**
+ * Controlador para importación masiva de estudiantes vía CSV/XLSX.
+ *
+ * Recibe un archivo CSV o XLSX con columnas mínimas: nombre, matricula.
+ * Columnas opcionales: idcarrera, cuatrimestre, grupo, numero_telefonico.
+ * Utiliza la librería Box\Spout para leer archivos.
+ *
+ * La validación del archivo se hace por extensión (no MIME) para
+ * compatibilidad con Windows donde la detección MIME es poco confiable.
+ */
 class StudentImportController extends Controller
 {
+    /**
+     * Procesa la importación del archivo subido.
+     *
+     * Flujo:
+     * 1. Valida extensión del archivo (csv, txt, xlsx; xls no soportado).
+     * 2. Abre el archivo con Box\Spout.
+     * 3. Lee el encabezado y verifica columnas obligatorias.
+     * 4. Por cada fila, normaliza la matrícula y hace updateOrCreate.
+     * 5. Registra errores en el log con contexto detallado.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function store(Request $request)
     {
         $data = $request->validate([
@@ -137,6 +160,14 @@ class StudentImportController extends Controller
         }
     }
 
+    /**
+     * Normaliza la matrícula: mayúsculas, sin espacios, formato LETRAS-NÚMEROS.
+     *
+     * Ejemplo: 'tic320072' → 'TIC-320072'
+     *
+     * @param  string  $matricula
+     * @return string
+     */
     private function normalizeMatricula(string $matricula): string
     {
         $normalized = strtoupper(trim($matricula));
@@ -149,12 +180,29 @@ class StudentImportController extends Controller
         return $normalized;
     }
 
+    /**
+     * Recorta un valor y retorna null si está vacío.
+     *
+     * @param  mixed  $value
+     * @return string|null
+     */
     private function nullableTrim($value): ?string
     {
         $trimmed = trim((string) ($value ?? ''));
         return $trimmed === '' ? null : $trimmed;
     }
 
+    /**
+     * Convierte un valor a entero nullable con rango opcional.
+     *
+     * Retorna null si el valor está vacío, no es numérico,
+     * o está fuera del rango [$min, $max].
+     *
+     * @param  mixed     $value
+     * @param  int|null  $min  Valor mínimo aceptable
+     * @param  int|null  $max  Valor máximo aceptable
+     * @return int|null
+     */
     private function nullableInt($value, int $min = null, int $max = null): ?int
     {
         $trimmed = trim((string) ($value ?? ''));

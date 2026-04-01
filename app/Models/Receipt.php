@@ -5,6 +5,18 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * Modelo Eloquent para recibos de sanciones.
+ *
+ * Vincula una sanción con un estudiante, registrando
+ * que el alumno recibió dicha penalización.
+ *
+ * Tabla: recibe  |  PK: idrecibe (int, no autoincremental)
+ *
+ * Relaciones:
+ * - sanction() → belongsTo Sanction
+ * - student()  → belongsTo Student (por matricula)
+ */
 class Receipt extends Model
 {
     use HasFactory;

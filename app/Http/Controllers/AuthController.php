@@ -8,18 +8,51 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
+/**
+ * Controlador de autenticación (login, registro y logout).
+ *
+ * El registro público está restringido a estudiantes con correo
+ * institucional UTNay (ej. tic-320072@utnay.edu.mx). Al registrarse,
+ * se extrae la matrícula del correo y se vincula o crea el registro
+ * en la tabla alumnos automáticamente.
+ *
+ * Roles soportados: admin, tutor, estudiante.
+ */
 class AuthController extends Controller
 {
+    /**
+     * Muestra el formulario de inicio de sesión.
+     *
+     * @return \Illuminate\View\View
+     */
     public function showLogin()
     {
         return view('auth.login');
     }
 
+    /**
+     * Muestra el formulario de registro público.
+     *
+     * @return \Illuminate\View\View
+     */
     public function showRegister()
     {
         return view('auth.register');
     }
 
+    /**
+     * Procesa el registro de un nuevo usuario.
+     *
+     * Flujo:
+     * 1. Valida datos del formulario.
+     * 2. Determina el rol a partir del correo (solo estudiantes vía regex).
+     * 3. Crea el usuario en la tabla users.
+     * 4. Si es estudiante, vincula o crea el registro en alumnos.
+     * 5. Inicia sesión automáticamente.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function register(Request $request)
     {
         $data = $request->validate([
@@ -115,6 +148,15 @@ class AuthController extends Controller
         return redirect()->route('dashboard')->with('status', 'Cuenta creada correctamente.');
     }
 
+    /**
+     * Determina el rol del usuario a partir de su correo electrónico.
+     *
+     * Solo acepta correos institucionales de alumnos UTNay.
+     * Retorna null si el correo no coincide con el patrón esperado.
+     *
+     * @param  string      $email
+     * @return string|null  'estudiante' o null
+     */
     private function resolveRoleFromEmail(string $email): ?string
     {
         $email = strtolower(trim($email));
@@ -126,6 +168,14 @@ class AuthController extends Controller
         return null;
     }
 
+    /**
+     * Extrae la matrícula de un correo institucional de alumno.
+     *
+     * Ejemplo: 'tic-320072@utnay.edu.mx' → 'TIC-320072'.
+     *
+     * @param  string      $email
+     * @return string|null  Matrícula normalizada o null si no aplica
+     */
     private function extractStudentMatriculaFromEmail(string $email): ?string
     {
         if (!preg_match('/^([a-z]{2,10})-?(\d{3,10})@utnay\.edu\.mx$/', strtolower(trim($email)), $matches)) {
@@ -135,6 +185,15 @@ class AuthController extends Controller
         return strtoupper($matches[1]) . '-' . $matches[2];
     }
 
+    /**
+     * Procesa el inicio de sesión.
+     *
+     * Redirige a mi-casillero si el usuario es estudiante,
+     * o al dashboard si es admin/tutor.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function login(Request $request)
     {
         $credentials = $request->validate([
@@ -159,6 +218,12 @@ class AuthController extends Controller
         return redirect()->route('dashboard')->with('status', 'Sesión iniciada.');
     }
 
+    /**
+     * Cierra la sesión del usuario actual.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function logout(Request $request)
     {
         Auth::logout();

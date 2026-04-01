@@ -1,3 +1,5 @@
+{{-- Plantilla PDF para exportar el reporte por grupo/carrera.
+     Se genera con dompdf cuando está disponible. --}}
 <!doctype html>
 <html lang="es">
 

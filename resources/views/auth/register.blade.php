@@ -1,3 +1,6 @@
+{{-- Formulario de registro público.
+     Solo para alumnos con correo institucional UTNay.
+     Extrae la matrícula automáticamente del correo. --}}
 @extends('plantilla')
 
 @section('titulo', 'Registro - UTN Lockers')

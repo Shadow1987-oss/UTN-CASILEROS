@@ -1,3 +1,4 @@
+{{-- Formulario de edición de estudiante. Acceso: admin. --}}
 @extends('plantilla')
 
 @section('titulo', 'Editar Estudiante - UTN Lockers')

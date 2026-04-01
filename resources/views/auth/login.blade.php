@@ -1,3 +1,4 @@
+{{-- Formulario de inicio de sesión. Acceso: invitados (no autenticados). --}}
 @extends('plantilla')
 
 @section('titulo', 'Iniciar sesión - UTN Lockers')

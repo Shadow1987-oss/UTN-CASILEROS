@@ -1,3 +1,5 @@
+{{-- Formulario de creación de casillero.
+     Campos: ID, edificio, área, planta, número, estado, observaciones. Acceso: admin. --}}
 @extends('plantilla')
 
 @section('titulo', 'Nuevo Casillero - UTN Lockers')

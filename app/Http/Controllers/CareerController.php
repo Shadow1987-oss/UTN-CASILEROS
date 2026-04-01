@@ -8,8 +8,19 @@ use Illuminate\Http\Request;
 use Illuminate\Database\QueryException;
 use Illuminate\Validation\Rule;
 
+/**
+ * Controlador CRUD para carreras universitarias.
+ *
+ * Gestiona el catálogo de carreras al que se vinculan los alumnos.
+ * Tabla: carreras  |  PK: idcarrera
+ */
 class CareerController extends Controller
 {
+    /**
+     * Listado de todas las carreras.
+     *
+     * @return \Illuminate\View\View
+     */
     public function index()
     {
         $careers = Career::orderBy('idcarrera')->get();
@@ -55,6 +66,12 @@ class CareerController extends Controller
         return redirect()->route('careers.index')->with('status', 'Carrera actualizada.');
     }
 
+    /**
+     * Elimina una carrera solo si no tiene alumnos asociados.
+     *
+     * @param  \App\Models\Career  $career
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function destroy(Career $career)
     {
         $studentsLinked = Student::where('idcarrera', $career->idcarrera)->count();

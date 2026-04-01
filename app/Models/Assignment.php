@@ -5,6 +5,23 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * Modelo Eloquent para asignaciones de casilleros.
+ *
+ * Representa la relación entre un estudiante y un casillero durante
+ * un período académico, supervisada opcionalmente por un tutor.
+ *
+ * Tabla: asignamientos  |  PK: idasigna (int, no autoincremental)
+ *
+ * Relaciones:
+ * - student()  → belongsTo Student (por matricula)
+ * - locker()   → belongsTo Locker  (por idcasillero)
+ * - period()   → belongsTo Period  (por idPeriodo)
+ * - usuario()  → belongsTo Usuario (por idusuario)
+ *
+ * Accesor:
+ * - status_label: devuelve 'Activo' o 'Liberado' en español
+ */
 class Assignment extends Model
 {
     use HasFactory;

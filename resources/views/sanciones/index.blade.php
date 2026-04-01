@@ -1,3 +1,5 @@
+{{-- Listado paginado de sanciones con tutor y estudiante asociados.
+     Acciones: crear, editar, eliminar. Acceso: admin. --}}
 @extends('plantilla')
 
 @section('titulo', 'Sanciones - UTN Lockers')

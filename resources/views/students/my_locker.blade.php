@@ -1,3 +1,6 @@
+{{-- Vista "Mi Casillero" para rol estudiante.
+     Muestra la asignación activa (casillero, edificio, tutor),
+     formulario para solicitar casillero e historial de solicitudes. --}}
 @extends('plantilla')
 
 @section('titulo', 'Mi Casillero - UTN Lockers')

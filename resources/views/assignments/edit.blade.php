@@ -1,3 +1,5 @@
+{{-- Formulario de edición de asignación existente.
+     Permite cambiar estudiante, casillero, período y tutor. Acceso: admin, tutor. --}}
 @extends('plantilla')
 
 @section('titulo', 'Editar Asignación - UTN Lockers')

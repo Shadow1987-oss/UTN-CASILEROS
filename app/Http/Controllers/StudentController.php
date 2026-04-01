@@ -13,8 +13,27 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Validation\Rule;
 
+/**
+ * Controlador CRUD para estudiantes (alumnos).
+ *
+ * Gestiona el catálogo de alumnos con filtros avanzados por matrícula,
+ * carrera, cuatrimestre, grupo, período y edificio. También maneja
+ * la vista "Mi Casillero" para el rol estudiante y la creación de
+ * solicitudes de casillero con notificación automática al staff.
+ *
+ * Tabla: alumnos  |  PK: matricula (string)
+ */
 class StudentController extends Controller
 {
+    /**
+     * Listado paginado de estudiantes con filtros avanzados.
+     *
+     * Filtros: search (únicamente por matrícula normalizada),
+     * idcarrera, cuatrimestre (1–10), grupo, idperiodo, idedificio.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\View\View
+     */
     public function index(Request $request)
     {
         $query = Student::with('career');
@@ -151,6 +170,14 @@ class StudentController extends Controller
         return redirect()->route('students.index')->with('status', 'Estudiante eliminado.');
     }
 
+    /**
+     * Vista "Mi Casillero" para el rol estudiante.
+     *
+     * Muestra la asignación activa del estudiante autenticado
+     * y su historial de solicitudes de casillero.
+     *
+     * @return \Illuminate\View\View
+     */
     public function myLocker()
     {
         $student = Student::where('user_id', auth()->id())->first();
@@ -176,6 +203,17 @@ class StudentController extends Controller
         return view('students.my_locker', compact('student', 'assignment', 'periods', 'lockerRequests'));
     }
 
+    /**
+     * Procesa la solicitud de casillero de un estudiante.
+     *
+     * Validaciones:
+     * - El estudiante no debe tener casillero activo.
+     * - No debe haber solicitud pendiente previa.
+     * Envía notificación a todos los admin y tutores.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function requestLocker(Request $request)
     {
         $student = Student::where('user_id', auth()->id())->first();
@@ -236,6 +274,16 @@ class StudentController extends Controller
         return redirect()->route('student.home')->with('status', 'Solicitud de casillero enviada correctamente.');
     }
 
+    /**
+     * Normaliza datos del teléfono según columna existente en la BD.
+     *
+     * Detecta dinámicamente si la tabla alumnos tiene la columna
+     * 'numero_telefonico' o 'numero_telefono' y asigna el valor
+     * correspondiente para compatibilidad entre esquemas.
+     *
+     * @param  array  $data  Datos del formulario validados
+     * @return array  Datos ajustados
+     */
     private function normalizeStudentPhoneData(array $data): array
     {
         $hasNumeroTelefonico = Schema::hasColumn('alumnos', 'numero_telefonico');
@@ -256,6 +304,12 @@ class StudentController extends Controller
         return $data;
     }
 
+    /**
+     * Normaliza la matrícula al formato LETRAS-NÚMEROS (ej. TIC-320072).
+     *
+     * @param  string|null  $matricula
+     * @return string|null
+     */
     private function normalizeMatricula(?string $matricula): ?string
     {
         if ($matricula === null) {

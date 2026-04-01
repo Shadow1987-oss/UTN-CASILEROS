@@ -1,3 +1,4 @@
+{{-- Listado de edificios con acciones CRUD. Acceso: admin. --}}
 @extends('plantilla')
 
 @section('titulo', 'Edificios - UTN Lockers')

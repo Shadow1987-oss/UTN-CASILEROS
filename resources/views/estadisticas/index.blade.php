@@ -1,3 +1,5 @@
+{{-- Página principal del módulo de estadísticas.
+     Enlaces a: Ocupación de casilleros y Reporte por grupo. Acceso: admin, tutor. --}}
 @extends('plantilla')
 
 @section('titulo', 'Estadísticas - UTN Lockers')

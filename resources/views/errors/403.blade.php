@@ -1,3 +1,4 @@
+{{-- Página de error 403 - Acceso denegado (rol insuficiente). --}}
 @extends('plantilla')
 
 @section('titulo', '403 - Acceso denegado')

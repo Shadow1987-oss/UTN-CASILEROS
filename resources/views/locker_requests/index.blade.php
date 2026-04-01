@@ -1,3 +1,6 @@
+{{-- Listado de solicitudes de casillero de estudiantes.
+     Filtros: estado (pendiente/aprobada/rechazada), período, matrícula.
+     Acciones: aprobar o rechazar solicitudes pendientes. Acceso: admin, tutor. --}}
 @extends('plantilla')
 
 @section('titulo', 'Solicitudes de Casillero - UTN Lockers')

@@ -1,3 +1,4 @@
+{{-- Formulario de creación de tutor. Acceso: admin. --}}
 @extends('plantilla')
 
 @section('titulo', 'Nuevo Tutor - UTN Lockers')

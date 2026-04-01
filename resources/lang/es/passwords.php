@@ -1,5 +1,14 @@
 <?php
 
+/*
+|--------------------------------------------------------------------------
+| Traducciones de Restablecimiento de Contraseña (Español)
+|--------------------------------------------------------------------------
+|
+| Mensajes del flujo de recuperación de contraseña vía email.
+|
+*/
+
 return [
     'reset' => '¡Tu contraseña ha sido restablecida!',
     'sent' => '¡Te hemos enviado un enlace para restablecer tu contraseña!',

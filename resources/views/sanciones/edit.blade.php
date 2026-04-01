@@ -1,3 +1,4 @@
+{{-- Formulario de edición de sanción. Acceso: admin. --}}
 @extends('plantilla')
 
 @section('titulo', 'Editar Sanción - UTN Lockers')

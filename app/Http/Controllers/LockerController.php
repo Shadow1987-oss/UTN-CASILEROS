@@ -7,8 +7,25 @@ use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 
+/**
+ * Controlador CRUD para casilleros.
+ *
+ * Gestiona el inventario de casilleros con filtros por estado,
+ * edificio, área y planta. Cada casillero tiene un número único
+ * y puede estar disponible, ocupado o dañado.
+ *
+ * Tabla: casilleros  |  PK: idcasillero
+ */
 class LockerController extends Controller
 {
+    /**
+     * Listado paginado de casilleros con filtros opcionales.
+     *
+     * Filtros: estado, idedificio, area, planta.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\View\View
+     */
     public function index(Request $request)
     {
         $query = Locker::with('building');
@@ -43,6 +60,15 @@ class LockerController extends Controller
         return view('lockers.create', compact('buildings'));
     }
 
+    /**
+     * Almacena un nuevo casillero.
+     *
+     * Áreas válidas: Laboratorios, Aulas, Biblioteca, Administrativo.
+     * El número de casillero (numeroCasiller) debe ser único.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function store(Request $request)
     {
         $data = $request->validate([

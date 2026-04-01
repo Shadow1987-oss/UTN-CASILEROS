@@ -11,8 +11,26 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 
+/**
+ * Controlador CRUD para reportes de incidencias.
+ *
+ * Un reporte registra un incidente asociado a un tutor (usuario),
+ * un estudiante (matrícula) y opcionalmente uno o más casilleros
+ * afectados (relación muchos-a-muchos vía tabla pivote "puede").
+ *
+ * Tabla: reportes  |  PK: idreporte
+ */
 class ReportController extends Controller
 {
+    /**
+     * Listado paginado de reportes con filtros.
+     *
+     * Filtros: tutor_id, matricula, idcasillero, búsqueda libre
+     * en descripción/observaciones.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\View\View
+     */
     public function index(Request $request)
     {
         $query = Report::with(['tutor', 'student', 'casilleros']);
@@ -154,6 +172,16 @@ class ReportController extends Controller
         return redirect()->route('reportes.index')->with('status', 'Reporte eliminado.');
     }
 
+    /**
+     * Sincroniza la relación muchos-a-muchos entre reporte y casilleros.
+     *
+     * Borra las relaciones existentes en la tabla pivote "puede"
+     * y las recrea con los IDs proporcionados.
+     *
+     * @param  int    $reportId    ID del reporte
+     * @param  array  $lockerIds   Array de IDs de casilleros
+     * @return void
+     */
     private function syncReportLockers(int $reportId, array $lockerIds): void
     {
         DB::table('puede')->where('idreporte', $reportId)->delete();
@@ -180,6 +208,14 @@ class ReportController extends Controller
         DB::table('puede')->insert($rows);
     }
 
+    /**
+     * Verifica que todos los casilleros indicados estén activamente
+     * asignados al estudiante (sin liberar).
+     *
+     * @param  string  $matricula   Matrícula del estudiante
+     * @param  array   $lockerIds   IDs de casilleros a validar
+     * @return bool
+     */
     private function studentOwnsLockers(string $matricula, array $lockerIds): bool
     {
         $lockerIds = collect($lockerIds)
@@ -200,6 +236,12 @@ class ReportController extends Controller
         return $validCount === $lockerIds->count();
     }
 
+    /**
+     * Normaliza la matrícula al formato LETRAS-NÚMEROS (ej. TIC-320072).
+     *
+     * @param  string|null  $matricula
+     * @return string|null
+     */
     private function normalizeMatricula(?string $matricula): ?string
     {
         if ($matricula === null) {
@@ -220,6 +262,16 @@ class ReportController extends Controller
         return $normalized;
     }
 
+    /**
+     * Construye los datos de selección de casilleros para formularios.
+     *
+     * Devuelve los casilleros con asignaciones activas y un mapa
+     * de qué matrículas están asociadas a cada casillero.
+     *
+     * @param  array        $includeLockerIds   IDs de casilleros a incluir siempre
+     * @param  string|null  $includeMatricula   Matrícula a incluir en el mapa
+     * @return array  [Collection $lockers, array $lockerStudentMap]
+     */
     private function buildLockerSelectionData(array $includeLockerIds = [], ?string $includeMatricula = null): array
     {
         $activeAssignments = Assignment::query()

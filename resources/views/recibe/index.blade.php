@@ -1,3 +1,5 @@
+{{-- Listado de recibos de sanciones con sanción y estudiante asociados.
+     Acceso: admin. --}}
 @extends('plantilla')
 
 @section('titulo', 'Recibos - UTN Lockers')

@@ -7,8 +7,20 @@ use App\Models\Locker;
 use App\Models\Period;
 use App\Models\Student;
 
+/**
+ * Controlador del panel principal (Dashboard).
+ *
+ * Muestra contadores generales: total de alumnos, casilleros,
+ * períodos, asignaciones activas, casilleros disponibles,
+ * ocupados y dañados.
+ */
 class DashboardController extends Controller
 {
+    /**
+     * Dashboard con estadísticas generales del sistema.
+     *
+     * @return \Illuminate\View\View
+     */
     public function index()
     {
         $students = Student::count();
