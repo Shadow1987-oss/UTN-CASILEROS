@@ -82,6 +82,7 @@
         <table>
             <thead>
                 <tr>
+                    <th>ID</th>
                     <th>Estudiante</th>
                     <th>Matrícula</th>
                     <th>Grupo</th>
@@ -96,6 +97,7 @@
             <tbody>
                 @forelse ($assignments as $assignment)
                     <tr>
+                        <td>{{ $assignment->idasigna }}</td>
                         <td>{{ optional($assignment->student)->full_name ?? '-' }}
                         </td>
                         <td>{{ \App\Models\Student::formatMatricula($assignment->matricula) }}</td>
@@ -125,7 +127,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="9" class="muted">Sin asignaciones aún.</td>
+                        <td colspan="10" class="muted">Sin asignaciones aún.</td>
                     </tr>
                 @endforelse
             </tbody>

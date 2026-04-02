@@ -92,14 +92,13 @@ Route::middleware('auth')->group(function () {
         Route::resource('careers', CareerController::class);
         Route::resource('buildings', BuildingController::class);
 
-        // Tutores (sin create/store desde rutas, se gestionan desde admin)
+        // Tutores: CRUD completo
         Route::resource('tutores', UsuarioController::class)
             ->names('usuarios')
-            ->parameters(['tutores' => 'usuario'])
-            ->except(['create', 'store']);
+            ->parameters(['tutores' => 'usuario']);
 
-        // Estudiantes: edición e importación masiva CSV/XLSX
-        Route::resource('students', StudentController::class)->except(['index', 'show', 'create', 'store']);
+        // Estudiantes: CRUD completo (excepto index/show que son compartidos con tutor)
+        Route::resource('students', StudentController::class)->except(['index', 'show']);
         Route::post('students/import', [StudentImportController::class, 'store'])->name('students.import');
 
         // Casilleros: CRUD (excepto index que es compartido)

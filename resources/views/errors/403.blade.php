@@ -7,6 +7,14 @@
     <div class="card" style="text-align: center;">
         <h2>Error 403</h2>
         <p class="muted">No tienes permisos para acceder a esta sección.</p>
-        <a href="{{ route('dashboard') }}" class="btn">Ir al tablero</a>
+        @auth
+            @if (auth()->user()->role === 'estudiante')
+                <a href="{{ route('student.home') }}" class="btn">Ir a mi casillero</a>
+            @else
+                <a href="{{ route('dashboard') }}" class="btn">Ir al tablero</a>
+            @endif
+        @else
+            <a href="{{ route('login') }}" class="btn">Iniciar sesión</a>
+        @endauth
     </div>
 @endsection

@@ -20,7 +20,6 @@
                     <th>Nombre</th>
                     <th>Fechas</th>
                     <th></th>
-                    <th></th>
                 </tr>
             </thead>
             <tbody>

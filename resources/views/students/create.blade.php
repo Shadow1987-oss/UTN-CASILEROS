@@ -59,6 +59,12 @@
                 'placeholder' => 'Ej. 3',
             ])
             @include('partials.form-field', [
+                'label' => 'Grupo',
+                'name' => 'grupo',
+                'value' => old('grupo'),
+                'placeholder' => 'Ej. DMS-51',
+            ])
+            @include('partials.form-field', [
                 'label' => 'Apellido Paterno',
                 'name' => 'apellidoPaterno',
                 'value' => old('apellidoPaterno'),

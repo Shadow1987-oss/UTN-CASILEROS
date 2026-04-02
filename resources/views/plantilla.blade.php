@@ -48,7 +48,8 @@
                                         request()->routeIs('buildings.*') ||
                                         request()->routeIs('usuarios.*') ||
                                         request()->routeIs('sanciones.*') ||
-                                        request()->routeIs('recibe.*');
+                                        request()->routeIs('recibe.*') ||
+                                        request()->routeIs('estadisticas.*');
                                 @endphp
                                 <div class="nav-more">
                                     <button type="button"
@@ -66,6 +67,8 @@
                                             class="{{ request()->routeIs('sanciones.*') ? 'active' : '' }}">Sanciones</a>
                                         <a href="{{ route('recibe.index') }}"
                                             class="{{ request()->routeIs('recibe.*') ? 'active' : '' }}">Recibos</a>
+                                        <a href="{{ route('estadisticas.index') }}"
+                                            class="{{ request()->routeIs('estadisticas.*') ? 'active' : '' }}">Estadísticas</a>
                                     </div>
                                 </div>
                             @elseif (auth()->user()->role === 'tutor')

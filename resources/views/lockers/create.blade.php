@@ -67,11 +67,19 @@
                 <select id="estado" name="estado" class="input" required>
                     <option value="disponible" {{ old('estado') == 'disponible' ? 'selected' : '' }}>Disponible</option>
                     <option value="ocupado" {{ old('estado') == 'ocupado' ? 'selected' : '' }}>Ocupado</option>
+                    <option value="dañado" {{ old('estado') == 'dañado' ? 'selected' : '' }}>Dañado</option>
                 </select>
                 @error('estado')
                     <div class="field-help error">{{ $message }}</div>
                 @enderror
             </div>
+            @include('partials.form-field', [
+                'label' => 'Observaciones',
+                'name' => 'observaciones',
+                'type' => 'textarea',
+                'value' => old('observaciones'),
+                'required' => false,
+            ])
             <div class="actions">
                 <button class="btn" type="submit">Guardar</button>
                 <a class="btn secondary" href="{{ route('lockers.index') }}">Cancelar</a>

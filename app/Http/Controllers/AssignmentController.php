@@ -120,10 +120,11 @@ class AssignmentController extends Controller
 
         $alreadyAssigned = Assignment::where('matricula', $data['matricula'])
             ->where('idPeriodo', $data['idPeriodo'])
+            ->whereNull('released_at')
             ->exists();
 
         if ($alreadyAssigned) {
-            return back()->withInput()->withErrors(['matricula' => 'El estudiante ya tiene un casillero en este período.']);
+            return back()->withInput()->withErrors(['matricula' => 'El estudiante ya tiene un casillero activo en este período.']);
         }
 
         $activeCount = Assignment::where('idcasillero', $data['idcasillero'])
