@@ -61,7 +61,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
         Route::get('students', [StudentController::class, 'index'])->name('students.index');
-        Route::get('students/{student}', [StudentController::class, 'show'])->name('students.show');
+        Route::get('students/{student}', [StudentController::class, 'show'])->name('students.show')
+            ->where('student', '[0-9]+|[A-Za-z]+-[0-9]+');
         Route::get('lockers', [LockerController::class, 'index'])->name('lockers.index');
 
         Route::get('assignments', [AssignmentController::class, 'index'])->name('assignments.index');
