@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', function () {
             if (btn) {
                 btn.disabled = true;
                 var original = btn.innerHTML;
-                btn.innerHTML = 'Processing...';
+                btn.innerHTML = 'Procesando...';
             }
         });
     }
@@ -18,6 +18,12 @@ document.addEventListener('DOMContentLoaded', function () {
     handleForm('locker-form');
     handleForm('period-form');
     handleForm('assignment-form');
+    handleForm('sancion-form');
+    handleForm('report-form');
+    handleForm('recibo-form');
+    handleForm('career-form');
+    handleForm('building-form');
+    handleForm('usuario-form');
 
     // Validación simple de email en inputs con type=email
     document.querySelectorAll('input[type="email"]').forEach(function (input) {

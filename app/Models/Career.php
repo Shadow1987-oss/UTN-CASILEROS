@@ -25,7 +25,10 @@ class Career extends Model
     protected $keyType = 'int';
     public $timestamps = false;
 
-    protected $guarded = [];
+    protected $fillable = [
+        'idcarrera',
+        'nombre_carre',
+    ];
 
     public function students()
     {

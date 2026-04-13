@@ -8,6 +8,7 @@ use App\Models\Student;
 use App\Models\Usuario;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 
 /**
@@ -49,15 +50,17 @@ class SanctionController extends Controller
 
         unset($data['matricula']);
 
-        Sanction::create($data);
+        DB::transaction(function () use ($data, $normalizedMatricula) {
+            Sanction::create($data);
 
-        Receipt::updateOrCreate(
-            ['idsancion' => (int) $data['idsancion']],
-            [
-                'idrecibe' => (int) ((int) Receipt::max('idrecibe') + 1),
-                'matricula' => $normalizedMatricula,
-            ]
-        );
+            Receipt::updateOrCreate(
+                ['idsancion' => (int) $data['idsancion']],
+                [
+                    'idrecibe' => (int) ((int) Receipt::max('idrecibe') + 1),
+                    'matricula' => $normalizedMatricula,
+                ]
+            );
+        });
 
         return redirect()->route('sanciones.index')->with('status', 'Sanción creada.');
     }
@@ -74,22 +77,27 @@ class SanctionController extends Controller
     {
         $data = $request->validate([
             'idsancion' => ['required', 'integer', 'min:1', Rule::unique('sanciones', 'idsancion')->ignore($sancione->idsancion, 'idsancion')],
+            'idusuario' => ['nullable', 'integer', 'min:1', 'exists:usuarios,idusuario'],
+            'matricula' => ['nullable', 'string', 'max:20', 'regex:/^[A-Za-z]{2,10}-?\d{3,10}$/', 'exists:alumnos,matricula'],
             'sancion' => ['required', 'string', 'max:50'],
             'motivo' => ['required', 'string', 'max:50'],
         ]);
 
-        $normalizedMatricula = $this->normalizeMatricula((string) optional($sancione->receipt)->matricula) ?? (string) optional($sancione->receipt)->matricula;
-        $data['idusuario'] = $sancione->idusuario;
+        $rawMatricula = $data['matricula'] ?? optional($sancione->receipt)->matricula;
+        $normalizedMatricula = $this->normalizeMatricula((string) $rawMatricula) ?? (string) $rawMatricula;
+        unset($data['matricula']);
 
-        $sancione->update($data);
+        DB::transaction(function () use ($sancione, $data, $normalizedMatricula) {
+            $sancione->update($data);
 
-        Receipt::updateOrCreate(
-            ['idsancion' => (int) $sancione->idsancion],
-            [
-                'idrecibe' => optional($sancione->receipt)->idrecibe ? (int) $sancione->receipt->idrecibe : (int) ((int) Receipt::max('idrecibe') + 1),
-                'matricula' => $normalizedMatricula,
-            ]
-        );
+            Receipt::updateOrCreate(
+                ['idsancion' => (int) $sancione->idsancion],
+                [
+                    'idrecibe' => optional($sancione->receipt)->idrecibe ? (int) $sancione->receipt->idrecibe : (int) ((int) Receipt::max('idrecibe') + 1),
+                    'matricula' => $normalizedMatricula,
+                ]
+            );
+        });
 
         return redirect()->route('sanciones.index')->with('status', 'Sanción actualizada.');
     }

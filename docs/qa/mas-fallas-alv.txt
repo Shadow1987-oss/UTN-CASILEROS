@@ -1,0 +1,122 @@
+FALLAS ALV 
+Vista de Crear casilero  
+ 
+Porque un casillero nuevo se crearía para asignar como dañado o con una 
+descripción, eliminar esas 2 opciones 
+Footer  
+ 
+No esta centrado y porque la un alumno, tuto o un pinche administrador quisiera abrir 
+linquedin, se quiere cambiar de chamba o que rollo? 
+  
+
+Vista de Nuevo reporte/administrador 
+no deja hacer el reporte por que ese campo no puede ser llenado/seleccionado con 
+nada alv y no se guarda el reporte 
+ 
+ 
+Se puede asignar un casillero y decirle al alumno que lo rechazaron 
+ 
+los administradores y tutores no reciben notificaciones de nada 
+  
+
+PARTE 2 
+Acomodar el recuadro a la derecha  
+ 
+-------------------------------------------------------- 
+Aunque el Alumno ya tenga un casillero asinado puede seguir mandando 
+solicitudes para que le asignen un casillero, generando posible solicitudes 
+constantes de uno o varios alumnos para y llenar la bandeja de solicitudes  
+ 
+ 
+ 
+ 
+ 
+
+ID Negativos 
+ 
+Se pueden agregar ids negativos en todos los formularios  
+ 
+Casilleros 
+ 
+Se pueden crear casilleros sin la mayoría de datos y los id negativos y se puede 
+duplicar el numero de casillero 
+  
+
+4fsdf 
+ 
+ 
+Aun liberado marca asignado el casillero al alumno, se requiere eliminar la asignación   
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+Cuatrimestre 
+ 
+Se pueden filtrar con números mayores a los cuatrimestres existentes y también 
+cuatrismestres negativos 
+ 
+Importar archivo 
+ 
+ 
+
+Error al importar documentos de Excel  
+ 
+Sanciones 
+ 
+Espacio opcional o mal implementado, de ser preferente pasarlo a opción múltiple 
+con sanciones pre organizadas y no dejarlo a consideración (eliminar) 
+ 
+El motivo debe ser obligatorio, si se sanciona a un alumno sin motivo seria motivo de 
+quejas 
+
+ 
+Dentro del mismo campo de editar sanciones se puede editar la sanción a otro 
+alumno u otro tutor, no debería ser posible ya que la sanción esta puesta sobre un 
+alumno que ya tiene asignado  un tutor 
+ 
+Creación de Cuentas 
+ 
+Cualquier usuario puede darse el rol de tutor a su gusto  
+
+Areas 
+ 
+Agregar áreas predeterminadas ya que puede haber error de escritura y no encontrar 
+el área  
+Asignacion 
+ 
+No se puede elegir la planta donde se va a asignar el casillero 
+  
+
+Tutor 
+ 
+ 
+No se puede ver otro tutor aunque ya se haya creado la cuenta 
+ 
+ 
+¿? 
+ 
+Área vacia con un casillero registrado 
+ 
+
+Error al generar un reporte  
+ 
+ 
+ 
+ 
+ 
+ 
+Error en al intentar editar un recibo 
+ 
+Periodos 
+ 
+Se puede crear un periodo sin fecha establecida  
+ 
+
+ 
+Error al edirtar a un tutor 

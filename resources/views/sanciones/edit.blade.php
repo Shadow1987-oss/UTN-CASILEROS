@@ -6,13 +6,13 @@
 @section('contenido')
     <div class="card">
         <h2>Editar sanción</h2>
-        <form method="POST" action="{{ route('sanciones.update', $sancione) }}">
+        <form class="form" method="POST" action="{{ route('sanciones.update', $sancione) }}" id="sancion-form">
             @csrf
             @method('PUT')
             <input type="hidden" name="idsancion" value="{{ old('idsancion', $sancione->idsancion) }}">
             <div class="field">
                 <label for="idusuario">Tutor responsable</label>
-                <select id="idusuario" name="idusuario" class="input" disabled>
+                <select id="idusuario" name="idusuario" class="input">
                     <option value="">Seleccionar tutor</option>
                     @foreach ($usuarios as $usuario)
                         <option value="{{ $usuario->idusuario }}"
@@ -24,11 +24,10 @@
                 @error('idusuario')
                     <div class="field-help error">{{ $message }}</div>
                 @enderror
-                <div class="field-help">El tutor de esta sanción no se puede modificar.</div>
             </div>
             <div class="field">
                 <label for="matricula">Estudiante sancionado</label>
-                <select id="matricula" name="matricula" class="input" required disabled>
+                <select id="matricula" name="matricula" class="input" required>
                     <option value="">Seleccionar estudiante</option>
                     @foreach ($students as $student)
                         <option value="{{ $student->matricula }}"
@@ -40,22 +39,21 @@
                 @error('matricula')
                     <div class="field-help error">{{ $message }}</div>
                 @enderror
-                <div class="field-help">El estudiante sancionado no se puede modificar.</div>
             </div>
-            <input type="hidden" name="idusuario" value="{{ old('idusuario', $sancione->idusuario) }}">
-            <input type="hidden" name="matricula" value="{{ old('matricula', $selectedMatricula) }}">
             @include('partials.form-field', [
                 'label' => 'Sanción',
                 'name' => 'sancion',
                 'value' => old('sancion', $sancione->sancion),
                 'required' => true,
                 'placeholder' => 'Ej. Daño al casillero',
+                'maxlength' => 50,
             ])
             @include('partials.form-field', [
                 'label' => 'Motivo',
                 'name' => 'motivo',
                 'value' => old('motivo', $sancione->motivo),
                 'placeholder' => 'Ej. Cerradura rota',
+                'maxlength' => 50,
             ])
             <div class="actions">
                 <button class="btn" type="submit">Actualizar</button>

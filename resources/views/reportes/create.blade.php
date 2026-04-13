@@ -7,7 +7,7 @@
 @section('contenido')
     <div class="card">
         <h2>Nuevo reporte</h2>
-        <form method="POST" action="{{ route('reportes.store') }}">
+        <form class="form" method="POST" action="{{ route('reportes.store') }}" id="report-form">
             @csrf
             @include('partials.form-field', [
                 'label' => 'ID del reporte',

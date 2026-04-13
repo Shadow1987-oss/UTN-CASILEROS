@@ -53,5 +53,8 @@
                 @endforelse
             </tbody>
         </table>
+        <div style="margin-top: 16px;">
+            {{ $recibos->links() }}
+        </div>
     </div>
 @endsection

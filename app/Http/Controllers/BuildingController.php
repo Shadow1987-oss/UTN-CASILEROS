@@ -80,7 +80,6 @@ class BuildingController extends Controller
     public function update(Request $request, Building $building)
     {
         $data = $request->validate([
-            'idedificio' => ['required', 'integer', 'min:1', Rule::unique('edificios', 'idedificio')->ignore($building->idedificio, 'idedificio')],
             'num_edific' => ['required', 'string', 'max:50'],
         ]);
 

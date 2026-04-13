@@ -116,5 +116,6 @@
 
     <!-- Google Maps API -->
     <script async defer
-        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCMqz5JHcQV4yEFD7wkTWqrocIgp2ixNOk&callback=initMap"></script>
+        src="https://maps.googleapis.com/maps/api/js?key={{ config('services.google_maps.key') }}&callback=initMap">
+    </script>
 @endsection

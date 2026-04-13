@@ -16,6 +16,7 @@
                 'value' => old('nombre'),
                 'placeholder' => 'Ej. Juan Carlos',
                 'required' => true,
+                'maxlength' => 50,
             ])
             @include('partials.form-field', [
                 'label' => 'Matrícula',
@@ -23,6 +24,7 @@
                 'value' => old('matricula'),
                 'placeholder' => 'Ej. 320072',
                 'required' => true,
+                'maxlength' => 20,
             ])
             <div class="field">
                 <label for="user_id">Cuenta de acceso (opcional)</label>
@@ -57,30 +59,35 @@
                 'name' => 'cuatrimestre',
                 'value' => old('cuatrimestre'),
                 'placeholder' => 'Ej. 3',
+                'maxlength' => 2,
             ])
             @include('partials.form-field', [
                 'label' => 'Grupo',
                 'name' => 'grupo',
                 'value' => old('grupo'),
                 'placeholder' => 'Ej. DMS-51',
+                'maxlength' => 10,
             ])
             @include('partials.form-field', [
                 'label' => 'Apellido Paterno',
                 'name' => 'apellidoPaterno',
                 'value' => old('apellidoPaterno'),
                 'placeholder' => 'Apellido paterno',
+                'maxlength' => 50,
             ])
             @include('partials.form-field', [
                 'label' => 'Apellido Materno',
                 'name' => 'apellidoMaterno',
                 'value' => old('apellidoMaterno'),
                 'placeholder' => 'Apellido materno',
+                'maxlength' => 50,
             ])
             @include('partials.form-field', [
                 'label' => 'Número de Teléfono',
                 'name' => 'numero_telefonico',
                 'value' => old('numero_telefonico'),
                 'placeholder' => 'Ej. 3411234567',
+                'maxlength' => 15,
             ])
             <div class="actions">
                 <button class="btn" type="submit">Guardar</button>

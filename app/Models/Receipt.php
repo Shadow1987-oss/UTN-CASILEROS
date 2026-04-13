@@ -27,7 +27,11 @@ class Receipt extends Model
     protected $keyType = 'int';
     public $timestamps = false;
 
-    protected $guarded = [];
+    protected $fillable = [
+        'idrecibe',
+        'idsancion',
+        'matricula',
+    ];
 
     public function sanction()
     {

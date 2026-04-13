@@ -57,7 +57,6 @@ class CareerController extends Controller
     public function update(Request $request, Career $career)
     {
         $data = $request->validate([
-            'idcarrera' => ['required', 'integer', 'min:1', Rule::unique('carreras', 'idcarrera')->ignore($career->idcarrera, 'idcarrera')],
             'nombre_carre' => ['required', 'string', 'max:50'],
         ]);
 

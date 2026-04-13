@@ -6,7 +6,7 @@
 @section('contenido')
     <div class="card">
         <h2>Editar reporte</h2>
-        <form method="POST" action="{{ route('reportes.update', $report) }}">
+        <form class="form" method="POST" action="{{ route('reportes.update', $report) }}" id="report-form">
             @csrf
             @method('PUT')
             <input type="hidden" name="idreporte" value="{{ old('idreporte', $report->idreporte) }}">

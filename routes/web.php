@@ -34,9 +34,9 @@ Route::redirect('/', '/dashboard');
 
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
-    Route::post('/login', [AuthController::class, 'login'])->name('login.attempt');
+    Route::post('/login', [AuthController::class, 'login'])->name('login.attempt')->middleware('throttle:5,1');
     Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
-    Route::post('/register', [AuthController::class, 'register'])->name('register.attempt');
+    Route::post('/register', [AuthController::class, 'register'])->name('register.attempt')->middleware('throttle:5,1');
 });
 
 Route::middleware('auth')->group(function () {

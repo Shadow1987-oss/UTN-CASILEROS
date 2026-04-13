@@ -8,7 +8,7 @@
 @section('contenido')
     <div class="card">
         <h2>Nueva sanción</h2>
-        <form method="POST" action="{{ route('sanciones.store') }}">
+        <form class="form" method="POST" action="{{ route('sanciones.store') }}" id="sancion-form">
             @csrf
             @include('partials.form-field', [
                 'label' => 'ID de sanción',
@@ -55,12 +55,14 @@
                 'value' => old('sancion'),
                 'required' => true,
                 'placeholder' => 'Ej. Daño al casillero',
+                'maxlength' => 50,
             ])
             @include('partials.form-field', [
                 'label' => 'Motivo',
                 'name' => 'motivo',
                 'value' => old('motivo'),
                 'placeholder' => 'Ej. Cerradura rota',
+                'maxlength' => 50,
             ])
             <div class="actions">
                 <button class="btn" type="submit">Guardar</button>

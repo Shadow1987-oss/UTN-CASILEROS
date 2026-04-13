@@ -24,7 +24,7 @@ class PeriodController extends Controller
      */
     public function index()
     {
-        $periods = Period::all();
+        $periods = Period::orderByDesc('idperiodo')->paginate(20);
 
         return view('periods.index', compact('periods'));
     }

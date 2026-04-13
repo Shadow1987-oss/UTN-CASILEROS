@@ -25,7 +25,10 @@ class Building extends Model
     protected $keyType = 'int';
     public $timestamps = false;
 
-    protected $guarded = [];
+    protected $fillable = [
+        'idedificio',
+        'num_edific',
+    ];
 
     public function lockers()
     {

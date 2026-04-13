@@ -6,7 +6,7 @@
 @section('contenido')
     <div class="card">
         <h2>Nuevo edificio</h2>
-        <form class="form" method="POST" action="{{ route('buildings.store') }}">
+        <form class="form" method="POST" action="{{ route('buildings.store') }}" id="building-form">
             @csrf
             @include('partials.form-field', [
                 'label' => 'ID de edificio',

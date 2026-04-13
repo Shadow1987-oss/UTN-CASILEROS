@@ -11,6 +11,7 @@
                 <h2>Tutores</h2>
                 <p class="muted">Catálogo de personal responsable.</p>
             </div>
+            <a href="{{ route('usuarios.create') }}" class="btn">Nuevo tutor</a>
         </div>
 
         <table>
@@ -45,5 +46,8 @@
                 @endforelse
             </tbody>
         </table>
+        <div style="margin-top: 16px;">
+            {{ $usuarios->links() }}
+        </div>
     </div>
 @endsection

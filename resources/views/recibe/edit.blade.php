@@ -6,7 +6,7 @@
 @section('contenido')
     <div class="card">
         <h2>Editar recibo de sanción</h2>
-        <form method="POST" action="{{ route('recibe.update', $recibo) }}">
+        <form class="form" method="POST" action="{{ route('recibe.update', $recibo) }}" id="recibo-form">
             @csrf
             @method('PUT')
 

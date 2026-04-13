@@ -26,7 +26,7 @@ class ReceiptController extends Controller
      */
     public function index()
     {
-        $recibos = Receipt::with(['sanction', 'student'])->get();
+        $recibos = Receipt::with(['sanction', 'student'])->orderByDesc('idrecibe')->paginate(20);
         return view('recibe.index', compact('recibos'));
     }
 

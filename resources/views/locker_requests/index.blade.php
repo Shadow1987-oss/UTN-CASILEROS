@@ -93,16 +93,22 @@
                                 <form method="POST" action="{{ route('locker_requests.approve', $requestItem) }}"
                                     style="display:inline; margin-right: 6px;">
                                     @csrf
-                                    <input type="text" name="review_notes" class="input" maxlength="255"
-                                        placeholder="Nota (opcional)" style="max-width: 180px; display:inline-block;">
+                                    <label for="approve_notes_{{ $requestItem->id }}" class="sr-only">Nota de
+                                        aprobación</label>
+                                    <input type="text" name="review_notes" id="approve_notes_{{ $requestItem->id }}"
+                                        class="input" maxlength="255" placeholder="Nota (opcional)"
+                                        style="max-width: 180px; display:inline-block;">
                                     <button class="btn" type="submit">Aprobar</button>
                                 </form>
 
                                 <form method="POST" action="{{ route('locker_requests.reject', $requestItem) }}"
                                     style="display:inline;">
                                     @csrf
-                                    <input type="text" name="review_notes" class="input" maxlength="255" required
-                                        placeholder="Motivo de rechazo" style="max-width: 180px; display:inline-block;">
+                                    <label for="reject_notes_{{ $requestItem->id }}" class="sr-only">Motivo de
+                                        rechazo</label>
+                                    <input type="text" name="review_notes" id="reject_notes_{{ $requestItem->id }}"
+                                        class="input" maxlength="255" required placeholder="Motivo de rechazo"
+                                        style="max-width: 180px; display:inline-block;">
                                     <button class="btn danger" type="submit">Rechazar</button>
                                 </form>
                             @else

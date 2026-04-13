@@ -6,7 +6,7 @@
 @section('contenido')
     <div class="card">
         <h2>Nuevo recibo de sanción</h2>
-        <form method="POST" action="{{ route('recibe.store') }}">
+        <form class="form" method="POST" action="{{ route('recibe.store') }}" id="recibo-form">
             @csrf
             @include('partials.form-field', [
                 'label' => 'ID del recibo',

@@ -46,5 +46,8 @@
                 @endforelse
             </tbody>
         </table>
+        <div style="margin-top: 16px;">
+            {{ $periods->links() }}
+        </div>
     </div>
 @endsection

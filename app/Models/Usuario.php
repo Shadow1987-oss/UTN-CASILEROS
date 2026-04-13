@@ -29,7 +29,13 @@ class Usuario extends Model
     protected $keyType = 'int';
     public $timestamps = false;
 
-    protected $guarded = [];
+    protected $fillable = [
+        'idusuario',
+        'nombre',
+        'apellidoP',
+        'apellidoM',
+        'cargo',
+    ];
 
     public function reports()
     {

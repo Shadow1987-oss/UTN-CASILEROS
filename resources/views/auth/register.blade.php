@@ -29,7 +29,7 @@
             <div class="field" id="nombre-field">
                 <label for="nombre">Nombre(s)</label>
                 <input id="nombre" type="text" name="nombre" value="{{ old('nombre') }}" class="input"
-                    placeholder="Ej. Juan Carlos" required>
+                    placeholder="Ej. Juan Carlos" required maxlength="50">
                 @error('nombre')
                     <div class="field-help error">{{ $message }}</div>
                 @enderror
@@ -38,7 +38,7 @@
             <div class="field" id="apellidoPaterno-field">
                 <label for="apellidoPaterno">Apellido paterno</label>
                 <input id="apellidoPaterno" type="text" name="apellidoPaterno" value="{{ old('apellidoPaterno') }}"
-                    class="input" placeholder="Ej. Pérez" required>
+                    class="input" placeholder="Ej. Pérez" required maxlength="50">
                 @error('apellidoPaterno')
                     <div class="field-help error">{{ $message }}</div>
                 @enderror
@@ -47,7 +47,7 @@
             <div class="field" id="apellidoMaterno-field">
                 <label for="apellidoMaterno">Apellido materno (opcional)</label>
                 <input id="apellidoMaterno" type="text" name="apellidoMaterno" value="{{ old('apellidoMaterno') }}"
-                    class="input" placeholder="Ej. López">
+                    class="input" placeholder="Ej. López" maxlength="50">
                 @error('apellidoMaterno')
                     <div class="field-help error">{{ $message }}</div>
                 @enderror

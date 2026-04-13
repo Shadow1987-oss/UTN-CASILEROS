@@ -6,7 +6,7 @@
 @section('contenido')
     <div class="card">
         <h2>Editar edificio</h2>
-        <form class="form" method="POST" action="{{ route('buildings.update', $building) }}">
+        <form class="form" method="POST" action="{{ route('buildings.update', $building) }}" id="building-form">
             @csrf
             @method('PUT')
             <input type="hidden" name="idedificio" value="{{ old('idedificio', $building->idedificio) }}">

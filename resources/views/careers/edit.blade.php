@@ -6,7 +6,7 @@
 @section('contenido')
     <div class="card">
         <h2>Editar carrera</h2>
-        <form class="form" method="POST" action="{{ route('careers.update', $career) }}">
+        <form class="form" method="POST" action="{{ route('careers.update', $career) }}" id="career-form">
             @csrf
             @method('PUT')
             <input type="hidden" name="idcarrera" value="{{ old('idcarrera', $career->idcarrera) }}">

@@ -224,6 +224,7 @@ class AssignmentController extends Controller
         $alreadyAssigned = Assignment::where('matricula', $data['matricula'])
             ->where('idPeriodo', $data['idPeriodo'])
             ->where('idasigna', '!=', $assignment->idasigna)
+            ->whereNull('released_at')
             ->exists();
 
         if ($alreadyAssigned) {
@@ -367,15 +368,23 @@ class AssignmentController extends Controller
      */
     private function notifyStaff(string $title, string $message, array $payload = []): void
     {
-        $staffUsers = User::whereIn('role', ['admin', 'tutor'])->get(['id']);
-        foreach ($staffUsers as $staffUser) {
-            UserNotification::create([
-                'user_id' => (int) $staffUser->id,
+        $staffUsers = User::whereIn('role', ['admin', 'tutor'])->pluck('id');
+
+        $notifications = $staffUsers->map(function ($userId) use ($title, $message, $payload) {
+            return [
+                'user_id' => (int) $userId,
                 'type' => 'assignment',
                 'title' => $title,
                 'message' => $message,
-                'payload' => $payload,
-            ]);
+                'payload' => json_encode($payload),
+                'read_at' => null,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ];
+        })->all();
+
+        if (!empty($notifications)) {
+            UserNotification::insert($notifications);
         }
     }
 }

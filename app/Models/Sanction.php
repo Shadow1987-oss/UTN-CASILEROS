@@ -28,7 +28,12 @@ class Sanction extends Model
     protected $keyType = 'int';
     public $timestamps = false;
 
-    protected $guarded = [];
+    protected $fillable = [
+        'idsancion',
+        'idusuario',
+        'sancion',
+        'motivo',
+    ];
 
     public function usuario()
     {

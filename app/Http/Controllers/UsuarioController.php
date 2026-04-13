@@ -20,7 +20,7 @@ class UsuarioController extends Controller
 {
     public function index()
     {
-        $usuarios = Usuario::orderBy('idusuario')->get();
+        $usuarios = Usuario::orderBy('idusuario')->paginate(20);
         return view('usuarios.index', compact('usuarios'));
     }
 
@@ -36,7 +36,7 @@ class UsuarioController extends Controller
             'nombre' => ['required', 'string', 'max:50'],
             'apellidoP' => ['nullable', 'string', 'max:50'],
             'apellidoM' => ['nullable', 'string', 'max:50'],
-            'cargo' => ['nullable', 'string', 'max:50'],
+            'cargo' => ['nullable', 'string', 'in:Tutor,Admin'],
         ]);
 
         Usuario::create($data);
@@ -61,7 +61,7 @@ class UsuarioController extends Controller
             'nombre' => ['required', 'string', 'max:50'],
             'apellidoP' => ['nullable', 'string', 'max:50'],
             'apellidoM' => ['nullable', 'string', 'max:50'],
-            'cargo' => ['nullable', 'string', 'max:50'],
+            'cargo' => ['nullable', 'string', 'in:Tutor,Admin'],
         ]);
 
         $usuario->update($data);

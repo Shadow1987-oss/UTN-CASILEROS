@@ -28,7 +28,13 @@ class Report extends Model
     protected $keyType = 'int';
     public $timestamps = false;
 
-    protected $guarded = [];
+    protected $fillable = [
+        'idreporte',
+        'idusuario',
+        'matricula',
+        'fecha',
+        'descripcion',
+    ];
 
     public function tutor()
     {
