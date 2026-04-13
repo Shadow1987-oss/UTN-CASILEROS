@@ -62,12 +62,16 @@
                             <label for="idperiodo">Período</label>
                             <select id="idperiodo" name="idperiodo" class="input" required>
                                 <option value="">Seleccionar período</option>
-                                @foreach ($periods as $period)
+                                @forelse ($periods as $period)
                                     <option value="{{ $period->idperiodo }}"
                                         {{ old('idperiodo') == $period->idperiodo ? 'selected' : '' }}>
                                         {{ $period->nombrePerio }}
+                                        ({{ \Carbon\Carbon::parse($period->fechaInicio)->format('d/m/Y') }} –
+                                        {{ \Carbon\Carbon::parse($period->fechaFin)->format('d/m/Y') }})
                                     </option>
-                                @endforeach
+                                @empty
+                                    <option value="" disabled>No hay períodos vigentes</option>
+                                @endforelse
                             </select>
                         </div>
                         <div class="field">

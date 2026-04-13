@@ -99,7 +99,13 @@
                             @endif
                             <a href="{{ route('notifications.index') }}"
                                 class="nav-icon-link {{ request()->routeIs('notifications.*') ? 'active' : '' }}"
-                                title="Notificaciones" aria-label="Notificaciones">🔔</a>
+                                title="Notificaciones" aria-label="Notificaciones" style="position:relative;">
+                                🔔
+                                @if (($unreadNotificationsCount ?? 0) > 0)
+                                    <span
+                                        style="position:absolute;top:-6px;right:-8px;background:#e53e3e;color:#fff;font-size:11px;font-weight:700;min-width:18px;height:18px;line-height:18px;text-align:center;border-radius:50%;padding:0 4px;">{{ $unreadNotificationsCount > 99 ? '99+' : $unreadNotificationsCount }}</span>
+                                @endif
+                            </a>
                             <form method="POST" action="{{ route('logout') }}" style="display:inline;">
                                 @csrf
                                 <button class="btn secondary" type="submit" style="padding:8px 12px;">Salir</button>

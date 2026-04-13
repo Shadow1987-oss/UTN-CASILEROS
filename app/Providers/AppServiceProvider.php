@@ -23,6 +23,15 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        // Compartir contador de notificaciones no leídas con todas las vistas
+        view()->composer('plantilla', function ($view) {
+            $unreadCount = 0;
+            if (auth()->check()) {
+                $unreadCount = \App\Models\UserNotification::where('user_id', auth()->id())
+                    ->whereNull('read_at')
+                    ->count();
+            }
+            $view->with('unreadNotificationsCount', $unreadCount);
+        });
     }
 }

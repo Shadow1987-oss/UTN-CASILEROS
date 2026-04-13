@@ -198,7 +198,9 @@ class StudentController extends Controller
                 ->paginate(10);
         }
 
-        $periods = Period::orderBy('fechaInicio', 'desc')->get();
+        $periods = Period::where('fechaFin', '>=', now()->toDateString())
+            ->orderBy('fechaInicio', 'desc')
+            ->get();
 
         return view('students.my_locker', compact('student', 'assignment', 'periods', 'lockerRequests'));
     }

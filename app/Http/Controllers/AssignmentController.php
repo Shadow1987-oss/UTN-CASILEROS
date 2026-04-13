@@ -81,7 +81,8 @@ class AssignmentController extends Controller
         $students = Student::orderBy('matricula')->get();
         $lockers = Locker::all();
         $periods = Period::all();
-        $usuarios = Usuario::orderBy('nombre')->orderBy('apellidoP')->get();
+        $usuarios = Usuario::where('cargo', 'Tutor')
+            ->orderBy('nombre')->orderBy('apellidoP')->get();
 
         $tutorLoads = Assignment::query()
             ->selectRaw('idusuario, COUNT(*) as active_assignments')
@@ -183,7 +184,8 @@ class AssignmentController extends Controller
         $students = Student::orderBy('matricula')->get();
         $lockers = Locker::all();
         $periods = Period::all();
-        $usuarios = Usuario::orderBy('nombre')->orderBy('apellidoP')->get();
+        $usuarios = Usuario::where('cargo', 'Tutor')
+            ->orderBy('nombre')->orderBy('apellidoP')->get();
 
         $tutorLoads = Assignment::query()
             ->selectRaw('idusuario, COUNT(*) as active_assignments')
