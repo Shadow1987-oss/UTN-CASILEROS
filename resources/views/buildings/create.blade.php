@@ -11,9 +11,11 @@
             @include('partials.form-field', [
                 'label' => 'ID de edificio',
                 'name' => 'idedificio',
-                'type' => 'number',
+                'type' => 'text',
                 'value' => old('idedificio'),
                 'required' => true,
+                'placeholder' => 'Ej. 1, 2, 3…',
+                'inputmode' => 'numeric',
             ])
             @include('partials.form-field', [
                 'label' => 'Número/clave de edificio',

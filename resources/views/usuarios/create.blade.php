@@ -11,9 +11,11 @@
             @include('partials.form-field', [
                 'label' => 'ID de tutor',
                 'name' => 'idusuario',
-                'type' => 'number',
+                'type' => 'text',
                 'value' => old('idusuario'),
                 'required' => true,
+                'placeholder' => 'Ej. 1, 2, 3…',
+                'inputmode' => 'numeric',
             ])
             @include('partials.form-field', [
                 'label' => 'Nombre(s)',

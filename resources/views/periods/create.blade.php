@@ -11,9 +11,11 @@
             @include('partials.form-field', [
                 'label' => 'ID del período',
                 'name' => 'idperiodo',
-                'type' => 'number',
+                'type' => 'text',
                 'value' => old('idperiodo'),
                 'required' => true,
+                'placeholder' => 'Ej. 1, 2, 3…',
+                'inputmode' => 'numeric',
             ])
             @include('partials.form-field', [
                 'label' => 'Nombre del período',

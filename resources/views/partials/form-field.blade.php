@@ -17,7 +17,8 @@
         <input id="{{ $name }}" type="{{ $type ?? 'text' }}" name="{{ $name }}"
             value="{{ old($name, $value ?? '') }}" class="input" placeholder="{{ $placeholder ?? '' }}"
             @if ($required ?? false) required @endif
-            @if ($maxlength ?? false) maxlength="{{ $maxlength }}" @endif>
+            @if ($maxlength ?? false) maxlength="{{ $maxlength }}" @endif
+            @if ($inputmode ?? false) inputmode="{{ $inputmode }}" pattern="[0-9]+" @endif>
     @endif
     @error($name)
         <div class="field-help error">{{ $message }}</div>

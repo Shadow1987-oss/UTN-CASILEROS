@@ -11,9 +11,11 @@
             @include('partials.form-field', [
                 'label' => 'ID de carrera',
                 'name' => 'idcarrera',
-                'type' => 'number',
+                'type' => 'text',
                 'value' => old('idcarrera'),
                 'required' => true,
+                'placeholder' => 'Ej. 1, 2, 3…',
+                'inputmode' => 'numeric',
             ])
             @include('partials.form-field', [
                 'label' => 'Nombre de carrera',

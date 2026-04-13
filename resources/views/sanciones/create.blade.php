@@ -13,9 +13,11 @@
             @include('partials.form-field', [
                 'label' => 'ID de sanción',
                 'name' => 'idsancion',
-                'type' => 'number',
+                'type' => 'text',
                 'value' => old('idsancion'),
                 'required' => true,
+                'placeholder' => 'Ej. 1, 2, 3…',
+                'inputmode' => 'numeric',
             ])
             <div class="field">
                 <label for="idusuario">Tutor responsable</label>

@@ -13,9 +13,11 @@
             @include('partials.form-field', [
                 'label' => 'ID de asignación',
                 'name' => 'idasigna',
-                'type' => 'number',
+                'type' => 'text',
                 'value' => old('idasigna'),
                 'required' => true,
+                'placeholder' => 'Ej. 1, 2, 3…',
+                'inputmode' => 'numeric',
             ])
             <div class="field">
                 <label for="matricula">Estudiante</label>

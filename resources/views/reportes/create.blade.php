@@ -12,9 +12,11 @@
             @include('partials.form-field', [
                 'label' => 'ID del reporte',
                 'name' => 'idreporte',
-                'type' => 'number',
+                'type' => 'text',
                 'value' => old('idreporte'),
                 'required' => true,
+                'placeholder' => 'Ej. 1, 2, 3…',
+                'inputmode' => 'numeric',
             ])
             <div class="field">
                 <label for="idusuario">Tutor responsable</label>

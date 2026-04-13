@@ -11,9 +11,11 @@
             @include('partials.form-field', [
                 'label' => 'ID del recibo',
                 'name' => 'idrecibe',
-                'type' => 'number',
+                'type' => 'text',
                 'value' => old('idrecibe'),
                 'required' => true,
+                'placeholder' => 'Ej. 1, 2, 3…',
+                'inputmode' => 'numeric',
             ])
             <div class="field">
                 <label for="idsancion">Sanción</label>
