@@ -48,6 +48,7 @@ class Student extends Model
         'apellidoPaterno',
         'apellidoMaterno',
         'numero_telefonico',
+        'numero_telefono',
     ];
 
     protected $appends = [

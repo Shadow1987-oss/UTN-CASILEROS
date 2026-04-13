@@ -30,7 +30,14 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::redirect('/', '/dashboard');
+Route::get('/', function () {
+    if (auth()->check()) {
+        return auth()->user()->role === 'estudiante'
+            ? redirect('/mi-casillero')
+            : redirect('/dashboard');
+    }
+    return redirect('/login');
+});
 
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'showLogin'])->name('login');

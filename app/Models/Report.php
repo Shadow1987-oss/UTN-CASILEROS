@@ -32,8 +32,8 @@ class Report extends Model
         'idreporte',
         'idusuario',
         'matricula',
-        'fecha',
         'descripcion',
+        'observaciones',
     ];
 
     public function tutor()

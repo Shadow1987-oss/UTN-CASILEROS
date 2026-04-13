@@ -12,6 +12,9 @@
                 <h2>Estudiantes</h2>
                 <p class="muted">Administrar registros de estudiantes.</p>
             </div>
+            @if (auth()->user()->role === 'admin')
+                <a class="btn" href="{{ route('students.create') }}">Nuevo estudiante</a>
+            @endif
         </div>
 
         <form method="GET" action="{{ route('students.index') }}" class="form" style="margin-bottom: 20px;">

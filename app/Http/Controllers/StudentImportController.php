@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Student;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Box\Spout\Reader\Common\Creator\ReaderEntityFactory;
 
 /**
@@ -138,7 +139,7 @@ class StudentImportController extends Controller
 
             return redirect()->route('students.index')->with('status', "Se importaron {$imported} estudiantes.");
         } catch (\Throwable $exception) {
-            \Log::error('Student import failed', [
+            Log::error('Student import failed', [
                 'message' => $exception->getMessage(),
                 'file' => $exception->getFile(),
                 'line' => $exception->getLine(),

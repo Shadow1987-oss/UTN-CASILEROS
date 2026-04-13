@@ -288,7 +288,7 @@ class ReportsController extends Controller
 
         return $students->groupBy('idcarrera')->map(function ($group) {
             return [
-                'career' => $group->first()->career->nombre_carre ?? (string) $group->first()->idcarrera,
+                'career' => optional($group->first()->career)->nombre_carre ?? (string) $group->first()->idcarrera,
                 'total_students' => $group->count(),
                 'with_lockers' => $group->filter(function ($student) {
                     return $student->assignments->whereNull('released_at')->isNotEmpty();
